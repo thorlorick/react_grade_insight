@@ -1,66 +1,51 @@
-# react_grade_insight
-react, node.js, mysql project for real time grade updates
+# Grade Insight — User Flow Overview
 
+## 🧭 High-Level User Flow
 
-Grade Insight
+### 🔐 Login Page
+- All users (teacher, student, parent) go through the same login form.
+- System detects user type after login (by looking them up in DB).
+- Redirects them to the correct dashboard.
 
-A simple, secure tool for teachers to upload CSV gradebooks and for students and parents to view grades by class and assignment.
-Features
+---
 
-    Teachers upload CSV files containing students’ grades, assignments, and metadata.
+### 🧑‍🏫 Teacher Dashboard
+- Linked to their `teacher_id`.
+- Displays:
+  - All their classes
+  - Upload CSV button (opens generic upload form)
+  - Optionally: recent uploads / file history
 
-    System automatically:
+---
 
-        Parses CSVs
+### 📤 Upload Page (generic)
+- Class name input (or dropdown if class exists)
+- File upload field (CSV)
+- Submit
 
-        Creates or updates classes, assignments, students, and grades
+**On Submit:**
+- System identifies the teacher from the session
+- Associates all data from the CSV to that teacher + class
 
-        Generates secure parent access codes stored separately
+---
 
-    Students and parents can log in to view their grades, organized by class.
+### 🧑‍🎓 Student Dashboard
+- Linked via `student_number` (from login)
+- Displays:
+  - Classes they are enrolled in
+  - Assignments + grades per class (grouped view)
+  - Optionally: progress charts, recent feedback
 
-    Minimal teacher effort: just upload and view.
+---
 
-Technology Stack
+### 👩‍👦 Parent Dashboard
+- Accessed by entering:
+  - Student number
+  - Parent access code
+- Displays:
+  - Same information as the student view
+  - Possibly read-only with limited detail (e.g., no comments)
 
-    Frontend: React.js (client-side UI and forms)
+---
 
-    Backend: Node.js + Express (API and business logic)
-
-    Database: MySQL (relational data storage)
-
-    Security: Parent access codes hashed and stored separately
-
-Database Design Highlights
-
-    teachers: Stores teacher accounts
-
-    classes: Represents subjects or courses
-
-    students: Student personal info
-
-    assignments: Individual graded items with metadata
-
-    grades: Student scores per assignment
-
-    uploads: Records each CSV upload event
-
-    parent_access_codes: Secure hashed codes linked to students for parental access
-
-User Roles
-
-    Teacher (Rick): Upload CSVs, view dashboards, receive parent access codes
-
-    Student (Jane): Log in to view grades by class
-
-    Parent: Log in with student number + access code to view student grades
-
-Next Steps
-
-    Build backend API to accept CSV uploads and process data
-
-    Develop React frontend for upload form, dashboards, and login views
-
-    Implement secure authentication for all users
-
-    Add reporting and notifications for parent access codes
+[README.md] (Frontend: React, Backend: Node.js, Database: MySQL)
