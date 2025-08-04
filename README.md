@@ -2,49 +2,49 @@
 
 ## 🧭 High-Level User Flow
 
-### 🔐 Login Page
-- All users (teacher, student, parent) go through the same login form.
-- System detects user type after login (by looking them up in DB).
-- Redirects them to the correct dashboard.
+### 🔐 Login Page (React)
+- All users (teacher, student, parent) go through the same login form. (React)
+- System detects user type after login (Node.js + MySQL)
+- Redirects them to the correct dashboard. (React)
 
 ---
 
-### 🧑‍🏫 Teacher Dashboard
-- Linked to their `teacher_id`.
-- Displays:
-  - All their classes
-  - Upload CSV button (opens generic upload form)
-  - Optionally: recent uploads / file history
+### 🧑‍🏫 Teacher Dashboard (React)
+- Linked to their `teacher_id`. (MySQL)
+- Displays: (React)
+  - All their classes (MySQL)
+  - Upload CSV button (opens generic upload form) (React)
+  - Optionally: recent uploads / file history (React + MySQL)
 
 ---
 
-### 📤 Upload Page (generic)
-- Class name input (or dropdown if class exists)
-- File upload field (CSV)
-- Submit
+### 📤 Upload Page (generic) (React)
+- Class name input (or dropdown if class exists) (React)
+- File upload field (CSV) (React)
+- Submit (React)
 
-**On Submit:**
-- System identifies the teacher from the session
-- Associates all data from the CSV to that teacher + class
-
----
-
-### 🧑‍🎓 Student Dashboard
-- Linked via `student_number` (from login)
-- Displays:
-  - Classes they are enrolled in
-  - Assignments + grades per class (grouped view)
-  - Optionally: progress charts, recent feedback
+**On Submit:** (Node.js)
+- System identifies the teacher from the session (Node.js + MySQL)
+- Associates all data from the CSV to that teacher + class (Node.js + MySQL)
 
 ---
 
-### 👩‍👦 Parent Dashboard
-- Accessed by entering:
-  - Student number
-  - Parent access code
-- Displays:
-  - Same information as the student view
-  - Possibly read-only with limited detail (e.g., no comments)
+### 🧑‍🎓 Student Dashboard (React)
+- Linked via `student_number` (from login) (Node.js + MySQL)
+- Displays: (React)
+  - Classes they are enrolled in (MySQL)
+  - Assignments + grades per class (grouped view) (React + MySQL)
+  - Optionally: progress charts, recent feedback (React + MySQL)
+
+---
+
+### 👩‍👦 Parent Dashboard (React)
+- Accessed by entering: (React)
+  - Student number (React)
+  - Parent access code (React + Node.js)
+- Displays: (React)
+  - Same information as the student view (React + MySQL)
+  - Possibly read-only with limited detail (e.g., no comments) (React)
 
 ---
 
