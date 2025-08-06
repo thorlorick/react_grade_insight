@@ -88,3 +88,65 @@ A simple, web-based grade viewer for teachers, students, and parents. Built usin
 - Backend: [Node.js]
 - Database: [MySQL]
 - Authentication: Session or token-based (TBD)
+
+
+# Grade Insight
+
+## ☕ Upload Before the Coffee Is Poured
+
+Grade Insight is built on one core philosophy:
+
+> **Teachers should be able to download grades from Google Classroom and upload them here — all before their coffee is poured.**
+
+No setup. No friction. Just **"set it and forget it."**
+
+---
+
+## 🧠 How It Works
+
+Every teacher has a unique account (`teacher_id`). When they upload a CSV of grades:
+
+- The system automatically tags all data with their `teacher_id`
+- Grades are stored in a shared `grades` table, but **scoped** to each teacher
+- No teacher can overwrite another’s data — ever
+- Students can appear in multiple classes and see grades from **each teacher independently**
+
+---
+
+## 🗃️ The Grades Table
+
+All grade data is stored in a central table with these key fields:
+
+```sql
+grades
+-------
+id               -- unique row id
+teacher_id       -- who uploaded the grade
+student_id       -- who the grade is for
+class_id         -- class the grade belongs to
+assignment_id    -- which assignment
+grade            -- the actual grade
+uploaded_at      -- timestamp of upload
+
+
+
+👩‍🎓 Student View
+
+Students only see grades from the classes they are enrolled in, scoped to their actual teachers. If a mark changes, they can see:
+
+    “Last updated by Mr. Smith on Aug 6, 9:02am.”
+
+🔒 Safe by Design
+
+    ✅ One teacher = one sandbox
+
+    ✅ No accidental overwrites
+
+    ✅ Multiple teachers per student fully supported
+
+    ✅ Simple upload flow: one file, one click, done
+
+Grade Insight handles the complexity — so you don’t have to.
+
+☕ Upload your file.
+✅ We’ll handle the rest.
