@@ -59,12 +59,6 @@ CREATE TABLE teacher_approved (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE student (
-    student_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE parents_approved (
     parent_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,33 +76,6 @@ CREATE TABLE parent_student (
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE
 );
 
-CREATE TABLE assignment (
-    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    due_date DATE,
-    teacher_id INT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (teacher_id) REFERENCES teacher_approved(teacher_id)
-);
-
-CREATE TABLE grades (
-    grade_id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT NOT NULL,
-    assignment_id INT NOT NULL,
-    grade DECIMAL(5,2) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES student(student_id),
-    FOREIGN KEY (assignment_id) REFERENCES assignment(assignment_id)
-);
-
-CREATE TABLE upload (
-    upload_id INT AUTO_INCREMENT PRIMARY KEY,
-    teacher_id INT,
-    filename VARCHAR(255) NOT NULL,
-    upload_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (teacher_id) REFERENCES teacher_approved(teacher_id)
-);
 
 CREATE TABLE login_attempt (
     attempt_id INT AUTO_INCREMENT PRIMARY KEY,
