@@ -51,19 +51,10 @@ CREATE TABLE grades (
     FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE SET NULL
 );
 
-CREATE TABLE teacher_approved (
-    teacher_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE parents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE TABLE parents_approved (
-    parent_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -72,10 +63,9 @@ CREATE TABLE parent_student (
     parent_id INT NOT NULL,
     student_id INT NOT NULL,
     PRIMARY KEY (parent_id, student_id),
-    FOREIGN KEY (parent_id) REFERENCES parents_approved(parent_id) ON DELETE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE
+    FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE login_attempt (
     attempt_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,5 +75,6 @@ CREATE TABLE login_attempt (
     attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM('success', 'failure') NOT NULL
 );
+
 
 ## END OF MYSQL
