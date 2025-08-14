@@ -1,6 +1,6 @@
-## this is a dumping page
+# this is a dumping page
 
-# START OF MYSQL
+## START OF MYSQL
 
 CREATE TABLE teachers (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,7 +77,9 @@ CREATE TABLE login_attempt (
 );
 
 
-# END OF MYSQL
+## END OF MYSQL
+
+### attempt to create the database:
 
 
 
