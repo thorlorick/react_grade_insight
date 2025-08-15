@@ -39,8 +39,9 @@ app.post('/api/uploads/template', upload.single('file'), (req, res) => {
   return res.json({ ok: true, file: filename, summary });
 });
 
-// Start server
+// Start server on all network interfaces
 const PORT = process.env.PORT || 8081;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`API listening on :${PORT}`);
 });
+
