@@ -98,6 +98,8 @@ Perfect — the React frontend built successfully ✅
 Your production-ready files are now in:
 /home/len/react_grade_insight/frontend/build
 
+# SUCCESS!!!!! ===== gradeinsight.com is up and running --- except nothing works....but that's ok!!!!
+it can be seen!!!!!!
 
 
 
