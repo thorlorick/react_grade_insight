@@ -346,7 +346,7 @@
                     };
 
                     // Send the request
-                    xhr.open('POST', `http://localhost:3001/api/uploads/template?teacherId=${teacherId}&notes=${encodeURIComponent(notes)}`);
+                    xhr.open('POST', `http://localhost:8081/api/uploads/template?teacherId=${teacherId}&notes=${encodeURIComponent(notes)}`);
                     xhr.send(formData);
 
                 } catch (err) {
