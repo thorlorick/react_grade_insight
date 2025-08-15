@@ -294,52 +294,63 @@
                 }
             };
 
-            const simulateUpload = async () => {
+            const uploadToServer = async () => {
                 setUploading(true);
                 setProgress(0);
                 setError(null);
 
                 try {
-                    // Simulate upload progress
-                    for (let i = 0; i <= 100; i += 10) {
-                        setProgress(i);
-                        await new Promise(resolve => setTimeout(resolve, 200));
-                    }
+                    const formData = new FormData();
+                    formData.append('file', file);
 
-                    // Simulate server response with dynamic assignment names
-                    const headers = await new Promise((resolve) => {
-                        Papa.parse(file, {
-                            complete: (results) => resolve(results.data[0]),
-                            header: false
-                        });
-                    });
+                    // You can change these values as needed
+                    const teacherId = 1; // TODO: Get this from user input or auth
+                    const notes = 'Uploaded via web interface';
+
+                    const xhr = new XMLHttpRequest();
                     
-                    const assignmentNames = headers.slice(3); // Get assignment columns after the required 3
-                    
-                    const mockResponse = {
-                        success: true,
-                        message: 'CSV uploaded successfully',
-                        data: {
-                            assignmentsCreated: assignmentNames.length,
-                            studentsProcessed: 3,
-                            gradesCreated: assignmentNames.length * 3,
-                            assignments: assignmentNames.map((name, index) => ({
-                                name: name,
-                                dueDate: `2025-06-${String(index + 1).padStart(2, '0')}`,
-                                maxPoints: 100 - (index * 2) // Just for demo variety
-                            })),
-                            students: [
-                                'Alice Smith',
-                                'Bob Johnson', 
-                                'Charlie Brown'
-                            ]
+                    // Track upload progress
+                    xhr.upload.addEventListener('progress', (e) => {
+                        if (e.lengthComputable) {
+                            const percentComplete = Math.round((e.loaded / e.total) * 100);
+                            setProgress(percentComplete);
                         }
+                    });
+
+                    // Handle the response
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.ok) {
+                                setUploadResponse({
+                                    success: true,
+                                    message: 'CSV uploaded and processed successfully',
+                                    data: {
+                                        filename: response.file,
+                                        summary: response.summary
+                                    }
+                                });
+                            } else {
+                                setError(response.error || 'Upload failed');
+                            }
+                        } else {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            setError(errorResponse.error || `HTTP ${xhr.status}: Upload failed`);
+                        }
+                        setUploading(false);
                     };
 
-                    setUploadResponse(mockResponse);
+                    xhr.onerror = function() {
+                        setError('Network error during upload');
+                        setUploading(false);
+                    };
+
+                    // Send the request
+                    xhr.open('POST', `http://localhost:3001/api/uploads/template?teacherId=${teacherId}&notes=${encodeURIComponent(notes)}`);
+                    xhr.send(formData);
+
                 } catch (err) {
                     setError('Upload failed: ' + err.message);
-                } finally {
                     setUploading(false);
                 }
             };
@@ -412,7 +423,7 @@
                         <div>
                             <button 
                                 className="btn" 
-                                onClick={simulateUpload}
+                                onClick={uploadToServer}
                                 disabled={uploading}
                             >
                                 {uploading ? 'Uploading...' : 'Upload CSV'}
@@ -437,28 +448,15 @@
                             <h3>✅ Upload Successful!</h3>
                             <p><strong>Message:</strong> {uploadResponse.message}</p>
                             <div style={{marginTop: '15px'}}>
-                                <p><strong>Results:</strong></p>
-                                <ul>
-                                    <li>Assignments Created: {uploadResponse.data.assignmentsCreated}</li>
-                                    <li>Students Processed: {uploadResponse.data.studentsProcessed}</li>
-                                    <li>Grades Created: {uploadResponse.data.gradesCreated}</li>
-                                </ul>
-                                
-                                <p><strong>Assignments:</strong></p>
-                                <ul>
-                                    {uploadResponse.data.assignments.map((assignment, index) => (
-                                        <li key={index}>
-                                            {assignment.name} - Due: {assignment.dueDate} (Max: {assignment.maxPoints} pts)
-                                        </li>
-                                    ))}
-                                </ul>
-                                
-                                <p><strong>Students:</strong></p>
-                                <ul>
-                                    {uploadResponse.data.students.map((student, index) => (
-                                        <li key={index}>{student}</li>
-                                    ))}
-                                </ul>
+                                <p><strong>File:</strong> {uploadResponse.data.filename}</p>
+                                {uploadResponse.data.summary && (
+                                    <div>
+                                        <p><strong>Import Summary:</strong></p>
+                                        <pre style={{background: '#f8f9fa', padding: '10px', borderRadius: '4px', fontSize: '14px'}}>
+                                            {JSON.stringify(uploadResponse.data.summary, null, 2)}
+                                        </pre>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
