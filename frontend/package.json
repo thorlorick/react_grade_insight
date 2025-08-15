@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "react-scripts build",
+    "start": "react-scripts start"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +14,4 @@
   "dependencies": {
     "react-scripts": "^5.0.1"
   }
-}
-
-"scripts": {
-  "build": "react-scripts build"
 }
