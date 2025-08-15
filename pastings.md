@@ -89,6 +89,9 @@ curl -X POST   -F "file=@upload_template"   "http://localhost:8081/api/uploads/t
 
 trying to get react main page to work now.
 
+### NO GO!!!!
+I couldn't get the index.html to load, but I think the issue is in trying to force some tests locally, and then deploy...I'm just going to see if I can get everything poingting to gradeinsight.com
+
 
 
 
