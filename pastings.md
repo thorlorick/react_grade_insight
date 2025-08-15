@@ -80,8 +80,17 @@ CREATE TABLE login_attempt (
 ## END OF MYSQL
 
 ### attempt to create the database:
-Sucess
+Success
 #### trying to get the csv upload to work now
+##Success
+
+used:
+curl -X POST   -F "file=@upload_template"   "http://localhost:8081/api/uploads/template?teacherId=1&notes=Test"
+
+trying to get react main page to work now.
+
+
+
 
 
 
