@@ -5,6 +5,10 @@ const uploadsRoute = require('./routes/uploads');
 const app = express();
 app.use(express.json());
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../../frontend')));
+
+
 // health check
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
