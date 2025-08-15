@@ -96,6 +96,7 @@ I couldn't get the index.html to load, but I think the issue is in trying to for
 Perfect — the React frontend built successfully ✅
 
 Your production-ready files are now in:
+/home/len/react_grade_insight/frontend/build
 
 
 
