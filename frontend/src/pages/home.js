@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade Insight - When Good Isn't Enough</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
+import React from 'react';
+import './GradeInsight.css';  // we’ll add this later
+
+export default function GradeInsight() {
+  return (
+    <div>
     <nav class="navbar">
         <a href="#" class="nav-logo">Grade_Insight</a>
         <div class="nav-links">
@@ -61,5 +55,6 @@
             loginForm.classList.add('fade-in');
         });
     </script>
-</body>
-</html>
+ </div>
+  );
+}
