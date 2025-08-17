@@ -55,7 +55,7 @@ body {
 
 .hero-container {
     height: calc(100vh - 100px);
-    background-image: url("/Assets/img/bgAdventure.jpg");
+    background-image: url("/images/GI-BG.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
