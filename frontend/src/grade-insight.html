@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Insight - When Good Isn't Enough</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="nav-logo">Grade_Insight</a>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="#" class="nav-link">Security</a>
+            <a href="#" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
+    <div class="hero-container">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="content-inner">
+                <h1 class="hero-text" id="heroText">Grade Insight<br>Simple.<br>Secure.<br>Yours.</h1>
+                <div class="login-form" id="loginForm">
+                    <h2 class="login-title">Secure Access</h2>
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label" for="username">Username</label>
+                            <input type="text" id="username" class="form-input" placeholder="Enter your username">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="password">Password</label>
+                            <input type="password" id="password" class="form-input" placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="login-button">Sign In</button>
+                        <div class="signup-link">
+                            Don't have an account? <a href="#">Sign up</a>
+                        </div>
+                    </form>
+                </div>
+                <a href="#" class="adventure-button" id="adventureButton">Begin your Adventure</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('adventureButton').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const heroText = document.getElementById('heroText');
+            const loginForm = document.getElementById('loginForm');
+            const button = document.getElementById('adventureButton');
+
+            // Fade out hero text and button, fade in login form simultaneously
+            heroText.classList.add('fade-out');
+            button.classList.add('fade-out');
+            loginForm.classList.add('fade-in');
+        });
+    </script>
+</body>
+</html>
