@@ -11,7 +11,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* Default route */}
-        <Route path="/" element={<Gradeinsight" />} />
+        <Route path="/" element={<Gradeinsight />} />
 
         {/* Pages */}
         <Route path="/uploads" element={<Uploads />} />
