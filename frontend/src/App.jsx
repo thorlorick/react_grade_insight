@@ -1,13 +1,15 @@
-import React from 'react';
-import './styles.css';  // only if you want global styles
-import Home from './components/Home';
+// src/App.jsx
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Uploads from "./pages/Uploads";
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <Home />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<h1>Welcome to Grade Insight</h1>} />
+        <Route path="/uploads" element={<Uploads />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;
