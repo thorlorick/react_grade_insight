@@ -1,0 +1,29 @@
+/* src/pages/Login.module.css */
+
+/* Change the body selector to a class */
+.body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+    padding: 50px;
+    margin: 0;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* All other CSS classes remain as they were, but are now scoped */
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    right: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 20;
+}
+
+/* ... all other CSS classes from your original code ... */
+
+
