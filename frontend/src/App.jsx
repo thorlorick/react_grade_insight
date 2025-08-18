@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // Import your pages
 import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
+import Login from './pages/Login';
 
 const App = () => {
   return (
@@ -15,7 +16,8 @@ const App = () => {
 
         {/* Pages */}
         <Route path="/uploads" element={<Uploads />} />
-        <Route path="/login" element={<Gradeinsight />} />
+        <Route path="/home" element={<Gradeinsight />} />
+        <Route path="/login" element={<Login />} />
 
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />
