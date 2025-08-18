@@ -1,13 +1,3 @@
-import React, { useState } from 'react';
-
-const Login = () => {
-    // State to control the visibility of the login form.
-    const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
-
-    const handleButtonClick = (e) => {
-        e.preventDefault();
-        setIsLoginFormVisible(true);
-    };
 
     // The CSS is defined as a multiline string to be injected into the component.
     const componentCss = `
