@@ -127,14 +127,14 @@ export const GlassInput = ({
   return (
     <div className={className}>
       {label && (
-        <label className="form-text block text-sm font-normal mb-2 tracking-wide" htmlFor={id}>
+        <label className="form-text block text-xs font-normal mb-2 tracking-wide" htmlFor={id}>
           {label}
         </label>
       )}
       <input
         type={type}
         id={id}
-        className="form-input w-full rounded-lg px-4 py-3 text-base transition-all duration-300 focus:outline-none"
+        className="form-input w-full rounded-lg px-3 py-2 text-sm transition-all duration-300 focus:outline-none"
         placeholder={placeholder}
         {...props}
       />
@@ -210,27 +210,29 @@ export default function DesignSystemExample() {
           Components
         </h1>
         
-        <GlassContainer variant="light" className="p-8 max-w-md w-full space-y-6">
+        <GlassContainer variant="light" className="p-6 max-w-sm w-full">
           <h2 className="form-text text-2xl font-light text-center mb-6">
             Example Form
           </h2>
           
-          <GlassInput 
-            label="Username" 
-            id="username" 
-            placeholder="Enter your username" 
-          />
-          
-          <GlassInput 
-            label="Email" 
-            type="email" 
-            id="email" 
-            placeholder="Enter your email" 
-          />
-          
-          <GlassButton variant="light" size="lg" className="w-full">
-            Submit
-          </GlassButton>
+          <div className="space-y-4">
+            <GlassInput 
+              label="Username" 
+              id="username" 
+              placeholder="Enter your username" 
+            />
+            
+            <GlassInput 
+              label="Email" 
+              type="email" 
+              id="email" 
+              placeholder="Enter your email" 
+            />
+            
+            <GlassButton variant="light" size="lg" className="w-full mt-6">
+              Submit
+            </GlassButton>
+          </div>
         </GlassContainer>
         
         <div className="flex gap-4">
