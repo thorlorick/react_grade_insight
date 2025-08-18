@@ -1,18 +1,24 @@
 const converted = {
-  "*": { margin: "0", padding: "0", boxSizing: "border-box" },
+  "*": {
+    margin: 0,
+    padding: 0,
+    boxSizing: "border-box"
+  },
+
   body: {
     fontFamily:
       "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif",
-    background:
-      "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%)",
+    background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%)",
+    margin: 0,
     padding: "50px",
-    margin: "0",
     minHeight: "100vh",
     position: "relative"
   },
+
+  /* Navbar */
   ".navbar": {
     position: "absolute",
-    top: "0",
+    top: 0,
     left: "50px",
     right: "50px",
     height: "50px",
@@ -22,55 +28,62 @@ const converted = {
     padding: "0 24px",
     zIndex: 20
   },
+
   ".nav-logo": {
-    color: "rgba(255, 255, 255, 0.9)",
+    color: "rgba(255,255,255,0.9)",
     fontSize: "1.125rem",
     fontWeight: 700,
     textDecoration: "none",
     letterSpacing: "0.1em"
   },
-  ".nav-links": { display: "flex", alignItems: "center", gap: "32px" },
+
+  ".nav-links": {
+    display: "flex",
+    alignItems: "center",
+    gap: "32px"
+  },
+
   ".nav-link": {
-    color: "rgba(255, 255, 255, 0.7)",
+    color: "rgba(255,255,255,0.7)",
     textDecoration: "none",
     fontSize: "0.875rem",
     fontWeight: 400,
-    transition: "color 0.3s ease",
-    letterSpacing: "0.02em"
+    letterSpacing: "0.02em",
+    transition: "color 0.3s ease"
   },
-  ".nav-link:hover": { color: "rgba(255, 255, 255, 0.9)" },
+
+  ".nav-link:hover": {
+    color: "rgba(255,255,255,0.9)"
+  },
+
+  /* Hero */
   ".hero-container": {
-    height: "calc(100vh - 100px)",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
+    height: "100vh", // avoid calc() scroll issues
+    background: 'url("/Assets/img/bgAdventure.jpg") center/cover no-repeat',
     position: "relative",
     borderRadius: "12px",
     overflow: "hidden",
+    border: "2px solid rgba(255,255,255,0.1)",
     boxShadow:
-      "0 25px 50px -12px rgba(0, 0, 0, 0.8),\n                0 0 0 1px rgba(255, 255, 255, 0.05),\n                inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-    border: "2px solid rgba(255, 255, 255, 0.1)"
+      "0 25px 50px -12px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.1)"
   },
+
   ".hero-container::before": {
     content: "''",
     position: "absolute",
-    top: "-2px",
-    left: "-2px",
-    right: "-2px",
-    bottom: "-2px",
+    inset: 0, // replaces top/left/right/bottom
     background:
-      "linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%)",
-    borderRadius: "14px",
+      "linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%)",
+    borderRadius: "inherit",
     zIndex: -1
   },
+
   ".overlay": {
     position: "absolute",
-    top: "0",
-    left: "0",
-    right: "0",
-    bottom: "0",
-    backgroundColor: "rgba(0, 0, 0, 0.3)"
+    inset: 0,
+    backgroundColor: "rgba(0,0,0,0.3)"
   },
+
   ".content": {
     position: "relative",
     zIndex: 10,
@@ -79,167 +92,188 @@ const converted = {
     justifyContent: "center",
     alignItems: "flex-end",
     height: "100%",
-    textAlign: "right",
-    padding: "0 80px 0 24px"
+    padding: "0 80px 0 24px",
+    textAlign: "right"
   },
+
   ".content-inner": {
     maxWidth: "500px",
-    position: "relative",
     minHeight: "300px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center"
   },
+
   ".hero-text": {
     fontSize: "2.5rem",
     fontWeight: 200,
     color: "#7dd3fc",
     lineHeight: 1.2,
     marginBottom: "48px",
-    textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-    transition: "opacity 0.6s ease-in-out",
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.02em",
+    textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+    transition: "opacity 0.6s ease-in-out"
   },
+
   ".hero-text.fade-out": { opacity: 0 },
+
+  /* Login form */
   ".login-form": {
     opacity: 0,
     transition: "opacity 0.6s ease-in-out",
     position: "absolute",
     top: "50%",
-    right: "0",
+    right: 0,
     transform: "translateY(-50%)",
     width: "280px",
     minHeight: "400px",
     background:
-      "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+      "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
     backdropFilter: "blur(12px)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
+    border: "1px solid rgba(255,255,255,0.2)",
     borderRadius: "16px",
     padding: "40px 30px",
-    boxShadow:
-      "0 8px 32px rgba(0, 0, 0, 0.3),\n                0 1px 0 rgba(255, 255, 255, 0.2) inset,\n                0 -1px 0 rgba(0, 0, 0, 0.1) inset",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center"
+    justifyContent: "center",
+    boxShadow:
+      "0 8px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.2) inset, 0 -1px 0 rgba(0,0,0,0.1) inset"
   },
+
   ".login-form.fade-in": { opacity: 1 },
+
   ".login-title": {
     fontSize: "1.75rem",
     fontWeight: 200,
     color: "#34d399",
     textAlign: "center",
     marginBottom: "32px",
-    textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.01em",
+    textShadow: "0 2px 4px rgba(0,0,0,0.5)"
   },
+
   ".form-group": { marginBottom: "24px" },
+
   ".form-label": {
     display: "block",
+    marginBottom: "8px",
     color: "#6ee7b7",
     fontSize: "0.875rem",
     fontWeight: 400,
-    marginBottom: "8px",
     letterSpacing: "0.02em"
   },
+
   ".form-input": {
     width: "100%",
-    background: "rgba(255, 255, 255, 0.1)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    borderRadius: "8px",
     padding: "12px 16px",
+    borderRadius: "8px",
+    border: "1px solid rgba(255,255,255,0.2)",
+    background: "rgba(255,255,255,0.1)",
     color: "#d1fae5",
     fontSize: "1rem",
-    transition: "all 0.3s ease",
-    backdropFilter: "blur(8px)"
+    backdropFilter: "blur(8px)",
+    transition: "all 0.3s ease"
   },
+
   ".form-input::placeholder": { color: "#86efac" },
+
   ".form-input:focus": {
     outline: "none",
-    borderColor: "rgba(255, 255, 255, 0.4)",
-    background: "rgba(255, 255, 255, 0.15)",
-    boxShadow: "0 0 0 2px rgba(255, 255, 255, 0.1)"
+    borderColor: "rgba(255,255,255,0.4)",
+    background: "rgba(255,255,255,0.15)",
+    boxShadow: "0 0 0 2px rgba(255,255,255,0.1)"
   },
+
   ".login-button": {
     width: "100%",
-    background:
-      "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
-    backdropFilter: "blur(12px)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    color: "#a7f3d0",
     padding: "14px 24px",
+    margin: "8px 0 16px",
+    borderRadius: "8px",
+    border: "1px solid rgba(255,255,255,0.2)",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
+    color: "#a7f3d0",
     fontSize: "1rem",
     fontWeight: 400,
-    borderRadius: "8px",
     cursor: "pointer",
     transition: "all 0.3s ease",
-    marginBottom: "16px",
-    marginTop: "8px",
     boxShadow:
-      "0 4px 16px rgba(0, 0, 0, 0.2),\n                0 1px 0 rgba(255, 255, 255, 0.2) inset"
+      "0 4px 16px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.2) inset"
   },
+
   ".login-button:hover": {
-    background:
-      "linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%)",
     transform: "translateY(-1px)",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%)",
     boxShadow:
-      "0 6px 20px rgba(0, 0, 0, 0.3),\n                0 1px 0 rgba(255, 255, 255, 0.3) inset"
+      "0 6px 20px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.3) inset"
   },
+
   ".signup-link": {
     textAlign: "center",
     color: "#67e8f9",
     fontSize: "0.875rem"
   },
+
   ".signup-link a": {
     color: "#22d3ee",
-    textDecoration: "none",
     fontWeight: 400,
+    textDecoration: "none",
     transition: "color 0.3s ease"
   },
+
   ".signup-link a:hover": { color: "#0891b2" },
+
+  /* Adventure button */
   ".adventure-button": {
-    background:
-      "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
-    backdropFilter: "blur(12px)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    color: "#67e8f9",
+    position: "relative",
+    display: "inline-block",
     padding: "8px 16px",
+    borderRadius: "8px",
+    border: "1px solid rgba(255,255,255,0.2)",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
+    color: "#67e8f9",
     fontSize: "1.125rem",
     fontWeight: 400,
-    borderRadius: "8px",
-    cursor: "pointer",
-    transition:
-      "all 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-in-out",
+    letterSpacing: "0.02em",
     textDecoration: "none",
-    display: "inline-block",
     width: "fit-content",
-    boxShadow:
-      "0 8px 32px rgba(0, 0, 0, 0.3),\n                0 1px 0 rgba(255, 255, 255, 0.2) inset,\n                0 -1px 0 rgba(0, 0, 0, 0.1) inset",
-    position: "relative",
+    cursor: "pointer",
     overflow: "hidden",
-    letterSpacing: "0.02em"
+    transition:
+      "all 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.6s ease-in-out",
+    boxShadow:
+      "0 8px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.2) inset, 0 -1px 0 rgba(0,0,0,0.1) inset"
   },
+
   ".adventure-button.fade-out": { opacity: 0 },
+
   ".adventure-button::before": {
     content: "''",
     position: "absolute",
-    top: "0",
+    top: 0,
     left: "-100%",
     width: "100%",
     height: "100%",
     background:
-      "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+      "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
     transition: "left 0.6s"
   },
+
   ".adventure-button:hover": {
-    background:
-      "linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%)",
     transform: "translateY(-2px) scale(1.02)",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%)",
     boxShadow:
-      "0 12px 40px rgba(0, 0, 0, 0.4),\n                0 1px 0 rgba(255, 255, 255, 0.3) inset,\n                0 -1px 0 rgba(0, 0, 0, 0.1) inset"
+      "0 12px 40px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.3) inset, 0 -1px 0 rgba(0,0,0,0.1) inset"
   },
+
   ".adventure-button:hover::before": { left: "100%" },
+
+  /* Media */
   "@media (min-width: 768px)": {
     ".hero-text": { fontSize: "3.5rem" },
     ".content": { padding: "0 120px 0 24px" }
   }
-}
+};
