@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './Login.module.css';
+import styles from './Gradeinsight.module.css';
 
 const Login = () => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
