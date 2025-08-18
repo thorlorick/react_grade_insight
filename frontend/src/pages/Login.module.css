@@ -1,279 +1,439 @@
-const converted = {
-  "*": {
-    margin: 0,
-    padding: 0,
-    boxSizing: "border-box"
-  },
+/* Login.module.css */
 
-  body: {
-    fontFamily:
-      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif",
-    background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%)",
-    margin: 0,
-    padding: "50px",
-    minHeight: "100vh",
-    position: "relative"
-  },
+.body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+  padding: 50px;
+  margin: 0;
+  min-height: 100vh;
+  position: relative;
+}
 
-  /* Navbar */
-  ".navbar": {
-    position: "absolute",
-    top: 0,
-    left: "50px",
-    right: "50px",
-    height: "50px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 24px",
-    zIndex: 20
-  },
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 50px;
+  right: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 20;
+}
 
-  ".nav-logo": {
-    color: "rgba(255,255,255,0.9)",
-    fontSize: "1.125rem",
-    fontWeight: 700,
-    textDecoration: "none",
-    letterSpacing: "0.1em"
-  },
+.navLogo {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+}
 
-  ".nav-links": {
-    display: "flex",
-    alignItems: "center",
-    gap: "32px"
-  },
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
 
-  ".nav-link": {
-    color: "rgba(255,255,255,0.7)",
-    textDecoration: "none",
-    fontSize: "0.875rem",
-    fontWeight: 400,
-    letterSpacing: "0.02em",
-    transition: "color 0.3s ease"
-  },
+.navLink {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  letter-spacing: 0.02em;
+}
 
-  ".nav-link:hover": {
-    color: "rgba(255,255,255,0.9)"
-  },
+.navLink:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
 
-  /* Hero */
-  ".hero-container": {
-    height: "100vh", // avoid calc() scroll issues
-    background: 'url("/Assets/img/bgAdventure.jpg") center/cover no-repeat',
-    position: "relative",
-    borderRadius: "12px",
-    overflow: "hidden",
-    border: "2px solid rgba(255,255,255,0.1)",
-    boxShadow:
-      "0 25px 50px -12px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.1)"
-  },
+.heroContainer {
+  height: calc(100vh - 100px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
 
-  ".hero-container::before": {
-    content: "''",
-    position: "absolute",
-    inset: 0, // replaces top/left/right/bottom
-    background:
-      "linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%)",
-    borderRadius: "inherit",
-    zIndex: -1
-  },
+.heroContainer::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 14px;
+  z-index: -1;
+}
 
-  ".overlay": {
-    position: "absolute",
-    inset: 0,
-    backgroundColor: "rgba(0,0,0,0.3)"
-  },
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
 
-  ".content": {
-    position: "relative",
-    zIndex: 10,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    height: "100%",
-    padding: "0 80px 0 24px",
-    textAlign: "right"
-  },
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100%;
+  text-align: right;
+  padding: 0 80px 0 24px;
+}
 
-  ".content-inner": {
-    maxWidth: "500px",
-    minHeight: "300px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center"
-  },
+.contentInner {
+  max-width: 500px;
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  ".hero-text": {
-    fontSize: "2.5rem",
-    fontWeight: 200,
-    color: "#7dd3fc",
-    lineHeight: 1.2,
-    marginBottom: "48px",
-    letterSpacing: "-0.02em",
-    textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-    transition: "opacity 0.6s ease-in-out"
-  },
+.heroText {
+  font-size: 2.5rem;
+  font-weight: 200;
+  color: #7dd3fc;
+  line-height: 1.2;
+  margin-bottom: 48px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.6s ease-in-out;
+  letter-spacing: -0.02em;
+}
 
-  ".hero-text.fade-out": { opacity: 0 },
+.heroText.fadeOut {
+  opacity: 0;
+}
 
-  /* Login form */
-  ".login-form": {
-    opacity: 0,
-    transition: "opacity 0.6s ease-in-out",
-    position: "absolute",
-    top: "50%",
-    right: 0,
-    transform: "translateY(-50%)",
-    width: "280px",
-    minHeight: "400px",
-    background:
-      "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-    backdropFilter: "blur(12px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    borderRadius: "16px",
-    padding: "40px 30px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    boxShadow:
-      "0 8px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.2) inset, 0 -1px 0 rgba(0,0,0,0.1) inset"
-  },
+.loginForm {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 280px;
+  min-height: 400px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  ".login-form.fade-in": { opacity: 1 },
+.loginForm.fadeIn {
+  opacity: 1;
+}
 
-  ".login-title": {
-    fontSize: "1.75rem",
-    fontWeight: 200,
-    color: "#34d399",
-    textAlign: "center",
-    marginBottom: "32px",
-    letterSpacing: "-0.01em",
-    textShadow: "0 2px 4px rgba(0,0,0,0.5)"
-  },
+.loginTitle {
+  font-size: 1.75rem;
+  font-weight: 200;
+  color: #34d399;
+  text-align: center;
+  margin-bottom: 32px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.01em;
+}
 
-  ".form-group": { marginBottom: "24px" },
+.formContainer {
+  display: flex;
+  flex-direction: column;
+}
 
-  ".form-label": {
-    display: "block",
-    marginBottom: "8px",
-    color: "#6ee7b7",
-    fontSize: "0.875rem",
-    fontWeight: 400,
-    letterSpacing: "0.02em"
-  },
+.formGroup {
+  margin-bottom: 24px;
+}
 
-  ".form-input": {
-    width: "100%",
-    padding: "12px 16px",
-    borderRadius: "8px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "#d1fae5",
-    fontSize: "1rem",
-    backdropFilter: "blur(8px)",
-    transition: "all 0.3s ease"
-  },
+.formLabel {
+  display: block;
+  color: #6ee7b7;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
 
-  ".form-input::placeholder": { color: "#86efac" },
+.formInput {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #d1fae5;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  box-sizing: border-box;
+}
 
-  ".form-input:focus": {
-    outline: "none",
-    borderColor: "rgba(255,255,255,0.4)",
-    background: "rgba(255,255,255,0.15)",
-    boxShadow: "0 0 0 2px rgba(255,255,255,0.1)"
-  },
+.formInput::placeholder {
+  color: #86efac;
+}
 
-  ".login-button": {
-    width: "100%",
-    padding: "14px 24px",
-    margin: "8px 0 16px",
-    borderRadius: "8px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background:
-      "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
-    color: "#a7f3d0",
-    fontSize: "1rem",
-    fontWeight: 400,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    boxShadow:
-      "0 4px 16px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.2) inset"
-  },
+.formInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
 
-  ".login-button:hover": {
-    transform: "translateY(-1px)",
-    background:
-      "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%)",
-    boxShadow:
-      "0 6px 20px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.3) inset"
-  },
+.loginButton {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a7f3d0;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 400;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 16px;
+  margin-top: 8px;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
 
-  ".signup-link": {
-    textAlign: "center",
-    color: "#67e8f9",
-    fontSize: "0.875rem"
-  },
+.loginButton:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
+}
 
-  ".signup-link a": {
-    color: "#22d3ee",
-    fontWeight: 400,
-    textDecoration: "none",
-    transition: "color 0.3s ease"
-  },
+.signupLink {
+  text-align: center;
+  color: #67e8f9;
+  font-size: 0.875rem;
+}
 
-  ".signup-link a:hover": { color: "#0891b2" },
+.signupLinkAnchor {
+  color: #22d3ee;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
 
-  /* Adventure button */
-  ".adventure-button": {
-    position: "relative",
-    display: "inline-block",
-    padding: "8px 16px",
-    borderRadius: "8px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background:
-      "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
-    color: "#67e8f9",
-    fontSize: "1.125rem",
-    fontWeight: 400,
-    letterSpacing: "0.02em",
-    textDecoration: "none",
-    width: "fit-content",
-    cursor: "pointer",
-    overflow: "hidden",
-    transition:
-      "all 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.6s ease-in-out",
-    boxShadow:
-      "0 8px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.2) inset, 0 -1px 0 rgba(0,0,0,0.1) inset"
-  },
+.signupLinkAnchor:hover {
+  color: #0891b2;
+}
 
-  ".adventure-button.fade-out": { opacity: 0 },
+.adventureButton {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #67e8f9;
+  padding: 8px 16px;
+  font-size: 1.125rem;
+  font-weight: 400;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-in-out;
+  text-decoration: none;
+  display: inline-block;
+  width: fit-content;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.02em;
+}
 
-  ".adventure-button::before": {
-    content: "''",
-    position: "absolute",
-    top: 0,
-    left: "-100%",
-    width: "100%",
-    height: "100%",
-    background:
-      "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
-    transition: "left 0.6s"
-  },
+.adventureButton.fadeOut {
+  opacity: 0;
+}
 
-  ".adventure-button:hover": {
-    transform: "translateY(-2px) scale(1.02)",
-    background:
-      "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%)",
-    boxShadow:
-      "0 12px 40px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.3) inset, 0 -1px 0 rgba(0,0,0,0.1) inset"
-  },
+.adventureButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
 
-  ".adventure-button:hover::before": { left: "100%" },
+.adventureButton:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+}
 
-  /* Media */
-  "@media (min-width: 768px)": {
-    ".hero-text": { fontSize: "3.5rem" },
-    ".content": { padding: "0 120px 0 24px" }
+.adventureButton:hover::before {
+  left: 100%;
+}
+
+.fadeOut {
+  opacity: 0;
+}
+
+.fadeIn {
+  opacity: 1;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .body {
+    padding: 20px;
   }
-};
+
+  .navbar {
+    left: 20px;
+    right: 20px;
+    padding: 0 16px;
+    flex-direction: column;
+    height: auto;
+    gap: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .navLogo {
+    font-size: 1rem;
+  }
+
+  .navLinks {
+    gap: 20px;
+  }
+
+  .navLink {
+    font-size: 0.75rem;
+  }
+
+  .heroContainer {
+    height: calc(100vh - 40px);
+    margin-top: 80px; /* Account for taller mobile navbar */
+  }
+
+  .content {
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .contentInner {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .heroText {
+    font-size: 2rem;
+    margin-bottom: 32px;
+  }
+
+  .loginForm {
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: 320px;
+    min-height: auto;
+    padding: 30px 20px;
+    margin: 0 auto;
+  }
+
+  .loginTitle {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .formGroup {
+    margin-bottom: 20px;
+  }
+
+  .formInput {
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .loginButton {
+    padding: 16px 24px;
+    font-size: 1rem;
+  }
+
+  .adventureButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .body {
+    padding: 10px;
+  }
+
+  .navbar {
+    left: 10px;
+    right: 10px;
+    padding: 12px;
+  }
+
+  .heroText {
+    font-size: 1.75rem;
+    line-height: 1.1;
+  }
+
+  .loginForm {
+    padding: 25px 15px;
+    max-width: 280px;
+  }
+
+  .loginTitle {
+    font-size: 1.25rem;
+  }
+
+  .formInput {
+    padding: 12px 14px;
+  }
+
+  .loginButton {
+    padding: 14px 20px;
+  }
+
+  .adventureButton {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .heroText {
+    font-size: 3.5rem;
+  }
+
+  .content {
+    padding: 0 120px 0 24px;
+  }
+}
