@@ -17,27 +17,26 @@ const Login = () => {
   return (
     <div className={styles.body}>
       <nav className={styles.navbar}>
-        <a href="#" className={styles.navLogo}>ZENNOMA</a>
+        <a href="#" className={styles.navLogo}>Grade Insight</a>
         <div className={styles.navLinks}>
           <a href="#" className={styles.navLink}>Home</a>
-          <a href="#" className={styles.navLink}>About</a>
-          <a href="#" className={styles.navLink}>Security</a>
+          <a href="#" className={styles.navLink}>Student</a>
+          <a href="#" className={styles.navLink}>Dashboard</a>
           <a href="#" className={styles.navLink}>Contact</a>
         </div>
       </nav>
       
       <div 
         className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/bgAdventure.jpg)` }}
-      >
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
             <h1 className={`${styles.heroText} ${isLoginFormVisible ? styles.fadeOut : ''}`}>
-              Zennoma.<br />
-              Secure.<br />
-              Anonymous.<br />
-              Yours.
+              Grade Insight.<br />
+              When<br />
+              Good isn't<br />
+              Enough.
             </h1>
             
             <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
