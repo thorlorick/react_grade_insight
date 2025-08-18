@@ -164,9 +164,9 @@ export default function Start() {
             
             {/* Hero Text */}
             <h1 className={`hero-text text-4xl md:text-6xl mb-12 fade-transition ${showLogin ? 'opacity-0' : 'opacity-100'}`}>
-              Zennoma.<br />
+              Grade Insight:<br />
+              Simple.<br />
               Secure.<br />
-              Anonymous.<br />
               Yours.
             </h1>
 
