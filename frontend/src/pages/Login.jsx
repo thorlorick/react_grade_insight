@@ -26,7 +26,10 @@ const Login = () => {
         </div>
       </nav>
       
-      <div className={styles.heroContainer}>
+      <div 
+        className={styles.heroContainer} 
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/bgAdventure.jpg)` }}
+      >
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
