@@ -51,7 +51,6 @@
 
 .heroContainer {
   height: calc(100vh - 100px);
-  background-image: url('/images/bgAdventure.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
