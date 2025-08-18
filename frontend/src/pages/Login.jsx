@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
+import bgAdventure from '/images/bgAdventure.jpg';
 
 const Login = () => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
