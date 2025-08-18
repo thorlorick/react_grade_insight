@@ -7,7 +7,6 @@
   margin: 0;
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
 }
 
 .navbar {
@@ -51,7 +50,7 @@
 }
 
 .heroContainer {
-  height: 100vh;
+  height: calc(100vh - 100px);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -305,6 +304,130 @@
 }
 
 /* Media Queries */
+@media (max-width: 768px) {
+  .body {
+    padding: 20px;
+  }
+
+  .navbar {
+    left: 20px;
+    right: 20px;
+    padding: 0 16px;
+    flex-direction: column;
+    height: auto;
+    gap: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .navLogo {
+    font-size: 1rem;
+  }
+
+  .navLinks {
+    gap: 20px;
+  }
+
+  .navLink {
+    font-size: 0.75rem;
+  }
+
+  .heroContainer {
+    height: calc(100vh - 40px);
+    margin-top: 80px; /* Account for taller mobile navbar */
+  }
+
+  .content {
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .contentInner {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .heroText {
+    font-size: 2rem;
+    margin-bottom: 32px;
+  }
+
+  .loginForm {
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: 320px;
+    min-height: auto;
+    padding: 30px 20px;
+    margin: 0 auto;
+  }
+
+  .loginTitle {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .formGroup {
+    margin-bottom: 20px;
+  }
+
+  .formInput {
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .loginButton {
+    padding: 16px 24px;
+    font-size: 1rem;
+  }
+
+  .adventureButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .body {
+    padding: 10px;
+  }
+
+  .navbar {
+    left: 10px;
+    right: 10px;
+    padding: 12px;
+  }
+
+  .heroText {
+    font-size: 1.75rem;
+    line-height: 1.1;
+  }
+
+  .loginForm {
+    padding: 25px 15px;
+    max-width: 280px;
+  }
+
+  .loginTitle {
+    font-size: 1.25rem;
+  }
+
+  .formInput {
+    padding: 12px 14px;
+  }
+
+  .loginButton {
+    padding: 14px 20px;
+  }
+
+  .adventureButton {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+}
+
 @media (min-width: 768px) {
   .heroText {
     font-size: 3.5rem;
