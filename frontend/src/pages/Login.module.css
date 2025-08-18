@@ -1,6 +1,6 @@
 
     // The CSS is defined as a multiline string to be injected into the component.
-    const componentCss = `
+    const componentCss = 
         /*
          * IMPORTANT: The background image URL is now correctly referenced as a static
          * asset from the public folder, which allows the build process to handle it properly.
@@ -304,7 +304,7 @@
                 padding: 0 120px 0 24px;
             }
         }
-    `;
+    ;
 
     return (
         <div className="body">
