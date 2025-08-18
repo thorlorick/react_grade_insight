@@ -1,24 +1,9 @@
 import React, { useState } from 'react';
 
-/**
- * A responsive login page component with a dynamic background and animations.
- *
- * This component is designed as a single, self-contained file. To achieve the
- * "CSS Modules" effect in a single block, the styles are defined as a string
- * and injected into the component using a <style> tag.
- *
- * The page displays a hero text and a "Begin your Adventure" button.
- * Clicking the button fades out the text and button, and fades in a login form.
- */
 const Login = () => {
     // State to control the visibility of the login form.
     const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
 
-    /**
-     * Handles the click event on the "Begin your Adventure" button.
-     * Prevents the default anchor tag behavior and updates the state
-     * to show the login form and hide the hero content.
-     */
     const handleButtonClick = (e) => {
         e.preventDefault();
         setIsLoginFormVisible(true);
