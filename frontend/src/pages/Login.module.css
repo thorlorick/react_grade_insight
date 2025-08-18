@@ -51,6 +51,7 @@
 
 .heroContainer {
   height: calc(100vh - 100px);
+  background-image: url('https://imgur.com/a/nQ9KQWP');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
