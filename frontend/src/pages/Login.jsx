@@ -1,8 +1,8 @@
-// src/components/LandingPage/LandingPage.jsx
+// src/pages/Login.jsx
 import React, { useState } from 'react';
-import styles from './LandingPage.module.css';
+import styles from './Login.module.css';
 
-const LandingPage = () => {
+const Login = () => {
     const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
 
     const handleButtonClick = (e) => {
@@ -31,7 +31,6 @@ const LandingPage = () => {
                         >
                             Zennoma.<br />Secure.<br />Anonymous.<br />Yours.
                         </h1>
-
                         <div 
                             className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}
                         >
@@ -51,7 +50,6 @@ const LandingPage = () => {
                                 </div>
                             </form>
                         </div>
-
                         <a 
                             href="#" 
                             className={`${styles.adventureButton} ${isLoginFormVisible ? styles.fadeOut : ''}`}
@@ -66,4 +64,4 @@ const LandingPage = () => {
     );
 };
 
-export default LandingPage;
+export default Login;
