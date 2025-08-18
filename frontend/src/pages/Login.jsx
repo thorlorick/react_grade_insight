@@ -17,11 +17,11 @@ const Login = () => {
   return (
     <div className={styles.body}>
       <nav className={styles.navbar}>
-        <a href="#" className={styles.navLogo}>ZENNOMA</a>
+        <a href="#" className={styles.navLogo}>Grade Insight</a>
         <div className={styles.navLinks}>
           <a href="#" className={styles.navLink}>Home</a>
           <a href="#" className={styles.navLink}>About</a>
-          <a href="#" className={styles.navLink}>Security</a>
+          <a href="#" className={styles.navLink}>Dashboard</a>
           <a href="#" className={styles.navLink}>Contact</a>
         </div>
       </nav>
@@ -31,9 +31,9 @@ const Login = () => {
         <div className={styles.content}>
           <div className={styles.contentInner}>
             <h1 className={`${styles.heroText} ${isLoginFormVisible ? styles.fadeOut : ''}`}>
-              Zennoma.<br />
+              Grade Insight.<br />
+              Simple.<br />
               Secure.<br />
-              Anonymous.<br />
               Yours.
             </h1>
             
