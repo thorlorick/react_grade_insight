@@ -1,10 +1,10 @@
 /* Gradeinsight.module.css */
 
- * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 .body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
@@ -164,12 +164,12 @@
   letter-spacing: -0.01em;
 }
 
-.formContainer {
+.formContainer, .signupFormContainer {
   display: flex;
   flex-direction: column;
 }
 
-.formGroup {
+.formGroup, .signupFormGroup {
   margin-bottom: 24px;
 }
 
@@ -182,7 +182,7 @@
   letter-spacing: 0.02em;
 }
 
-.formInput {
+.formInput, .signupInput {
   width: 100%;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -195,18 +195,18 @@
   box-sizing: border-box;
 }
 
-.formInput::placeholder {
+.formInput::placeholder, .signupInput::placeholder {
   color: #86efac;
 }
 
-.formInput:focus {
+.formInput:focus, .signupInput:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
-.loginButton {
+.loginButton, .signupButton {
   width: 100%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
   backdrop-filter: blur(12px);
@@ -225,7 +225,7 @@
     0 1px 0 rgba(255, 255, 255, 0.2) inset;
 }
 
-.loginButton:hover {
+.loginButton:hover, .signupButton:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
   transform: translateY(-1px);
   box-shadow:
@@ -239,14 +239,14 @@
   font-size: 0.875rem;
 }
 
-.signupLinkAnchor {
+.signupLinkAnchor, .loginLinkAnchor {
   color: #017501;
   text-decoration: none;
   font-weight: 400;
   transition: color 0.3s ease;
 }
 
-.signupLinkAnchor:hover {
+.signupLinkAnchor:hover, .loginLinkAnchor:hover {
   color: #0891b2;
 }
 
@@ -374,11 +374,11 @@
     margin-bottom: 24px;
   }
 
-  .formGroup {
+  .formGroup, .signupFormGroup {
     margin-bottom: 20px;
   }
 
-  .formInput {
+  .formInput, .signupInput {
     padding: 14px 16px;
     font-size: 16px; /* Prevents zoom on iOS */
   }
@@ -420,11 +420,11 @@
     font-size: 1.25rem;
   }
 
-  .formInput {
+  .formInput, .signupInput {
     padding: 12px 14px;
   }
 
-  .loginButton {
+  .loginButton, .signupButton {
     padding: 14px 20px;
   }
 
