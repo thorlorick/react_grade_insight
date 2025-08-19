@@ -235,12 +235,12 @@
 
 .signupLink {
   text-align: center;
-  color: #67e8f9;
+  color: #c1fa50;
   font-size: 0.875rem;
 }
 
 .signupLinkAnchor {
-  color: #22d3ee;
+  color: #017501;
   text-decoration: none;
   font-weight: 400;
   transition: color 0.3s ease;
