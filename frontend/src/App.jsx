@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
 import Login from './pages/Login';
+import Signup from './pages/Signup'; 
 
 
 const App = () => {
