@@ -40,20 +40,13 @@ const Login = () => {
             </h1>
             
             <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
-              <h2 className={styles.loginTitle}>Please Enter your Email and Password</h2>
+              <h2 className={styles.loginTitle}>Your email, please..."</h2>
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
                   <input
                     type="text"
                     className={styles.formInput}
                     placeholder="Email"
-                  />
-                </div>
-                  <div className={styles.formGroup}>
-                  <input
-                    type="password"
-                    className={styles.formInput}
-                    placeholder="Password"
                   />
                 </div>
                 
