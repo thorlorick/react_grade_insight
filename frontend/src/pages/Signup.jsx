@@ -23,11 +23,11 @@ const Signup = () => {
           */}
         </div>
       </nav>
-      
-        
-      <div 
-        className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
+
+      <div
+        className={styles.heroContainer}
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
+      >
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
@@ -41,7 +41,7 @@ const Signup = () => {
                     placeholder="Email"
                   />
                 </div>
-                  <div className={styles.formGroup}>
+                <div className={styles.formGroup}>
                   <input
                     type="password"
                     className={styles.formInput}
@@ -49,7 +49,7 @@ const Signup = () => {
                   />
                 </div>
 
-                  <div className={styles.formGroup}>
+                <div className={styles.formGroup}>
                   <input
                     type="text"
                     className={styles.formInput}
@@ -62,11 +62,8 @@ const Signup = () => {
                   className={styles.loginButton}>
                   Register
                 </button>
-                
               </div>
             </div>
-            
-            <
           </div>
         </div>
       </div>
