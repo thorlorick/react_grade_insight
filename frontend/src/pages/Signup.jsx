@@ -27,19 +27,8 @@ const Signup = () => {
 
       <div 
         className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
-      >
-        <div className={styles.overlay}></div>
-        <div className={styles.content}>
-          <div className={styles.contentInner}>
-            <h1 className={`${styles.heroText} ${isSignupFormVisible ? styles.fadeOut : ''}`}>
-              Grade Insight.<br />
-              When<br />
-              Good isn't<br />
-              Enough.
-            </h1>
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
 
-            <div className={`${styles.loginForm} ${isSignupFormVisible ? styles.fadeIn : ''}`}>
               <h2 className={styles.loginTitle}>Sign Up</h2>
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
