@@ -63,7 +63,7 @@ const Login = () => {
                   Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  Need a Teacher account?<br /> <a href="#" className={styles.signupLinkAnchor}>Purchase Here</a><br />
+                  NOT SURE WHAT TO DO?<br /> <a href="#" className={styles.signupLinkAnchor}>CLICK HERE</a><br />
                 </div>
               </div>
             </div>
