@@ -1,4 +1,4 @@
-maiimport React, { useState } from 'react';
+import React, { useState } from 'react';
 import styles from './Gradeinsight.module.css';
 
 const Login = () => {
