@@ -47,7 +47,7 @@ const Login = () => {
                   <input
                     type="text"
                     className={styles.formInput}
-                    placeholder="Enter your Email to begin."
+                    placeholder="Enter your Email"
                   />
                 </div>
                 <button
