@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+maiimport React, { useState } from 'react';
 import styles from './Gradeinsight.module.css';
 
 const Login = () => {
@@ -43,29 +43,21 @@ const Login = () => {
               <h2 className={styles.loginTitle}>Secure Access</h2>
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Username</label>
+                  <label className={styles.formLabel}>Email</label>
                   <input
                     type="text"
                     className={styles.formInput}
-                    placeholder="Enter your username"
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Password</label>
-                  <input
-                    type="password"
-                    className={styles.formInput}
-                    placeholder="Enter your password"
+                    placeholder="Enter your Email to begin."
                   />
                 </div>
                 <button
                   onClick={handleFormSubmit}
-                  className={styles.loginButton}
-                >
+                  className={styles.loginButton}>
                   Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  Don't have an account? <a href="#" className={styles.signupLinkAnchor}>Sign up</a>
+                  Don't have a Teacher account? <a href="#" className={styles.signupLinkAnchor}>Purchase Here</a>
+                  Don't have a Parent account? <a href="#" className={styles.signupLinkAnchor}>Sign-up Here</a>
                 </div>
               </div>
             </div>
