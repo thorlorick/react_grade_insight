@@ -3,15 +3,9 @@ import { Link } from 'react-router-dom';
 import styles from './Gradeinsight.module.css';
 
 const Signup = () => {
-  const [isSignupFormVisible, setIsSignupFormVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
-
-  const handleButtonClick = (e) => {
-    e.preventDefault();
-    setIsSignupFormVisible(true);
-  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -27,10 +21,19 @@ const Signup = () => {
 
       <div 
         className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
-         <div className={styles.overlay}></div>
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
+      >
+        <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
+            <h1 className={styles.heroText}>
+              Grade Insight.<br />
+              When<br />
+              Good isn't<br />
+              Enough.
+            </h1>
+
+            <div className={styles.loginForm}>
               <h2 className={styles.loginTitle}>Sign Up</h2>
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
@@ -75,12 +78,6 @@ const Signup = () => {
               </div>
             </div>
 
-            <button
-              onClick={handleButtonClick}
-              className={`${styles.adventureButton} ${isSignupFormVisible ? styles.fadeOut : ''}`}
-            >
-              Get Started
-            </button>
           </div>
         </div>
       </div>
