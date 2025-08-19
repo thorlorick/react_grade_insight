@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Gradeinsight.module.css';
 
 const Login = () => {
@@ -66,7 +67,7 @@ const Login = () => {
                   Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  NOT SURE WHAT TO DO?<br /> <a href="#" className={styles.signupLinkAnchor}>CLICK HERE</a><br />
+                  NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</a><br />
                 </div>
               </div>
             </div>
