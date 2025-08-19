@@ -19,10 +19,12 @@ const Login = () => {
       <nav className={styles.navbar}>
         <a href="#" className={styles.navLogo}>Grade Insight</a>
         <div className={styles.navLinks}>
+          {/*
           <a href="#" className={styles.navLink}>Home</a>
           <a href="#" className={styles.navLink}>Student</a>
           <a href="#" className={styles.navLink}>Dashboard</a>
           <a href="#" className={styles.navLink}>Contact</a>
+          */}
         </div>
       </nav>
       
