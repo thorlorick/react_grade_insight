@@ -50,7 +50,7 @@
 }
 
 .heroContainer {
-  height: calc(100vh - 100px);
+  height: 100vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
