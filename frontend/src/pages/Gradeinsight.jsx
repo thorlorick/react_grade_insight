@@ -55,9 +55,8 @@ const Login = () => {
                   Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  Need a Teacher account? <br /><a href="#" className={styles.signupLinkAnchor}>Purchase Here</a><br />
-               <br />
-                  Need a Parent account? <br /><a href="#" className={styles.signupLinkAnchor}>Sign-up Here</a>
+                  Need a Teacher account?<a href="#" className={styles.signupLinkAnchor}>  Purchase Here</a><br />
+               
                 </div>
               </div>
             </div>
