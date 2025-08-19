@@ -41,7 +41,7 @@ const Login = () => {
             
             <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
               <h2 className={styles.loginTitle}>Enter your Email</h2><br />
-              <h3 className={styles.loginTitle}>for secure access</h3><br />
+              <h3 className={styles.loginTitle}>for secure access</h3>
               
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
