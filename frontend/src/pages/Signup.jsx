@@ -35,38 +35,39 @@ const Signup = () => {
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
-            <h2 className={styles.signupTitle}>Create Your Account</h2>
-            <div className={styles.signupFormContainer}>
-              <div className={styles.signupFormGroup}>
+            {/* The title and form below will use the login styling */}
+            <h2 className={styles.loginTitle}>Create Your Account</h2>
+            <div className={styles.formContainer}>
+              <div className={styles.formGroup}>
                 <input
                   type="text"
-                  className={styles.signupInput}
+                  className={styles.formInput}
                   placeholder="Email"
                 />
               </div>
-              <div className={styles.signupFormGroup}>
+              <div className={styles.formGroup}>
                 <input
                   type="password"
-                  className={styles.signupInput}
+                  className={styles.formInput}
                   placeholder="Password"
                 />
               </div>
-              <div className={styles.signupFormGroup}>
+              <div className={styles.formGroup}>
                 <input
                   type="text"
-                  className={styles.signupInput}
+                  className={styles.formInput}
                   placeholder="Student's Email"
                 />
               </div>
 
               <button
                 onClick={handleFormSubmit}
-                className={styles.signupButton}
+                className={styles.loginButton}
               >
                 Sign Up
               </button>
               <div className={styles.signupLink}>
-                Already have an account?<br /> <Link to="/login" className={styles.loginLinkAnchor}>CLICK HERE</Link>
+                Already have an account?<br /> <Link to="/login" className={styles.signupLinkAnchor}>CLICK HERE</Link>
               </div>
             </div>
           </div>
