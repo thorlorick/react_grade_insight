@@ -26,13 +26,6 @@ const Signup = () => {
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
-            <h1 className={styles.heroText}>
-              Grade Insight.<br />
-              When<br />
-              Good isn't<br />
-              Enough.
-            </h1>
-
             <div className={styles.loginForm}>
               <h2 className={styles.loginTitle}>Sign Up</h2>
               <div className={styles.formContainer}>
