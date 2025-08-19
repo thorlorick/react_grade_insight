@@ -35,38 +35,38 @@ const Signup = () => {
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
-            <h2 className={styles.loginTitle}>Create Your Account</h2>
-            <div className={styles.formContainer}>
-              <div className={styles.formGroup}>
+            <h2 className={styles.signupTitle}>Create Your Account</h2>
+            <div className={styles.signupFormContainer}>
+              <div className={styles.signupFormGroup}>
                 <input
                   type="text"
-                  className={styles.formInput}
+                  className={styles.signupInput}
                   placeholder="Email"
                 />
               </div>
-              <div className={styles.formGroup}>
+              <div className={styles.signupFormGroup}>
                 <input
                   type="password"
-                  className={styles.formInput}
+                  className={styles.signupInput}
                   placeholder="Password"
                 />
               </div>
-              <div className={styles.formGroup}>
+              <div className={styles.signupFormGroup}>
                 <input
                   type="text"
-                  className={styles.formInput}
+                  className={styles.signupInput}
                   placeholder="Student's Email"
                 />
               </div>
 
               <button
                 onClick={handleFormSubmit}
-                className={styles.loginButton}
+                className={styles.signupButton}
               >
                 Sign Up
               </button>
               <div className={styles.signupLink}>
-                Already have an account?<br /> <Link to="/login" className={styles.signupLinkAnchor}>CLICK HERE</Link>
+                Already have an account?<br /> <Link to="/login" className={styles.loginLinkAnchor}>CLICK HERE</Link>
               </div>
             </div>
           </div>
