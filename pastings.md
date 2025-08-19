@@ -477,6 +477,8 @@ body {
 }
 
 
-
+# So far so Good
+Everything is moving along nicely. landing page looks good, so does the login and sign up
+still not sure about the "logic" or the philosophy of the login system 
 
 
