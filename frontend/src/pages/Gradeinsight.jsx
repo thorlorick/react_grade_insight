@@ -67,7 +67,7 @@ const Login = () => {
                   Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</a><br />
+                  NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
                 </div>
               </div>
             </div>
