@@ -40,20 +40,21 @@ const Login = () => {
             </h1>
             
             <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
-              <h2 className={styles.loginTitle}>Secure Access</h2>
+              <h2 className={styles.loginTitle}>Enter your Email</h2><br />
+              <h2 className={styles.loginTitle}>for secure access</h2><br />
+              
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Email</label>
                   <input
                     type="text"
                     className={styles.formInput}
-                    placeholder="Enter your Email"
+                    placeholder="Email"
                   />
                 </div>
                 <button
                   onClick={handleFormSubmit}
                   className={styles.loginButton}>
-                  Sign In
+                  Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
                   Need a Teacher account? <a href="#" className={styles.signupLinkAnchor}>Purchase Here</a><br />
