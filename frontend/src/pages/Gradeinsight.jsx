@@ -18,7 +18,6 @@ const Login = () => {
     <div className={styles.body}>
       <nav className={styles.navbar}>
         <a href="#" className={styles.navLogo}>Grade Insight</a>
-        {/*
         <div className={styles.navLinks}>
           <a href="#" className={styles.navLink}>Home</a>
           <a href="#" className={styles.navLink}>Student</a>
@@ -26,7 +25,7 @@ const Login = () => {
           <a href="#" className={styles.navLink}>Contact</a>
         </div>
       </nav>
-      */}
+      
         
       <div 
         className={styles.heroContainer} 
