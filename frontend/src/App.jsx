@@ -1,11 +1,13 @@
 // src/App.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Import your pages
 import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
 import Login from './pages/Login';
+
 
 const App = () => {
   return (
@@ -18,6 +20,7 @@ const App = () => {
         <Route path="/uploads" element={<Uploads />} />
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />
