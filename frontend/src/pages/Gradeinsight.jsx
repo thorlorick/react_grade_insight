@@ -49,6 +49,13 @@ const Login = () => {
                     placeholder="Email"
                   />
                 </div>
+                  <div className={styles.formGroup}>
+                  <input
+                    type="password"
+                    className={styles.formInput}
+                    placeholder="Password"
+                  />
+                </div>
                 
                 <button
                   onClick={handleFormSubmit}
