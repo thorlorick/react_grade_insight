@@ -13,7 +13,7 @@ const Signup = () => {
   return (
     <div className={styles.body}>
       <nav className={styles.navbar}>
-        <a href="/Gradeinsight" className={styles.navLogo}>Grade Insight</a>
+        <a href="/" className={styles.navLogo}>Grade Insight</a>
         <div className={styles.navLinks}>
           {/*
           <a href="#" className={styles.navLink}>Home</a>
