@@ -62,6 +62,9 @@ const Signup = () => {
                   className={styles.loginButton}>
                   Register
                 </button>
+                 <div className={styles.signupLink}>
+                  Are you a Teacher?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>PURCHASE HERE</Link><br />
+                </div>
               </div>
             </div>
           </div>
