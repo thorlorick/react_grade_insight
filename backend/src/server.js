@@ -39,7 +39,7 @@ app.post('/api/uploads/template', upload.single('file'), (req, res) => {
   return res.json({ ok: true, file: filename, summary });
 });
 
-app.get("/api/health", (req, res) => {
+app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
