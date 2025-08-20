@@ -43,29 +43,34 @@ const Login = () => {
               Enough.
             </h1>
             
-            <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
-              <h2 className={styles.loginTitle}>Your Email and Password, please...</h2>
-              <div className={styles.formContainer}>
-                <div className={styles.formGroup}>
-                  <input
-                    type="text"
-                    className={styles.formInput}
-                    placeholder="Email"
-                  />
-                </div>
-                  <div className={styles.formGroup}>
-                  <input
-                    type="password"
-                    className={styles.formInput}
-                    placeholder="Password"
-                  />
-                </div>
-                
-                <button
-                  onClick={handleFormSubmit}
-                  className={styles.loginButton}>
-                  Secure Sign In
-                </button>
+            <div className={styles.loginForm}>
+  <h2 className={styles.loginTitle}>Your Email and Password, please...</h2>
+  <div className={styles.formContainer}>
+    <div className={styles.formGroup}>
+      <input
+        type="email"
+        className={styles.formInput}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+    </div>
+    <div className={styles.formGroup}>
+      <input
+        type="password"
+        className={styles.formInput}
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+    </div>
+    
+    <button
+      onClick={handleTeacherLogin}
+      className={styles.loginButton}
+    >
+      Secure Sign In
+    </button>
                 <div className={styles.signupLink}>
                   NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
                 </div>
