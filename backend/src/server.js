@@ -39,6 +39,11 @@ app.post('/api/uploads/template', upload.single('file'), (req, res) => {
   return res.json({ ok: true, file: filename, summary });
 });
 
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+
 // Start server on all network interfaces
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, '0.0.0.0', () => {
