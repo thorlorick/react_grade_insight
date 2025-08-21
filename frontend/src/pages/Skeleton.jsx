@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Gradeinsight.module.css';
+import styles from './Skeleton.module.css';
 
 const Login = () => {
-  const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
+  const [isLoginFormVisible, setIsLoginFormVisible] = useState(true);
 
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -18,7 +18,7 @@ const Login = () => {
   return (
     <div className={styles.body}>
       <nav className={styles.navbar}>
-        <a href="#" className={styles.navLogo}>Grade Insight</a>
+        <a href="#" className={styles.navLogo}>SKELETON</a>
         <div className={styles.navLinks}>
           {/*
           <a href="#" className={styles.navLink}>Home</a>
@@ -29,55 +29,17 @@ const Login = () => {
         </div>
       </nav>
       
-        
       <div 
         className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
+      >
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
-            <h1 className={`${styles.heroText} ${isLoginFormVisible ? styles.fadeOut : ''}`}>
-              Grade Insight.<br />
-              When<br />
-              Good isn't<br />
-              Enough.
-            </h1>
-            
-            <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
-              <h2 className={styles.loginTitle}>Your Email and Password, please...</h2>
-              <div className={styles.formContainer}>
-                <div className={styles.formGroup}>
-                  <input
-                    type="text"
-                    className={styles.formInput}
-                    placeholder="Email"
-                  />
-                </div>
-                  <div className={styles.formGroup}>
-                  <input
-                    type="password"
-                    className={styles.formInput}
-                    placeholder="Password"
-                  />
-                </div>
-                
-                <button
-                  onClick={handleFormSubmit}
-                  className={styles.loginButton}>
-                  Secure Sign In
-                </button>
-                <div className={styles.signupLink}>
-                  NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
-                </div>
-              </div>
+            <h2 className={styles.loginTitle}>THIS IS A SKELETON</h2>
+            <div className={styles.formContainer}>
+              {/* Form content can be added here */}
             </div>
-            
-            <button
-              onClick={handleButtonClick}
-              className={`${styles.adventureButton} ${isLoginFormVisible ? styles.fadeOut : ''}`}
-            >
-              See Your Grades
-            </button>
           </div>
         </div>
       </div>
