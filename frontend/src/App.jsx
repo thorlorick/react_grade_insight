@@ -8,6 +8,7 @@ import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
 import Login from './pages/Login';
 import Signup from './pages/Signup'; 
+import Skeleton from './pages/Skeleton'; 
 
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/skeleton" element={<Skeleton />} />
 
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />
