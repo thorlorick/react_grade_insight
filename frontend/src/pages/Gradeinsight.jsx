@@ -4,6 +4,8 @@ import styles from './Gradeinsight.module.css';
 
 const Login = () => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -12,7 +14,8 @@ const Login = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted');
+    console.log('Form submitted with:', { email, password });
+    // Add your authentication logic here
   };
 
   return (
@@ -29,7 +32,6 @@ const Login = () => {
         </div>
       </nav>
       
-        
       <div 
         className={styles.heroContainer} 
         style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
@@ -43,34 +45,41 @@ const Login = () => {
               Enough.
             </h1>
             
-            <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
+            <form 
+              className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}
+              onSubmit={handleFormSubmit}
+            >
               <h2 className={styles.loginTitle}>Your Email and Password, please...</h2>
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
                   <input
-                    type="text"
-                    className={styles.formInput}
+                    type="email"
                     placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
-                </div>
-                  <div className={styles.formGroup}>
                   <input
                     type="password"
-                    className={styles.formInput}
                     placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                 </div>
                 
                 <button
-                  onClick={handleFormSubmit}
-                  className={styles.loginButton}>
+                  type="submit"
+                  className={styles.loginButton}
+                >
                   Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
+                  NOT SURE WHAT TO DO?<br /> 
+                  <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
                 </div>
               </div>
-            </div>
+            </form>
             
             <button
               onClick={handleButtonClick}
