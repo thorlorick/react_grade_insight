@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Gradeinsight.module.css';
 
-const Login = () => {
+const Gradeinsight = () => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -14,8 +12,7 @@ const Login = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted with:', { email, password });
-    // Add your authentication logic here
+    console.log('Form submitted');
   };
 
   return (
@@ -32,6 +29,7 @@ const Login = () => {
         </div>
       </nav>
       
+        
       <div 
         className={styles.heroContainer} 
         style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
@@ -45,41 +43,34 @@ const Login = () => {
               Enough.
             </h1>
             
-            <form 
-              className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}
-              onSubmit={handleFormSubmit}
-            >
+            <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
               <h2 className={styles.loginTitle}>Your Email and Password, please...</h2>
               <div className={styles.formContainer}>
                 <div className={styles.formGroup}>
                   <input
-                    type="email"
+                    type="text"
+                    className={styles.formInput}
                     placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
                   />
+                </div>
+                  <div className={styles.formGroup}>
                   <input
                     type="password"
+                    className={styles.formInput}
                     placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
                   />
                 </div>
                 
                 <button
-                  type="submit"
-                  className={styles.loginButton}
-                >
+                  onClick={handleFormSubmit}
+                  className={styles.loginButton}>
                   Secure Sign In
                 </button>
                 <div className={styles.signupLink}>
-                  NOT SURE WHAT TO DO?<br /> 
-                  <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
+                  NOT SURE WHAT TO DO?<br /> <Link to="/signup" className={styles.signupLinkAnchor}>CLICK HERE</Link><br />
                 </div>
               </div>
-            </form>
+            </div>
             
             <button
               onClick={handleButtonClick}
@@ -94,4 +85,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Gradeinsight;
