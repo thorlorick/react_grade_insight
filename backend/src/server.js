@@ -1,9 +1,15 @@
 // backend/src/server.js
+
+// Load environment variables
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer'); // handles file uploads
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
+const mysql = require('mysql2/promise');
 
 const app = express();
 
@@ -15,18 +21,37 @@ app.use(express.urlencoded({ extended: true }));
 // Serve frontend static files
 app.use(express.static(path.join(__dirname, '../../frontend')));
 
-// Set up multer for file uploads
+// ----------------------
+// MySQL connection setup
+// ----------------------
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+};
+
+let db;
+mysql.createConnection(dbConfig)
+  .then((connection) => {
+    db = connection;
+    console.log('Connected to MySQL');
+  })
+  .catch((err) => console.error('MySQL connection error:', err));
+
+// ----------------------
+// Multer setup for uploads
+// ----------------------
 const upload = multer({
   dest: path.join(__dirname, '../../uploads/') // make sure this folder exists
 });
 
-// API route for CSV upload
+// CSV upload route
 app.post('/api/uploads/template', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ ok: false, error: 'No file uploaded' });
   }
 
-  // Here you can process the CSV as needed
   const filename = req.file.originalname;
   const summary = {
     uploadedAt: new Date(),
@@ -39,12 +64,50 @@ app.post('/api/uploads/template', upload.single('file'), (req, res) => {
   return res.json({ ok: true, file: filename, summary });
 });
 
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+// ----------------------
+// Health check route
+// ----------------------
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
+// ----------------------
+// Teacher login route
+// ----------------------
+app.post('/api/login', async (req, res) => {
+  if (!db) return res.status(500).json({ ok: false, error: 'Database not connected' });
 
-// Start server on all network interfaces
+  const { email, password } = req.body;
+
+  try {
+    const [rows] = await db.query("SELECT * FROM teachers WHERE email = ?", [email]);
+
+    if (!rows.length) return res.json({ ok: false, error: 'User not found' });
+
+    const teacher = rows[0];
+    const valid = bcrypt.compareSync(password, teacher.password_hash);
+
+    if (!valid) return res.json({ ok: false, error: 'Invalid password' });
+
+    // Return teacher info (without password)
+    return res.json({
+      ok: true,
+      teacher: {
+        id: teacher.id,
+        first_name: teacher.first_name,
+        last_name: teacher.last_name,
+        email: teacher.email
+      }
+    });
+  } catch (err) {
+    console.error('Login error:', err);
+    return res.status(500).json({ ok: false, error: 'Server error' });
+  }
+});
+
+// ----------------------
+// Start server
+// ----------------------
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`API listening on :${PORT}`);

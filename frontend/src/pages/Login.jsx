@@ -1,23 +1,55 @@
-const handleTeacherLogin = async (e) => {
-  e.preventDefault();
+import { useState } from "react";
 
-  try {
-    const res = await fetch('/api/login/teacher', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const data = await res.json();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (res.ok) {
-      // redirect to teacher dashboard
-      window.location.href = `/teacher/${data.teacher_id}-dashboard`;
-    } else {
-      alert(data.message);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.ok) {
+        setMessage("Login successful!");
+        // Here you could redirect or save a token/session
+      } else {
+        setMessage("Login failed: " + data.error);
+      }
+    } catch (err) {
+      setMessage("Error connecting to server");
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
-    alert('Server error. Try again later.');
-  }
-};
+  };
+
+  return (
+    <div>
+      <h2>Teacher Login</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
+      <p>{message}</p>
+    </div>
+  );
+}
