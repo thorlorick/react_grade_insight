@@ -1,15 +1,11 @@
 // backend/src/server.js
-
-// Load environment variables
-require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer'); // handles file uploads
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2/promise'); // MySQL with async/await
 
 const app = express();
 
@@ -25,10 +21,10 @@ app.use(express.static(path.join(__dirname, '../../frontend')));
 // MySQL connection setup
 // ----------------------
 const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: 'localhost',
+  user: 'your_mysql_user',
+  password: 'your_mysql_password',
+  database: 'grade_insight',
 };
 
 let db;
@@ -74,7 +70,7 @@ app.get('/health', (req, res) => {
 // ----------------------
 // Teacher login route
 // ----------------------
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   if (!db) return res.status(500).json({ ok: false, error: 'Database not connected' });
 
   const { email, password } = req.body;
@@ -112,4 +108,3 @@ const PORT = process.env.PORT || 8081;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`API listening on :${PORT}`);
 });
-
