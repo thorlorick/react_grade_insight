@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Import your pages
-import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
 import Login from './pages/Login';
 import Signup from './pages/Signup'; 
