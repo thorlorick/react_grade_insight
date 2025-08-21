@@ -1,25 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Gradeinsight.module.css';
+import styles from './TeachePage.module.css';
 
-const Gradeinsight = () => {
+const TeacherPage = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted!');
   };
 
   return (
-  <div className={styles.body}>
-  <nav className={styles.navbar}>
-    <Link to="/" className={styles.navLogo}>Grade Insight</Link>
-    <div className={styles.navLinks}>
-      <Link to="/teacher" className={styles.navLink}>Teacher</Link>
-      <Link to="/student" className={styles.navLink}>Student</Link>
-      <Link to="/parent" className={styles.navLink}>Parent</Link>
-      <Link to="/contact" className={styles.navLink}>Contact</Link>
-    </div>
-  </nav>
-
+    <div className={styles.body}>
+      <nav className={styles.navbar}>
+        <Link to="/" className={styles.navLogo}>Grade Insight</Link>
+        <div className={styles.navLinks}>
+          <Link to="/teacher" className={styles.navLink}>Teacher</Link>
+          <Link to="/student" className={styles.navLink}>Student</Link>
+          <Link to="/parent" className={styles.navLink}>Parent</Link>
+          <Link to="/contact" className={styles.navLink}>Contact</Link>
+        </div>
+      </nav>
 
       <div
         className={styles.heroContainer}
@@ -36,14 +35,12 @@ const Gradeinsight = () => {
             </h1>
 
             <div className={styles.loginForm}>
-              <form onSubmit={handleFormSubmit}>
-                <div className={styles.formContainer}>
-                  <div className={styles.formGroup}>
-                    {/* Input fields for username, password, etc. */}
-                  </div>
+              <h2 className={styles.loginTitle}>This is the SKELETON</h2>
+              <div className={styles.formContainer}>
+                <div className={styles.formGroup}>
+                  {/* Add your form content here */}
                 </div>
-                
-              </form>
+              </div>
             </div>
           </div>
         </div>
@@ -52,4 +49,4 @@ const Gradeinsight = () => {
   );
 };
 
-export default Gradeinsight;
+export default TeacherPage;
