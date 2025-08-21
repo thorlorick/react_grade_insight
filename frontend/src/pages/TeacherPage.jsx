@@ -6,23 +6,15 @@ import styles from './TeacherPage.module.css';
 
 const TeacherPage = () => {
   return (
-
-     <div className={styles.body}>
-      {/* Reusable Navbar component */}
+    <div className={styles.body}>
       <Navbar />
 
-      <div
-        className={styles.heroContainer}
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
-      >
-        <LoginContainer title="Teacher Login">
-        {/* Insert form fields or other elements */}
+      {/* Use LoginContainer directly */}
+      <LoginContainer>
         <input type="text" placeholder="Username" />
         <input type="password" placeholder="Password" />
         <button type="submit">Log In</button>
       </LoginContainer>
-      
-      </div>
     </div>
   );
 };
