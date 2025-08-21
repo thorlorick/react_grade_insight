@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './Gradeinsight.module.css';
 
 const Gradeinsight = () => {
@@ -7,6 +8,8 @@ const Gradeinsight = () => {
     e.preventDefault();
     console.log('Form submitted!');
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className={styles.body}>
@@ -39,9 +42,12 @@ const Gradeinsight = () => {
               </form>
             </div>
 
-            <button className={styles.adventureButton}>
-              See Your Grades
-            </button>
+            <button
+  onClick={() => navigate('/login')}
+  className={styles.adventureButton}
+>
+  See Your Grades
+</button>
           </div>
         </div>
       </div>
