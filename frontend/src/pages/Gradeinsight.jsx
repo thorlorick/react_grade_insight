@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Gradeinsight.module.css';
 
 const Gradeinsight = () => {
-  const [isLoginFormVisible, setIsLoginFormVisible] = useState(true);
+  const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
 
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -12,24 +12,16 @@ const Gradeinsight = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted');
+    // Logic to handle form submission will go here
+    console.log('Form submitted!');
   };
 
   return (
     <div className={styles.body}>
       <nav className={styles.navbar}>
-        <a href="#" className={styles.navLogo}>Grade Insight</a>
-        <div className={styles.navLinks}>
-          {/*
-          <a href="#" className={styles.navLink}>Home</a>
-          <a href="#" className={styles.navLink}>Student</a>
-          <a href="#" className={styles.navLink}>Dashboard</a>
-          <a href="#" className={styles.navLink}>Contact</a>
-          */}
-        </div>
+        <Link to="/" className={styles.navLogo}>Grade Insight</Link>
       </nav>
       
-        
       <div 
         className={styles.heroContainer} 
         style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
@@ -44,11 +36,15 @@ const Gradeinsight = () => {
             </h1>
             
             <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
-              
-              <div className={styles.formContainer}>
-                <div className={styles.formGroup}>
-                  
-              </div>
+              {/* Login form elements will be placed here */}
+              <form onSubmit={handleFormSubmit}>
+                <div className={styles.formContainer}>
+                  <div className={styles.formGroup}>
+                    {/* Input fields for username, password, etc. */}
+                  </div>
+                </div>
+                <button type="submit">Log In</button>
+              </form>
             </div>
             
             <button
