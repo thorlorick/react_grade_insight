@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Gradeinsight.module.css';
 
 const Gradeinsight = () => {
-  const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
-
-  const handleButtonClick = (e) => {
-    e.preventDefault();
-    setIsLoginFormVisible(true);
-  };
-
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Logic to handle form submission will go here
     console.log('Form submitted!');
   };
 
@@ -21,36 +13,33 @@ const Gradeinsight = () => {
       <nav className={styles.navbar}>
         <Link to="/" className={styles.navLogo}>Grade Insight</Link>
       </nav>
-      
-      <div 
-        className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
+
+      <div
+        className={styles.heroContainer}
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
+      >
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
-            <h1 className={`${styles.heroText} ${isLoginFormVisible ? styles.fadeOut : ''}`}>
+            <h1 className={styles.heroText}>
               Grade Insight.<br />
               When<br />
               Good isn't<br />
               Enough.
             </h1>
-            
-            <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
-              {/* Login form elements will be placed here */}
+
+            <div className={styles.loginForm}>
               <form onSubmit={handleFormSubmit}>
                 <div className={styles.formContainer}>
                   <div className={styles.formGroup}>
                     {/* Input fields for username, password, etc. */}
                   </div>
                 </div>
-                <button type="submit">Log In</button>
+               
               </form>
             </div>
-            
-            <button
-              onClick={handleButtonClick}
-              className={`${styles.adventureButton} ${isLoginFormVisible ? styles.fadeOut : ''}`}
-            >
+
+            <button className={styles.adventureButton}>
               See Your Grades
             </button>
           </div>
