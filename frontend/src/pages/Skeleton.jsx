@@ -18,7 +18,7 @@ const Login = () => {
   return (
     <div className={styles.body}>
       <nav className={styles.navbar}>
-        <a href="#" className={styles.navLogo}>SKELETON</a>
+        <a href="#" className={styles.navLogo}>Grade Insight</a>
         <div className={styles.navLinks}>
           {/*
           <a href="#" className={styles.navLink}>Home</a>
@@ -29,17 +29,25 @@ const Login = () => {
         </div>
       </nav>
       
+        
       <div 
         className={styles.heroContainer} 
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}
-      >
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/insightBG.jpg)` }}>
         <div className={styles.overlay}></div>
         <div className={styles.content}>
-          <div className={styles.contentInner}>
-            <h2 className={styles.loginTitle}>THIS IS A SKELETON</h2>
-            <div className={styles.formContainer}>
-              {/* Form content can be added here */}
+          <div className={styles.contentInner}> 
+            <div className={`${styles.loginForm} ${isLoginFormVisible ? styles.fadeIn : ''}`}>
+              <h2 className={styles.loginTitle}>This is the SKELETON</h2>
+              <div className={styles.formContainer}>
+                <div className={styles.formGroup}>
+                
+                </div>
+                
+                
+              </div>
             </div>
+            
+            
           </div>
         </div>
       </div>
