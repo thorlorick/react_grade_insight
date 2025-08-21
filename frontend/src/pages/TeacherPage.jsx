@@ -21,12 +21,7 @@ const TeacherPage = () => {
         <div className={styles.overlay}></div>
         <div className={styles.content}>
           <div className={styles.contentInner}>
-            <h1 className={styles.heroText}>
-              Grade Insight.<br />
-              For when<br />
-              Good<br />
-              Isn't Enough.
-            </h1>
+            
 
             <div className={styles.loginForm}>
               <h2 className={styles.loginTitle}>This is the SKELETON</h2>
