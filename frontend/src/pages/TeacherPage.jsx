@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './TeachePage.module.css';
+import styles from './TeacherPage.module.css';
 
 const TeacherPage = () => {
   const handleFormSubmit = (e) => {
