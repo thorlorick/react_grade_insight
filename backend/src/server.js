@@ -74,7 +74,7 @@ app.get('/health', (req, res) => {
 // ----------------------
 // Teacher login route
 // ----------------------
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   if (!db) return res.status(500).json({ ok: false, error: 'Database not connected' });
 
   const { email, password } = req.body;
