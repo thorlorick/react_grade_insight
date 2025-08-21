@@ -2,14 +2,15 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const db = require('../db'); // your MySQL connection
+const { pool } = require('../db'); // Import pool from your db connection
 
 router.post('/login/teacher', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ message: 'Missing fields' });
 
   try {
-    const [rows] = await db.query('SELECT * FROM teachers WHERE email = ?', [email]);
+    // Use pool.execute instead of db.query to match your connection setup
+    const [rows] = await pool.execute('SELECT * FROM teachers WHERE email = ?', [email]);
 
     if (rows.length === 0) return res.status(401).json({ message: 'Invalid email or password' });
 
@@ -27,4 +28,3 @@ router.post('/login/teacher', async (req, res) => {
 });
 
 module.exports = router;
-
