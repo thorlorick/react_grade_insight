@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import styles from './TeacherPage.module.css';
 
 const TeacherPage = () => {
@@ -9,16 +10,9 @@ const TeacherPage = () => {
   };
 
   return (
-    <div className={styles.body}>
-      <nav className={styles.navbar}>
-        <Link to="/" className={styles.navLogo}>Grade Insight</Link>
-        <div className={styles.navLinks}>
-          <Link to="/teacher" className={styles.navLink}>Teacher</Link>
-          <Link to="/student" className={styles.navLink}>Student</Link>
-          <Link to="/parent" className={styles.navLink}>Parent</Link>
-          <Link to="/contact" className={styles.navLink}>Contact</Link>
-        </div>
-      </nav>
+     <div className={styles.body}>
+      {/* Reusable Navbar component */}
+      <Navbar />
 
       <div
         className={styles.heroContainer}
