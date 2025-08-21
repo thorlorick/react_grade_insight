@@ -29,9 +29,9 @@ const Gradeinsight = () => {
           <div className={styles.contentInner}>
             <h1 className={styles.heroText}>
               Grade Insight.<br />
-              When<br />
-              Good isn't<br />
-              Enough.
+              For when<br />
+              Good<br />
+              Isn't Enough.
             </h1>
 
             <div className={styles.loginForm}>
@@ -41,13 +41,9 @@ const Gradeinsight = () => {
                     {/* Input fields for username, password, etc. */}
                   </div>
                 </div>
-                <button type="submit">Log In</button>
+                
               </form>
             </div>
-
-            <button className={styles.adventureButton}>
-              See Your Grades
-            </button>
           </div>
         </div>
       </div>
