@@ -1,10 +1,7 @@
 /* LoginContainer.module.css */
 
-
-
 .loginForm {
-  opacity: 1;
-
+  opacity: 1; /* Keep this as 1 since you removed the fade animation */
   position: absolute;
   top: 50%;
   right: 0;
@@ -26,8 +23,6 @@
   z-index: 10;
 }
 
-
-
 .loginTitle {
   font-size: 1.75rem;
   font-weight: 200;
@@ -38,41 +33,12 @@
   letter-spacing: -0.01em;
 }
 
-
-
-.loginButton {
-  width: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #a7f3d0;
-  padding: 14px 24px;
-  font-size: 1rem;
-  font-weight: 400;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 16px;
-  margin-top: 8px;
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.2) inset;
-}
-
-.loginButton:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.3),
-    0 1px 0 rgba(255, 255, 255, 0.3) inset;
-}
-
-
 .formContainer {
   display: flex;
   flex-direction: column;
 }
 
+/* Add these new classes for the form groups and inputs */
 .formGroup {
   margin-bottom: 24px;
 }
@@ -110,12 +76,35 @@
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
+.loginButton {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a7f3d0;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 400;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 16px;
+  margin-top: 8px;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
 
+.loginButton:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
+}
 
 /* Media Queries */
 @media (max-width: 768px) {
-
-
   .loginForm {
     position: static;
     transform: none;
@@ -131,18 +120,22 @@
     margin-bottom: 24px;
   }
 
-  
+  .formGroup {
+    margin-bottom: 20px;
+  }
+
+  .formInput {
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 
   .loginButton {
     padding: 16px 24px;
     font-size: 1rem;
   }
-
 }
 
 @media (max-width: 480px) {
-  
-
   .loginForm {
     padding: 25px 15px;
     max-width: 280px;
@@ -152,21 +145,11 @@
     font-size: 1.25rem;
   }
 
-
+  .formInput {
+    padding: 12px 14px;
+  }
 
   .loginButton {
     padding: 14px 20px;
-  }
-
-  
-}
-
-@media (min-width: 768px) {
-  .heroText {
-    font-size: 3.5rem;
-  }
-
-  .content {
-    padding: 0 120px 0 24px;
   }
 }

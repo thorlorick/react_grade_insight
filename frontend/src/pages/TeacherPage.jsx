@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import BackgroundContainer from '../components/BackgroundContainer';
 import LoginContainer from '../components/LoginContainer';
 import styles from './TeacherPage.module.css';
+import loginStyles from '../components/LoginContainer.module.css';
 
 const TeacherPage = () => {
   return (
@@ -10,9 +11,15 @@ const TeacherPage = () => {
       <Navbar />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Teacher Login">
-          <input type="text" placeholder="Username" />
-          <input type="password" placeholder="Password" />
-          <button type="submit">Log In</button>
+          <div className={loginStyles.formGroup}>
+            <label className={loginStyles.formLabel}>Username</label>
+            <input className={loginStyles.formInput} type="text" placeholder="Username" />
+          </div>
+          <div className={loginStyles.formGroup}>
+            <label className={loginStyles.formLabel}>Password</label>
+            <input className={loginStyles.formInput} type="password" placeholder="Password" />
+          </div>
+          <button className={loginStyles.loginButton} type="submit">Log In</button>
         </LoginContainer>
       </BackgroundContainer>
     </div>
