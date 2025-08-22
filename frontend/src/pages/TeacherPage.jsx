@@ -10,16 +10,8 @@ const TeacherPage = () => {
     <div className={styles.body}>
       <Navbar />
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer title="Teacher Login">
-          <div className={loginStyles.formGroup}>
-            <label className={loginStyles.formLabel}>Username</label>
-            <input className={loginStyles.formInput} type="text" placeholder="Username" />
-          </div>
-          <div className={loginStyles.formGroup}>
-            <label className={loginStyles.formLabel}>Password</label>
-            <input className={loginStyles.formInput} type="password" placeholder="Password" />
-          </div>
-          <button className={loginStyles.loginButton} type="submit">Log In</button>
+        <LoginContainer title="Teacher Dashboard">
+         
         </LoginContainer>
       </BackgroundContainer>
     </div>
