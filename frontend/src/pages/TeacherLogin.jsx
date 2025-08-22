@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import BackgroundContainer from '../components/BackgroundContainer';
 import LoginContainer from '../components/LoginContainer';
-import styles from './TeacherPage.module.css';
+import styles from './TeacherLogin.module.css';
 import loginStyles from '../components/LoginContainer.module.css';
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
             <input className={loginStyles.formInput} type="password" placeholder="Password" />
           </div>
           <button className={loginStyles.loginButton} type="submit">Log In</button> <br />
-          
+
           <div className={loginStyles.signupLink}>
     Don't have an account? <Link to="/signup" className={loginStyles.signupLinkAnchor}>Sign up here</Link>
           </div>
