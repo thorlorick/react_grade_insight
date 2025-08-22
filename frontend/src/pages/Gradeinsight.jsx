@@ -13,7 +13,7 @@ const Gradeinsight = () => {
       <nav className={styles.navbar}>
         <Link to="/" className={styles.navLogo}>Grade Insight</Link>
          <div className={styles.navLinks}>
-          <a href="#" className={styles.navLink}>Teacher</a>
+          <a href="/teacher" className={styles.navLink}>Teacher</a>
           <a href="#" className={styles.navLink}>Student</a>
           <a href="#" className={styles.navLink}>Parent</a>
           <a href="#" className={styles.navLink}>Contact</a>
