@@ -103,6 +103,23 @@
     0 1px 0 rgba(255, 255, 255, 0.3) inset;
 }
 
+.signupLink {
+  text-align: center;
+  color: #67e8f9;
+  font-size: 0.875rem;
+}
+
+.signupLinkAnchor {
+  color: #22d3ee;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.signupLinkAnchor:hover {
+  color: #0891b2;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
   .loginForm {
