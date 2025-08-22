@@ -8,7 +8,7 @@ import './App.css';
 // Import your pages
 import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
-import Login from './pages/Login';
+import Login from './pages/TeacherLogin';
 import Signup from './pages/Signup'; 
 import Skeleton from './pages/Skeleton'; 
 import TeacherPage from './pages/TeacherPage'; 
