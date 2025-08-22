@@ -19,7 +19,11 @@ const Login = () => {
             <label className={loginStyles.formLabel}>Password</label>
             <input className={loginStyles.formInput} type="password" placeholder="Password" />
           </div>
-          <button className={loginStyles.loginButton} type="submit">Log In</button>
+          <button className={loginStyles.loginButton} type="submit">Log In</button> <br />
+
+           <div className={styles.signupLink}>
+                  Haven't registered yet? <Link to="/signup" className={styles.signupLinkAnchor}>  REGISTER HERE</Link><br />
+                </div>
         </LoginContainer>
       </BackgroundContainer>
     </div>
