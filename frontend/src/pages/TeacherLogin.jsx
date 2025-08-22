@@ -20,6 +20,10 @@ const Login = () => {
             <input className={loginStyles.formInput} type="password" placeholder="Password" />
           </div>
           <button className={loginStyles.loginButton} type="submit">Log In</button> <br />
+          
+          <div className={loginStyles.signupLink}>
+    Don't have an account? <Link to="/signup" className={loginStyles.signupLinkAnchor}>Sign up here</Link>
+          </div>
 
          
         </LoginContainer>
