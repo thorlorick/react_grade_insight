@@ -6,7 +6,6 @@ import './App.css';
 
 
 // Import your pages
-import Uploads from './pages/Uploads';
 import Gradeinsight from './pages/Gradeinsight';
 import Login from './pages/TeacherLogin';
 import Signup from './pages/Signup'; 
@@ -22,7 +21,6 @@ const App = () => {
         <Route path="/" element={<Gradeinsight />} />
 
         {/* Pages */}
-        <Route path="/uploads" element={<Uploads />} />
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
