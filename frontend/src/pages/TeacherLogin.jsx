@@ -6,7 +6,7 @@ import LoginContainer from '../components/LoginContainer';
 
 const Login = () => {
   return (
-    <div>
+    <div className={body}>
       <Navbar />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Teacher Login">
