@@ -57,6 +57,7 @@
 
 .heroContainer {
   height: calc(100vh - 100px);
+  z-index: 1;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -84,6 +85,7 @@
 
 .overlay {
   position: absolute;
+  z-index: 1;
   top: 0;
   left: 0;
   right: 0;
