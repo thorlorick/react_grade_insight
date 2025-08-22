@@ -21,9 +21,7 @@ const Login = () => {
           </div>
           <button className={loginStyles.loginButton} type="submit">Log In</button> <br />
 
-           <div className={styles.signupLink}>
-                  Haven't registered yet? <Link to="/signup" className={styles.signupLinkAnchor}>  REGISTER HERE</Link><br />
-                </div>
+         
         </LoginContainer>
       </BackgroundContainer>
     </div>
