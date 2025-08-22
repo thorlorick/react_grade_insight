@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import BackgroundContainer from '../components/BackgroundContainer';
 import LoginContainer from '../components/LoginContainer';
-import styles from './TeacherLogin.module.css';
-import loginStyles from '../components/LoginContainer.module.css';
+import loginStyles from './TeacherLogin.module.css';
+
+
 
 const Login = () => {
   return (
-    <div className={styles.body}>
+    <div className={loginStyles.body}>
       <Navbar />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Teacher Login">
