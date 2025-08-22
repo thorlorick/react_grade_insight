@@ -29,8 +29,7 @@ const Gradeinsight = () => {
           <div className={styles.contentInner}>
             <h1 className={styles.heroText}>
               Grade Insight.<br />
-              When Good<br />
-              Isn't Enough.
+              When Good Isn't Enough.
             </h1>
 
             <div className={styles.loginForm}>
