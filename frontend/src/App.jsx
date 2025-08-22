@@ -22,7 +22,7 @@ const App = () => {
 
         {/* Pages */}
         <Route path="/home" element={<Gradeinsight />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/teacherLogin" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/skeleton" element={<Skeleton />} />
         <Route path="/teacher" element={<TeacherPage />} />
