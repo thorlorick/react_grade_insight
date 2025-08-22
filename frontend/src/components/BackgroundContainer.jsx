@@ -8,7 +8,9 @@ const BackgroundContainer = ({ image, children }) => {
       style={{ backgroundImage: `url(${process.env.PUBLIC_URL}${image})` }}
     >
       <div className={styles.overlay}></div>
+      <div className={styles.content}>
       {children}
+    </div>
     </div>
   );
 };
