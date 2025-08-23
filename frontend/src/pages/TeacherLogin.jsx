@@ -8,7 +8,15 @@ import loginStyles from './TeacherLogin.module.css';
 const Login = () => {
   return (
     <div className={loginStyles.body}>
-      <Navbar />
+        <Navbar
+  brand="Grade Insight"
+  links={[
+    { to: '/TeacherLogin', label: 'Teachers' },
+    { to: '/StudentLogin', label: 'Students' },
+    { to: '/ParentLogin', label: 'Parents' },
+    { to: '/contact', label: 'Contact Us' }
+  ]}
+/>
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Teacher Login">
           <div className={loginStyles.formGroup}>
