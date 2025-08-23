@@ -116,12 +116,14 @@ const TeacherLogin = () => {
           )}
 
           <div className={loginStyles.formGroup}>
-            <label 
+           {/* 
+           <label 
               htmlFor="email" 
               className={loginStyles.formLabel}
             >
               User E-mail
-            </label>
+            </label> 
+            */}
             <input
               id="email"
               name="email"
@@ -129,7 +131,7 @@ const TeacherLogin = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
-              // placeholder="Enter your email"
+              placeholder="Enter your email"
               // autoComplete="email"
               disabled={isLoading}
             />
@@ -144,12 +146,14 @@ const TeacherLogin = () => {
           </div>
 
           <div className={loginStyles.formGroup}>
+            {/*
             <label 
               htmlFor="password" 
               className={loginStyles.formLabel}
             >
               Password
             </label>
+            */}
             <input
               id="password"
               name="password"
@@ -157,7 +161,7 @@ const TeacherLogin = () => {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              // placeholder="Enter your password"
+              placeholder="Enter your password"
               // autoComplete="current-password"
               disabled={isLoading}
             />
