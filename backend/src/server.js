@@ -1,4 +1,7 @@
 // backend/src/server.js
+
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
@@ -7,7 +10,7 @@ const fs = require('fs');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const { pool } = require('./db'); // Import your db connection
-require('dotenv').config();
+
 
 // Import your existing auth routes
 const authRoutes = require('./routes/auth');
