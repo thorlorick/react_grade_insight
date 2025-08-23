@@ -1,6 +1,8 @@
 // backend/src/server.js
 
 require('dotenv').config();
+console.log('SESSION_SECRET loaded:', !!process.env.SESSION_SECRET);
+console.log('SESSION_SECRET value:', process.env.SESSION_SECRET ? 'EXISTS' : 'MISSING');
 
 const express = require('express');
 const cors = require('cors');
