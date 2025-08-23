@@ -104,7 +104,7 @@
 }
 
 .contentInner {
-  max-width: 800px;
+  max-width: auto;
   position: relative;
   min-height: 300px;
   display: flex;

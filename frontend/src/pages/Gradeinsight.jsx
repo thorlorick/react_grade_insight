@@ -11,10 +11,10 @@ const GradeInsight = () => {
       <Navbar
   brand="Grade Insight"
   links={[
-    { to: '/TeacherLogin', label: 'Teacher' },
-    { to: '/StudentLogin', label: 'Student' },
-    { to: '/ParentLogin', label: 'Parent' },
-    { to: '/contact', label: 'Contact' }
+    { to: '/TeacherLogin', label: 'Teachers' },
+    { to: '/StudentLogin', label: 'Students' },
+    { to: '/ParentLogin', label: 'Parents' },
+    { to: '/contact', label: 'Contact Us' }
   ]}
 />
       <BackgroundContainer image="/images/insightBG.jpg">
