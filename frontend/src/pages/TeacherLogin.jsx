@@ -20,11 +20,11 @@ const Login = () => {
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Teacher Login">
           <div className={loginStyles.formGroup}>
-            <label className={loginStyles.formLabel}>Username</label>
+            <label className={loginStyles.formLabel}>User E-mail</label>
             <input
               className={loginStyles.formInput}
-              type="text"
-              placeholder="Username"
+              type="email"
+              placeholder="User E-mail"
             />
           </div>
 
