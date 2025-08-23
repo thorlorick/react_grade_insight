@@ -5,7 +5,7 @@ import BackgroundContainer from '../components/BackgroundContainer';
 import LoginContainer from '../components/LoginContainer';
 import loginStyles from './TeacherLogin.module.css';
 
-const Login = () => {
+const TeacherLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -196,4 +196,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default TeacherLogin;
