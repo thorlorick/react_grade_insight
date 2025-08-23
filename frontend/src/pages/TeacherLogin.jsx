@@ -129,8 +129,8 @@ const TeacherLogin = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Enter your email"
-              autoComplete="email"
+              // placeholder="Enter your email"
+              // autoComplete="email"
               disabled={isLoading}
             />
             {errors.email && (
@@ -157,8 +157,8 @@ const TeacherLogin = () => {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Enter your password"
-              autoComplete="current-password"
+              // placeholder="Enter your password"
+              // autoComplete="current-password"
               disabled={isLoading}
             />
             {errors.password && (
