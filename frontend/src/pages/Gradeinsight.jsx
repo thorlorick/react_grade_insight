@@ -8,7 +8,15 @@ import styles from './Gradeinsight.module.css';
 const GradeInsight = () => {
  return (
     <div className={styles.body}>
-      <Navbar />
+      <Navbar
+  brand="Grade Insight"
+  links={[
+    { to: '/TeacherLogin', label: 'Teacher' },
+    { to: '/StudentLogin', label: 'Student' },
+    { to: '/ParentLogin', label: 'Parent' },
+    { to: '/contact', label: 'Contact' }
+  ]}
+/>
       <BackgroundContainer image="/images/insightBG.jpg">
         
           <h1 className={styles.heroText}>
