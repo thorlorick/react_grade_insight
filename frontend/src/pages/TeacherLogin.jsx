@@ -56,7 +56,7 @@ const TeacherLogin = () => {
     setErrors({});
     
     try {
-      const response = await fetch('/api/auth/login/teacher', {
+      const response = await fetch('http://localhost:8081/api/auth/login/teacher', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const TeacherLogin = () => {
       if (response.ok) {
         // Login successful - redirect to dashboard
         console.log('Login successful:', data);
-        navigate('/dashboard'); // Use React Router navigation
+        navigate('/TeacherPage'); // Use React Router navigation
       } else {
         // Login failed
         setErrors({ form: data.message });
