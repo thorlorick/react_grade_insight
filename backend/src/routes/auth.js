@@ -4,7 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { pool } = require('../db'); // Import pool from your db connection
 
-router.post('/login/teacher', async (req, res) => {
+router.post('/teacherLogin', async (req, res) => {
   const { email, password } = req.body;
   
   if (!email || !password) {
