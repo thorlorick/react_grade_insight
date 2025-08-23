@@ -10,12 +10,12 @@ const GradeInsight = () => {
     <div className={styles.body}>
       <Navbar />
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer>
+        
           <h1 className={styles.heroText}>
             Grade Insight.<br />
             When Good Isn't Enough.
           </h1>
-        </LoginContainer>
+        
       </BackgroundContainer>
     </div>
   );
