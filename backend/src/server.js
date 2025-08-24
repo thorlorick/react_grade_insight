@@ -11,6 +11,7 @@ console.log('SESSION_SECRET length:', process.env.SESSION_SECRET ? process.env.S
 console.log('========================');
 
 const express = require('express');
+const https = require('https'); // Add HTTPS module
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
@@ -19,11 +20,16 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const { pool } = require('./db'); // Import your db connection
 
-
 // Import your existing auth routes
 const authRoutes = require('./routes/auth');
 
 const app = express();
+
+// SSL Certificate configuration
+const sslOptions = {
+  key: fs.readFileSync('/etc/letsencrypt/live/gradeinsight.com-0001/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/gradeinsight.com-0001/fullchain.pem')
+};
 
 // Create session store using your MySQL connection
 const sessionStore = new MySQLStore({
@@ -50,6 +56,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware - MUST come after CORS and before routes
+// Update cookie settings for HTTPS
 app.use(session({
   key: 'grade_insight_session',
   secret: process.env.SESSION_SECRET,
@@ -60,7 +67,7 @@ app.use(session({
   cookie: {
     maxAge: 4 * 60 * 60 * 1000, // 4 hours
     httpOnly: true, // Security: no client-side access
-    secure: false // Set to true in production with HTTPS
+    secure: true // Set to true for HTTPS (changed from false)
   }
 }));
 
@@ -130,8 +137,16 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Start server
-const PORT = process.env.PORT || 8082;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`API listening on :${PORT}`);
+// Start both HTTP and HTTPS servers
+const HTTP_PORT = process.env.PORT || 8082;
+const HTTPS_PORT = process.env.HTTPS_PORT || 8083;
+
+// Keep HTTP server running (for backward compatibility during transition)
+app.listen(HTTP_PORT, '0.0.0.0', () => {
+  console.log(`HTTP API listening on :${HTTP_PORT}`);
+});
+
+// Start HTTPS server
+https.createServer(sslOptions, app).listen(HTTPS_PORT, '0.0.0.0', () => {
+  console.log(`HTTPS API listening on :${HTTPS_PORT}`);
 });
