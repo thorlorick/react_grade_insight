@@ -11,7 +11,7 @@ console.log('SESSION_SECRET length:', process.env.SESSION_SECRET ? process.env.S
 console.log('========================');
 
 const express = require('express');
-const https = require('https'); // Add HTTPS module
+const https = require('https');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
@@ -27,8 +27,8 @@ const app = express();
 
 // SSL Certificate configuration
 const sslOptions = {
-  key: fs.readFileSync('/etc/letsencrypt/live/gradeinsight.com-0001/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/gradeinsight.com-0001/fullchain.pem')
+  key: fs.readFileSync(path.join(__dirname, '../certs/privkey.pem')),
+  cert: fs.readFileSync(path.join(__dirname, '../certs/fullchain.pem'))
 };
 
 // Create session store using your MySQL connection
@@ -56,7 +56,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware - MUST come after CORS and before routes
-// Update cookie settings for HTTPS
 app.use(session({
   key: 'grade_insight_session',
   secret: process.env.SESSION_SECRET,
@@ -67,7 +66,7 @@ app.use(session({
   cookie: {
     maxAge: 4 * 60 * 60 * 1000, // 4 hours
     httpOnly: true, // Security: no client-side access
-    secure: true // Set to true for HTTPS (changed from false)
+    secure: true // Set to true for HTTPS
   }
 }));
 
