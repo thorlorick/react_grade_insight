@@ -5,14 +5,25 @@ import LoginContainer from '../components/LoginContainer';
 import styles from './TeacherPage.module.css';
 import loginStyles from '../components/LoginContainer.module.css';
 
-const TeacherPage = () => {
-  return (
+const GradeInsight = () => {
+ return (
     <div className={styles.body}>
-      <Navbar />
+      <Navbar
+  brand="Grade Insight"
+  links={[
+    { to: '/TeacherLogin', label: 'Teachers' },
+    { to: '/StudentLogin', label: 'Students' },
+    { to: '/ParentLogin', label: 'Parents' },
+    { to: '/contact', label: 'Contact Us' }
+  ]}
+/>
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer title="Teacher Dashboard">
-         
-        </LoginContainer>
+        
+          <h1 className={styles.heroText}>
+            Grade Insight.<br />
+            When Good Isn't Enough.
+          </h1>
+        
       </BackgroundContainer>
     </div>
   );

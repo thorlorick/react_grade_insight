@@ -70,7 +70,7 @@ const TeacherLogin = () => {
       if (response.ok) {
         // Login successful - redirect to dashboard
         console.log('Login successful:', data);
-        navigate('/'); // Use React Router navigation
+        navigate('/TeacherPage'); // Use React Router navigation
       } else {
         // Login failed
         setErrors({ form: data.message });
