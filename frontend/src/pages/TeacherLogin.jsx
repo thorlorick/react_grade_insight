@@ -56,7 +56,7 @@ const TeacherLogin = () => {
     setErrors({});
     
     try {
-      const response = await fetch('http://207.81.189.31:8082/api/auth/teacherLogin', {
+      const response = await fetch('https://207.81.189.31:8083/api/auth/teacherLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
