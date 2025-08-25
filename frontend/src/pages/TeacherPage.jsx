@@ -1,58 +1,69 @@
-import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import BackgroundContainer from '../components/BackgroundContainer';
-import LoginContainer from '../components/LoginContainer';
-import styles from './TeacherPage.module.css';
-import loginStyles from '../components/LoginContainer.module.css';
+// src/pages/TeacherPage.jsx
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import BackgroundContainer from "../components/BackgroundContainer";
+import SearchBar from "../components/SearchBar";
+import GenericButton from "../components/GenericButton";
+import StudentListTable from "../components/StudentListTable";
+import StudentDetailsPanel from "../components/StudentDetailsPanel";
+import { getTeacherData } from "../api/teacherApi";
 
 const TeacherPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [csvFile, setCsvFile] = useState(null);
+  const [studentsData, setStudentsData] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const handleFileUpload = (e) => {
-    setCsvFile(e.target.files[0]);
-    console.log('Selected file:', e.target.files[0]);
+  // Fetch data when the component mounts
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getTeacherData();
+        setStudentsData(data);
+        setFilteredStudents(data);
+      } catch (error) {
+        console.error("Failed to fetch teacher data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Handle search input
+  const handleSearch = (query) => {
+    const filtered = studentsData.filter((student) =>
+      student.first_name.toLowerCase().includes(query.toLowerCase()) ||
+      student.last_name.toLowerCase().includes(query.toLowerCase()) ||
+      student.email.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredStudents(filtered);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    console.log('Searching for:', e.target.value);
+  // Optional: handle CSV upload
+  const handleUpload = async (file) => {
+    // Call your API to upload CSV, then refresh data
   };
 
   return (
-    <div className={styles.body}>
+    <>
       <Navbar
         brand="Grade Insight"
-        links={[
-          { to: '/TeacherLogin', label: 'Teachers' },
-          { to: '/StudentLogin', label: 'Students' },
-          { to: '/ParentLogin', label: 'Parents' },
-          { to: '/contact', label: 'Contact Us' },
-        ]}
+        rightElements={
+          <>
+            <SearchBar onSearch={handleSearch} />
+            <GenericButton onClick={handleUpload}>Upload CSV</GenericButton>
+          </>
+        }
       />
 
-      <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer title="Teacher Dashboard">
-          <div className={loginStyles.formGroup}>
-            <label>Upload Grades CSV:</label>
-            <input type="file" accept=".csv" onChange={handleFileUpload} />
-          </div>
-
-          <div className={loginStyles.formGroup}>
-            <input
-              type="text"
-              placeholder="Search students or assignments..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </div>
-
-          <div className={loginStyles.formGroup}>
-            <p>Results or summary will show here...</p>
-          </div>
-        </LoginContainer>
+      <BackgroundContainer image={null}> {/* No background image */}
+        <StudentListTable
+          students={filteredStudents}
+          onSelectStudent={setSelectedStudent}
+        />
+        {selectedStudent && (
+          <StudentDetailsPanel student={selectedStudent} />
+        )}
       </BackgroundContainer>
-    </div>
+    </>
   );
 };
 
