@@ -33,12 +33,12 @@ const TeacherPage = () => {
 
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Teacher Dashboard">
-          <div className={loginStyles.upload}>
+          <div className={loginStyles.formGroup}>
             <label>Upload Grades CSV:</label>
             <input type="file" accept=".csv" onChange={handleFileUpload} />
           </div>
 
-          <div className={loginStyles.search}>
+          <div className={loginStyles.formGroup}>
             <input
               type="text"
               placeholder="Search students or assignments..."
@@ -47,7 +47,7 @@ const TeacherPage = () => {
             />
           </div>
 
-          <div className={loginStyles.results}>
+          <div className={loginStyles.formGroup}>
             <p>Results or summary will show here...</p>
           </div>
         </LoginContainer>
