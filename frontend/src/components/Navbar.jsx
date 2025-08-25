@@ -1,11 +1,13 @@
+// src/components/Navbar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
-const Navbar = ({ brand = "Grade Insight", links = [] }) => {
+const Navbar = ({ brand = "Grade Insight", links = [], rightElements = null }) => {
   return (
     <nav className={styles.navbar}>
       <Link to="/" className={styles.navLogo}>{brand}</Link>
+      
       <div className={styles.navLinks}>
         {links.map(({ to, label }) => (
           <Link key={to} to={to} className={styles.navLink}>
@@ -13,6 +15,12 @@ const Navbar = ({ brand = "Grade Insight", links = [] }) => {
           </Link>
         ))}
       </div>
+
+      {rightElements && (
+        <div className={styles.navRight}>
+          {rightElements}
+        </div>
+      )}
     </nav>
   );
 };
