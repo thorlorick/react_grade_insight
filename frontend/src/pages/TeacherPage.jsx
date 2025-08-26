@@ -14,7 +14,7 @@ const TeacherPage = () => {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  // Fetch data when the component mounts
+  // Fetch data when component mounts
   useEffect(() => {
     async function fetchData() {
       try {
@@ -30,21 +30,23 @@ const TeacherPage = () => {
 
   // Handle search input
   const handleSearch = (query) => {
-    const filtered = studentsData.filter((student) =>
-      student.first_name.toLowerCase().includes(query.toLowerCase()) ||
-      student.last_name.toLowerCase().includes(query.toLowerCase()) ||
-      student.email.toLowerCase().includes(query.toLowerCase())
+    const filtered = studentsData.filter(
+      (student) =>
+        student.first_name.toLowerCase().includes(query.toLowerCase()) ||
+        student.last_name.toLowerCase().includes(query.toLowerCase()) ||
+        student.email.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredStudents(filtered);
   };
 
-  // Optional: handle CSV upload
-  const handleUpload = async (file) => {
+  // Handle CSV upload (placeholder)
+  const handleUpload = async () => {
+    console.log("Upload CSV clicked");
     // Call your API to upload CSV, then refresh data
   };
 
   return (
-    <>
+    <div className={styles.body}>
       <Navbar
         brand="Grade Insight"
         rightElements={
@@ -57,14 +59,15 @@ const TeacherPage = () => {
 
       <BackgroundContainer image={null}> {/* No background image */}
         <StudentListTable
-          students={filteredStudents}
-          onSelectStudent={setSelectedStudent}
+          data={filteredStudents}   // pass filteredStudents to StudentListTable
+          onSelectStudent={setSelectedStudent} // optional, for clicking rows
         />
+
         {selectedStudent && (
           <StudentDetailsPanel student={selectedStudent} />
         )}
       </BackgroundContainer>
-    </>
+    </div>
   );
 };
 
