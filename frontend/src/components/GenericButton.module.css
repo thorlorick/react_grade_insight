@@ -1,27 +1,26 @@
 .button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a7f3d0;
+  padding: 14px 24px;
   font-size: 1rem;
+  font-weight: 400;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 16px;
+  margin-top: 8px;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
 }
 
-/* Variants */
-.primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.primary:hover {
-  background-color: #0056b3;
-}
-
-.secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.secondary:hover {
-  background-color: #565e64;
+.button:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
 }
