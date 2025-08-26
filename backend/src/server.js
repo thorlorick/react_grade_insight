@@ -1,4 +1,14 @@
 require('dotenv').config();
+
+console.log('=== SERVER STATUS ==='); 
+console.log('Current directory:', process.cwd()); 
+console.log('NODE_ENV:', process.env.NODE_ENV); 
+console.log('SESSION_SECRET exists:', 
+!!process.env.SESSION_SECRET); 
+console.log('SESSION_SECRET length:', process.env.SESSION_SECRET 
+? process.env.SESSION_SECRET.length : 0); 
+console.log('========================');
+
 const express = require('express');
 const https = require('https');
 const cors = require('cors');
