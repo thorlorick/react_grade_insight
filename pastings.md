@@ -482,3 +482,5 @@ Everything is moving along nicely. landing page looks good, so does the login an
 still not sure about the "logic" or the philosophy of the login system 
 
 
+# database issues  
+I have the teacher logged in, and session stored (i think) but I can't seem to make the csv uploads actually upload.
