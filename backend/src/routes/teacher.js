@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
-const pool = require('../db'); // your MySQL connection
+const { pool } = require('../db'); // your MySQL connection
 
 // Multer setup
 const upload = multer({ dest: 'tmp/' });
