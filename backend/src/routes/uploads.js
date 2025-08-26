@@ -3,11 +3,12 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
-const { importTemplate } = require('../importer');
+const { parseTemplate } = require('../csvParser');
+const { pool } = require('../db');
 
 const router = express.Router();
 
-// Ensure local uploads dir exists (gitignore this directory)
+// Ensure local uploads dir exists
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
@@ -20,22 +21,111 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// POST /api/uploads/template?teacherId=1&notes=Optional
-router.post('/template', upload.single('file'), async (req, res) => {
+router.post('/template', upload.single('csv'), async (req, res) => {
+  const conn = await pool.getConnection();
   try {
-    const teacherId = Number(req.query.teacherId);
-    if (!Number.isFinite(teacherId)) {
-      return res.status(400).json({ error: 'Missing or invalid teacherId' });
-    }
-    if (!req.file) {
-      return res.status(400).json({ error: 'Missing file field "file"' });
+    const teacherId = req.session.teacher?.id;
+    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!req.file) return res.status(400).json({ error: 'Missing CSV file' });
+
+    // Parse CSV
+    const { assignments, students } = await parseTemplate(req.file.path);
+
+    // Start transaction
+    await conn.beginTransaction();
+
+    // 1. Record the upload
+    const [uploadResult] = await conn.query(
+      'INSERT INTO uploads (teacher_id, filename, notes) VALUES (?, ?, ?)',
+      [teacherId, req.file.filename, req.query.notes || '']
+    );
+    const uploadId = uploadResult.insertId;
+
+    // 2. Upsert assignments
+    const assignmentIdMap = {}; // name+date => assignment_id
+    for (const a of assignments) {
+      const [existing] = await conn.query(
+        'SELECT id FROM assignments WHERE teacher_id=? AND name=? AND due_date=?',
+        [teacherId, a.name, a.date]
+      );
+      if (existing.length > 0) {
+        assignmentIdMap[a.name] = existing[0].id;
+        // Optionally update max_points or upload_id if needed
+        await conn.query(
+          'UPDATE assignments SET max_points=?, upload_id=? WHERE id=?',
+          [a.max_points, uploadId, existing[0].id]
+        );
+      } else {
+        const [inserted] = await conn.query(
+          'INSERT INTO assignments (teacher_id, upload_id, name, due_date, max_points) VALUES (?, ?, ?, ?, ?)',
+          [teacherId, uploadId, a.name, a.date, a.max_points]
+        );
+        assignmentIdMap[a.name] = inserted.insertId;
+      }
     }
 
-    const summary = await importTemplate(req.file.path, teacherId, req.query.notes || '');
-    res.json({ ok: true, file: req.file.filename, summary });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ ok: false, error: e.message });
+    // 3. Upsert students and grades
+    for (const s of students) {
+      // Check student by email
+      let [studentRows] = await conn.query(
+        'SELECT id FROM students WHERE email=?',
+        [s.email]
+      );
+      let studentId;
+      if (studentRows.length > 0) {
+        studentId = studentRows[0].id;
+        await conn.query(
+          'UPDATE students SET first_name=?, last_name=? WHERE id=?',
+          [s.first_name, s.last_name, studentId]
+        );
+      } else {
+        const [inserted] = await conn.query(
+          'INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)',
+          [s.first_name, s.last_name, s.email]
+        );
+        studentId = inserted.insertId;
+      }
+
+      // Insert or overwrite grades
+      for (let i = 0; i < assignments.length; i++) {
+        const assignmentId = assignmentIdMap[assignments[i].name];
+        const gradeValue = s.grades[i];
+
+        // Check if grade exists
+        const [gradeRows] = await conn.query(
+          'SELECT id FROM grades WHERE student_id=? AND assignment_id=? AND teacher_id=?',
+          [studentId, assignmentId, teacherId]
+        );
+
+        if (gradeRows.length > 0) {
+          await conn.query(
+            'UPDATE grades SET grade=?, upload_id=? WHERE id=?',
+            [gradeValue, uploadId, gradeRows[0].id]
+          );
+        } else {
+          await conn.query(
+            'INSERT INTO grades (student_id, assignment_id, teacher_id, upload_id, grade) VALUES (?, ?, ?, ?, ?)',
+            [studentId, assignmentId, teacherId, uploadId, gradeValue]
+          );
+        }
+      }
+    }
+
+    await conn.commit();
+
+    res.json({
+      ok: true,
+      file: req.file.filename,
+      assignmentsCount: assignments.length,
+      studentsCount: students.length
+    });
+  } catch (err) {
+    await conn.rollback();
+    console.error(err);
+    res.status(500).json({ ok: false, error: err.message });
+  } finally {
+    conn.release();
+    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
   }
 });
 
