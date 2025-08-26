@@ -47,19 +47,14 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
-      <Navbar
-        brand="Grade Insight"
-        rightElements={
-          <>
-            <SearchBar onSearch={handleSearch} />
-            <GenericButton onClick={handleUpload}>Upload CSV</GenericButton>
-          </>
-        }
-      />
+      <Navbar brand="Grade Insight">
+        <SearchBar onSearch={handleSearch} />
+        <GenericButton onClick={handleUpload}>Upload CSV</GenericButton>
+      </Navbar>
 
       <BackgroundContainer image={null}> {/* No background image */}
         <StudentListTable
-          data={filteredStudents}   // pass filteredStudents to StudentListTable
+          data={filteredStudents}
           onSelectStudent={setSelectedStudent} // optional, for clicking rows
         />
 
