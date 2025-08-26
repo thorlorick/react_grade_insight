@@ -6,6 +6,7 @@ import SearchBar from "../components/SearchBar";
 import GenericButton from "../components/GenericButton";
 import StudentListTable from "../components/StudentListTable";
 import StudentDetailsPanel from "../components/StudentDetailsPanel";
+import styles from './Gradeinsight.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
 const TeacherPage = () => {
