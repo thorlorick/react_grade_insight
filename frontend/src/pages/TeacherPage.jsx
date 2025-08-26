@@ -45,12 +45,20 @@ const TeacherPage = () => {
     // Call your API to upload CSV, then refresh data
   };
 
+  const handleDownloadTemplate = () => {
+  const link = document.createElement("a");
+  link.href = "/upload_template.csv"; // file must be in /public
+  link.download = "upload_template.csv";
+  link.click();
+};
+
   return (
     <div className={styles.body}>
-      <Navbar brand="Grade Insight">
-        <SearchBar onSearch={handleSearch} />
-        <GenericButton onClick={handleUpload}>Upload CSV</GenericButton>
-      </Navbar>
+     <Navbar brand="Grade Insight">
+    <SearchBar onSearch={handleSearch} />
+    <GenericButton onClick={handleUpload}>Upload CSV</GenericButton>
+    <GenericButton onClick={handleDownloadTemplate}>Download Template</GenericButton>
+  </Navbar>
 
       <BackgroundContainer image={null}> {/* No background image */}
         <StudentListTable
