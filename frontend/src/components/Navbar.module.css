@@ -40,6 +40,12 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+ .navRight {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 
 
 /* Media Queries */
