@@ -1,8 +1,26 @@
-.searchBar {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  width: 100%;
-  max-width: 250px;
+.input {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a7f3d0;
+  padding: 0 16px;
+  height: 40px; /* match the button height */
+  font-size: 1rem;
+  border-radius: 8px;
+  outline: none;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  transition: all 0.3s ease;
+}
+
+.input::placeholder {
+  color: rgba(167, 243, 208, 0.6); /* match button color style */
+}
+
+.input:focus {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
 }
