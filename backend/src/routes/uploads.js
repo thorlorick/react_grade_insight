@@ -4,7 +4,7 @@ const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
 const { parseTemplate } = require('../csvParser');
-const { pool } = require('../db');
+const { pool } = require('../db'); // MySQL connection
 
 const router = express.Router();
 
@@ -50,7 +50,6 @@ router.post('/template', upload.single('csv'), async (req, res) => {
       );
       if (existing.length > 0) {
         assignmentIdMap[a.name] = existing[0].id;
-        // Optionally update max_points or upload_id if needed
         await conn.query(
           'UPDATE assignments SET max_points=?, upload_id=? WHERE id=?',
           [a.max_points, uploadId, existing[0].id]
@@ -91,7 +90,6 @@ router.post('/template', upload.single('csv'), async (req, res) => {
         const assignmentId = assignmentIdMap[assignments[i].name];
         const gradeValue = s.grades[i];
 
-        // Check if grade exists
         const [gradeRows] = await conn.query(
           'SELECT id FROM grades WHERE student_id=? AND assignment_id=? AND teacher_id=?',
           [studentId, assignmentId, teacherId]
