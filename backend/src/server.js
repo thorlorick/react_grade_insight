@@ -18,6 +18,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const { pool } = require('./db'); // your MySQL connection
 const authRoutes = require('./routes/auth');
 const teacherRoutes = require('./routes/teacher');
+const uploadRoutes = require('./routes/upload');
 
 const app = express();
 
@@ -61,6 +62,9 @@ app.use('/api/auth', authRoutes);
 
 // Teacher routes
 app.use('/api/teacher', teacherRoutes);
+
+// Upload routes
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
