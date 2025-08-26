@@ -9,6 +9,7 @@ const { pool } = require('../db'); // your MySQL connection
 const upload = multer({ dest: 'tmp/' });
 
 // === GET /api/teacher/data ===
+// In teacher.js, replace the current query with:
 router.get('/data', async (req, res) => {
   const teacherId = req.session?.teacher_id;
   if (!teacherId) {
@@ -18,24 +19,25 @@ router.get('/data', async (req, res) => {
   try {
     const [rows] = await pool.execute(
       `SELECT 
-        s.student_id,
+        s.id as student_id,
+        s.student_number,
         s.first_name,
         s.last_name,
         s.email,
-        a.assignment_id,
-        a.title AS assignment_name,
-        a.date AS assignment_date,
+        a.id as assignment_id,
+        a.name AS assignment_name,
+        a.due_date AS assignment_date,
         a.max_points,
-        g.score
+        g.grade as score
       FROM students s
-      JOIN grades g ON s.student_id = g.student_id
-      JOIN assignments a ON g.assignment_id = a.assignment_id
-      WHERE s.teacher_id = ?
-      ORDER BY s.last_name, a.date`,
+      JOIN grades g ON s.id = g.student_id
+      JOIN assignments a ON g.assignment_id = a.id
+      WHERE g.teacher_id = ?
+      ORDER BY s.last_name, a.due_date`,
       [teacherId]
     );
 
-    res.json(rows); // flat array
+    res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch teacher data' });
