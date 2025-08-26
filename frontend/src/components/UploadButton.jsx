@@ -1,59 +1,46 @@
-// src/components/UploadButton.jsx
-import React, { useRef, useState } from 'react';
+// frontend/components/UploadButton.jsx
+import React from 'react';
 
 const UploadButton = ({ onUploadSuccess }) => {
-  const fileInputRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Open file dialog
-  const handleClick = () => {
-    fileInputRef.current.click();
-  };
-
-  // Handle file selection
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setLoading(true);
-    setError(null);
-
     const formData = new FormData();
-    formData.append('csv', file);
+    formData.append('csv', file); // must match backend field
 
     try {
-      const res = await fetch('/api/upload', {
+      const res = await fetch('/api/uploads/template', {
         method: 'POST',
         body: formData,
-        credentials: 'include', // ensures session cookie is sent
+        credentials: 'include' // send session cookie
       });
-
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload failed');
-
-      setLoading(false);
-      if (onUploadSuccess) onUploadSuccess(data);
+      onUploadSuccess(data);
     } catch (err) {
-      setLoading(false);
-      setError(err.message);
+      onUploadSuccess({ ok: false, error: err.message });
     }
   };
 
   return (
-    <div>
-      <button onClick={handleClick} disabled={loading}>
-        {loading ? 'Uploading...' : 'Upload CSV'}
-      </button>
+    <label
+      style={{
+        display: 'inline-block',
+        padding: '0.5rem 1rem',
+        backgroundColor: '#181B80',
+        color: 'white',
+        borderRadius: '0.5rem',
+        cursor: 'pointer'
+      }}
+    >
+      Upload CSV
       <input
         type="file"
         accept=".csv"
-        ref={fileInputRef}
-        style={{ display: 'none' }}
         onChange={handleFileChange}
+        style={{ display: 'none' }}
       />
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-    </div>
+    </label>
   );
 };
 

@@ -1,15 +1,46 @@
-// src/pages/Uploads.jsx
-import React from "react";
+// frontend/pages/uploads.jsx
+import React, { useState } from 'react';
+import UploadButton from '../components/UploadButton';
 
-export default function Uploads() {
+const UploadPage = () => {
+  const [summary, setSummary] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleUploadSuccess = (data) => {
+    if (data.ok) {
+      setSummary({
+        assignments: data.assignmentsCount,
+        students: data.studentsCount,
+        file: data.file
+      });
+      setError(null);
+    } else {
+      setError(data.error || 'Upload failed');
+      setSummary(null);
+    }
+  };
+
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Upload Grades</h1>
-      <form>
-        <label htmlFor="file">Select CSV File:</label>
-        <input type="file" id="file" name="file" />
-        <button type="submit">Upload</button>
-      </form>
+    <div style={{ padding: '2rem' }}>
+      <h1>Upload CSV Template</h1>
+
+      <UploadButton onUploadSuccess={handleUploadSuccess} />
+
+      {summary && (
+        <div style={{ marginTop: '1rem', color: 'green' }}>
+          <p>File: {summary.file}</p>
+          <p>Assignments processed: {summary.assignments}</p>
+          <p>Students processed: {summary.students}</p>
+        </div>
+      )}
+
+      {error && (
+        <div style={{ marginTop: '1rem', color: 'red' }}>
+          <p>Error: {error}</p>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default UploadPage;

@@ -6,6 +6,7 @@ import SearchBar from "../components/SearchBar";
 import GenericButton from "../components/GenericButton";
 import StudentListTable from "../components/StudentListTable";
 import StudentDetailsPanel from "../components/StudentDetailsPanel";
+import UploadButton from "../components/UploadButton"; // NEW
 import styles from './Gradeinsight.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
@@ -13,6 +14,8 @@ const TeacherPage = () => {
   const [studentsData, setStudentsData] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [uploadSummary, setUploadSummary] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
 
   // Fetch data when component mounts
   useEffect(() => {
@@ -39,31 +42,53 @@ const TeacherPage = () => {
     setFilteredStudents(filtered);
   };
 
-  // Handle CSV upload (placeholder)
-  const handleUpload = async () => {
-    console.log("Upload CSV clicked");
-    // Call your API to upload CSV, then refresh data
-  };
-
   const handleDownloadTemplate = () => {
-  const link = document.createElement("a");
-  link.href = "/upload_template.csv"; // file must be in /public
-  link.download = "upload_template.csv";
-  link.click();
-};
+    const link = document.createElement("a");
+    link.href = "/upload_template.csv"; // file must be in /public
+    link.download = "upload_template.csv";
+    link.click();
+  };
 
   return (
     <div className={styles.body}>
-     <Navbar brand="Grade Insight">
-    <SearchBar onSearch={handleSearch} />
-    <GenericButton onClick={handleUpload}>Upload CSV</GenericButton>
-    <GenericButton onClick={handleDownloadTemplate}>Download Template</GenericButton>
-  </Navbar>
+      <Navbar brand="Grade Insight">
+        <SearchBar onSearch={handleSearch} />
 
-      <BackgroundContainer image={null}> {/* No background image */}
+        {/* UploadButton replaces old GenericButton */}
+        <UploadButton onUploadSuccess={(data) => {
+          if (data.ok) {
+            setUploadSummary(data);
+            setUploadError(null);
+            // Optionally refresh student data after upload
+          } else {
+            setUploadError(data.error);
+            setUploadSummary(null);
+          }
+        }} />
+
+        <GenericButton onClick={handleDownloadTemplate}>
+          Download Template
+        </GenericButton>
+      </Navbar>
+
+      {/* Show upload summary or error */}
+      {uploadSummary && (
+        <div style={{ padding: '1rem', color: 'green' }}>
+          <p>File: {uploadSummary.file}</p>
+          <p>Assignments processed: {uploadSummary.assignmentsCount}</p>
+          <p>Students processed: {uploadSummary.studentsCount}</p>
+        </div>
+      )}
+      {uploadError && (
+        <div style={{ padding: '1rem', color: 'red' }}>
+          <p>Error: {uploadError}</p>
+        </div>
+      )}
+
+      <BackgroundContainer image={null}>
         <StudentListTable
           data={filteredStudents}
-          onSelectStudent={setSelectedStudent} // optional, for clicking rows
+          onSelectStudent={setSelectedStudent}
         />
 
         {selectedStudent && (
