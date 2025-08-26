@@ -2,7 +2,7 @@
 export const getTeacherData = async () => {
   try {
     // Use your backend port (8082 for HTTP or 8083 for HTTPS)
-    const res = await fetch('http://www.gradeinsight.com:8082/api/teacher/data', { 
+    const res = await fetch('https://www.gradeinsight.com:8083/api/teacher/data', { 
       credentials: 'include' 
     });
     if (!res.ok) {
