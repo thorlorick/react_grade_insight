@@ -21,6 +21,23 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Add this GET route for template download (before your existing POST route)
+router.get('/template', (req, res) => {
+  const csvTemplate = `first_name,last_name,email,Math Quiz 1,Science Test,History Essay
+John,Doe,john.doe@email.com,85,92,78
+Jane,Smith,jane.smith@email.com,88,95,82
+Bob,Johnson,bob.johnson@email.com,75,88,90`;
+
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="grade_upload_template.csv"');
+  res.send(csvTemplate);
+});
+
+// Your existing POST route stays exactly the same
+router.post('/template', upload.single('csv'), async (req, res) => {
+  // ... your existing upload code
+});
+
 router.post('/template', upload.single('csv'), async (req, res) => {
   const conn = await pool.getConnection();
   try {
