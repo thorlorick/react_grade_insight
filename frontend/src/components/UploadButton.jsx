@@ -11,7 +11,7 @@ const UploadButton = ({ onUploadSuccess }) => {
     formData.append('csv', file); // must match backend
 
     try {
-      const res = await fetch('/api/uploads/template', {
+      const res = await fetch('https://gradeinsight.com:8083/api/uploads/template', {
         method: 'POST',
         body: formData,
         credentials: 'include'
