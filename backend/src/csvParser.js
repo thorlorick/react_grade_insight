@@ -1,43 +1,55 @@
-const path = require('path');
 const fs = require('fs');
-const express = require('express');
-const multer = require('multer');
-const { parseTemplate } = require('../csvParser');
-const { pool } = require('../db'); // MySQL connection
+const csv = require('csv-parser');
 
-const router = express.Router();
+/**
+ * Parses a CSV template file into assignments and students.
+ * Expects CSV like:
+ * last_name,first_name,email,Math Test,Essay 1,Science Lab
+ * DATE,-,-,2025-06-01,2025-06-03,2025-06-05
+ * POINTS,-,-,100,98,10
+ * Smith,Alice,alice.smith@example.com,85,90,7
+ */
+async function parseTemplate(filePath) {
+  const rows = [];
 
-const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => rows.push(row))
+      .on('end', () => {
+        try {
+          if (rows.length < 3) throw new Error('CSV must have at least 3 rows');
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, file, cb) => {
-    const safe = file.originalname.replace(/[^\w.\-]+/g, '_');
-    cb(null, `${Date.now()}_${safe}`);
-  }
-});
-const upload = multer({ storage });
+          // First row: assignment names
+          const headers = Object.keys(rows[0]);
+          const assignmentNames = headers.slice(3); // skip last_name, first_name, email
 
-router.post('/template', upload.single('csv'), async (req, res) => {
-  try {
-    const teacherId = req.session.teacher?.id;
-    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
-    if (!req.file) return res.status(400).json({ error: 'Missing CSV file' });
+          // Second row: dates
+          const dateRow = rows[0]; // usually the first row in your CSV
+          const dateValues = rows[1]; // DATE row
+          const pointsRow = rows[2]; // POINTS row
 
-    // Parse CSV into structured assignments/students
-    const { assignments, students } = await parseTemplate(req.file.path);
+          const assignments = assignmentNames.map((name, i) => ({
+            name,
+            date: dateValues[name],
+            max_points: parseFloat(pointsRow[name])
+          }));
 
-    // TODO: Insert into database (uploads, assignments, students, grades)
-    // For now, just return parsed structure
-    res.json({ ok: true, assignments, students });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ ok: false, error: e.message });
-  } finally {
-    // Clean up file
-    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-  }
-});
+          // Remaining rows: students
+          const students = rows.slice(3).map((r) => ({
+            last_name: r['last_name'],
+            first_name: r['first_name'],
+            email: r['email'],
+            grades: assignmentNames.map((a) => parseFloat(r[a]))
+          }));
 
-module.exports = router;
+          resolve({ assignments, students });
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .on('error', reject);
+  });
+}
+
+module.exports = { parseTemplate };
