@@ -1,15 +1,4 @@
-// backend/src/server.js
-
 require('dotenv').config();
-
-// Add these debug lines:
-console.log('=== ENVIRONMENT DEBUG ===');
-console.log('Current directory:', process.cwd());
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('SESSION_SECRET exists:', !!process.env.SESSION_SECRET);
-console.log('SESSION_SECRET length:', process.env.SESSION_SECRET ? process.env.SESSION_SECRET.length : 0);
-console.log('========================');
-
 const express = require('express');
 const https = require('https');
 const cors = require('cors');
@@ -18,134 +7,59 @@ const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const { pool } = require('./db'); // Import your db connection
-
-// Import your existing auth routes
+const { pool } = require('./db'); // your MySQL connection
 const authRoutes = require('./routes/auth');
+const teacherRoutes = require('./routes/teacher');
 
 const app = express();
 
-// SSL Certificate configuration
+// SSL Certificate
 const sslOptions = {
   key: fs.readFileSync(path.join(__dirname, '../certs/privkey.pem')),
   cert: fs.readFileSync(path.join(__dirname, '../certs/fullchain.pem'))
 };
 
-// Create session store using your MySQL connection
+// Session store
 const sessionStore = new MySQLStore({
-  // Use existing connection pool
   connectionLimit: 1,
-  createDatabaseTable: true, // Auto-creates sessions table
+  createDatabaseTable: true,
   schema: {
     tableName: 'sessions',
-    columnNames: {
-      session_id: 'session_id',
-      expires: 'expires',
-      data: 'data'
-    }
+    columnNames: { session_id: 'session_id', expires: 'expires', data: 'data' }
   }
 }, pool);
 
-// Enable CORS for all origins (safe for local testing)
-app.use(cors({
-  origin: true, // Allow all origins for development
-  credentials: true // Important for sessions
-}));
-
+// Middleware
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session middleware - MUST come after CORS and before routes
+// Session
 app.use(session({
   key: 'grade_insight_session',
   secret: process.env.SESSION_SECRET,
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
-  rolling: true, // Reset expiration on activity
-  cookie: {
-    maxAge: 4 * 60 * 60 * 1000, // 4 hours
-    httpOnly: true, // Security: no client-side access
-    secure: true // Set to true for HTTPS
-  }
+  rolling: true,
+  cookie: { maxAge: 4*60*60*1000, httpOnly: true, secure: true }
 }));
 
-// Serve frontend static files
+// Serve frontend
 app.use(express.static(path.join(__dirname, '../../frontend')));
 
-// Add your auth routes
+// Auth routes
 app.use('/api/auth', authRoutes);
 
-// Set up multer for file uploads
-const upload = multer({
-  dest: path.join(__dirname, '../../uploads/')
-});
+// Teacher routes
+app.use('/api/teacher', teacherRoutes);
 
-// Updated CSV upload route - now uses session
-app.post('/api/uploads/template', upload.single('file'), (req, res) => {
-  // Check if user is logged in
-  if (!req.session.teacher_id) {
-    return res.status(401).json({ 
-      ok: false, 
-      error: 'Must be logged in to upload files' 
-    });
-  }
+// Health check
+app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-  if (!req.file) {
-    return res.status(400).json({ ok: false, error: 'No file uploaded' });
-  }
-
-  const filename = req.file.originalname;
-  const summary = {
-    uploadedAt: new Date(),
-    teacherId: req.session.teacher_id, // Now from session - secure!
-    teacherName: req.session.teacher_name,
-    notes: req.query.notes || null
-  };
-
-  console.log('File uploaded:', filename, summary);
-  return res.json({ ok: true, file: filename, summary });
-});
-
-// Add logout route
-app.post('/api/auth/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Could not log out' });
-    }
-    res.clearCookie('grade_insight_session');
-    res.json({ message: 'Logged out successfully' });
-  });
-});
-
-// Add session check route for frontend
-app.get('/api/auth/me', (req, res) => {
-  if (req.session.teacher_id) {
-    res.json({
-      isLoggedIn: true,
-      teacher_id: req.session.teacher_id,
-      teacher_name: req.session.teacher_name,
-      teacher_email: req.session.teacher_email
-    });
-  } else {
-    res.json({ isLoggedIn: false });
-  }
-});
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-// Start both HTTP and HTTPS servers
+// Start servers
 const HTTP_PORT = process.env.PORT || 8082;
 const HTTPS_PORT = process.env.HTTPS_PORT || 8083;
 
-// Keep HTTP server running (for backward compatibility during transition)
-app.listen(HTTP_PORT, '0.0.0.0', () => {
-  console.log(`HTTP API listening on :${HTTP_PORT}`);
-});
-
-// Start HTTPS server
-https.createServer(sslOptions, app).listen(HTTPS_PORT, '0.0.0.0', () => {
-  console.log(`HTTPS API listening on :${HTTPS_PORT}`);
-});
+app.listen(HTTP_PORT, '0.0.0.0', () => console.log(`HTTP API listening on :${HTTP_PORT}`));
+https.createServer(sslOptions, app).listen(HTTPS_PORT, '0.0.0.0', () => console.log(`HTTPS API listening on :${HTTPS_PORT}`));
