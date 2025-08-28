@@ -1,0 +1,283 @@
+/* src/components/StudentDashboardTable.module.css */
+
+.tableContainer {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  overflow: hidden;
+}
+
+.tableHeader {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tableHeader h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.gradeStats {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.loadingMessage,
+.noDataMessage {
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+  font-size: 18px;
+}
+
+.loadingMessage::after {
+  content: '';
+  animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60% { content: '...'; }
+  80%, 100% { content: ''; }
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 16px 12px;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tableRow {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background-color: #f8f9fa;
+}
+
+.table td {
+  padding: 16px 12px;
+  vertical-align: top;
+}
+
+/* Assignment Cell */
+.assignmentCell {
+  min-width: 200px;
+}
+
+.assignmentName {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.assignmentType {
+  font-size: 12px;
+  color: #6c757d;
+  background-color: #e9ecef;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* Subject Cell */
+.subjectCell {
+  min-width: 120px;
+  font-weight: 500;
+  color: #495057;
+}
+
+/* Grade Cell */
+.gradeCell {
+  min-width: 100px;
+  text-align: center;
+}
+
+.gradeValue {
+  font-weight: 700;
+  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  min-width: 60px;
+}
+
+.percentage {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+/* Grade Colors */
+.gradeA {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.gradeB {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #b8daff;
+}
+
+.gradeC {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.gradeD {
+  background-color: #ffeaa7;
+  color: #b8860b;
+  border: 1px solid #fdcb6e;
+}
+
+.gradeF {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.notGraded {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+.defaultGrade {
+  background-color: #e9ecef;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+/* Teacher Cell */
+.teacherCell {
+  min-width: 150px;
+  color: #495057;
+}
+
+/* Date Cells */
+.dateCell {
+  min-width: 100px;
+  color: #6c757d;
+  font-size: 13px;
+}
+
+/* Submission Status */
+.submittedCell {
+  min-width: 120px;
+}
+
+.submissionStatus {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.submitted {
+  color: #28a745;
+}
+
+.notSubmitted {
+  color: #dc3545;
+}
+
+.submittedDate {
+  font-size: 11px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+/* Feedback Cell */
+.feedbackCell {
+  min-width: 200px;
+  max-width: 250px;
+}
+
+.feedbackText {
+  color: #495057;
+  line-height: 1.4;
+  cursor: help;
+}
+
+.noFeedback {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tableContainer {
+    margin: 10px;
+  }
+  
+  .tableHeader {
+    padding: 16px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .tableHeader h2 {
+    font-size: 20px;
+  }
+  
+  .table th,
+  .table td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .assignmentName {
+    font-size: 13px;
+  }
+  
+  .gradeValue {
+    font-size: 14px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table th,
+  .table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  .assignmentCell,
+  .feedbackCell {
+    min-width: 150px;
+  }
+  
+  .gradeCell {
+    min-width: 80px;
+  }
+}
