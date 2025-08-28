@@ -95,8 +95,6 @@ INSERT INTO teachers (first_name, last_name, email, password_hash, school_name) 
 
 -- Verify the setup
 SELECT 'Database reset complete!' AS status;
-SELECT 'Test teacher created with:' AS info;
-SELECT name, email, 'Password: testpass123' AS credentials FROM teachers WHERE email = 'teacher@test.com';
 
 -- Show table structure for verification
 SHOW TABLES;
