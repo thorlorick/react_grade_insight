@@ -91,14 +91,16 @@ const TeacherPage = () => {
       )}
 
       <BackgroundContainer image={null}>
-        <StudentListTable
-          data={filteredStudents}
-          onSelectStudent={setSelectedStudent}
-        />
+        <LoginContainer>
+            <StudentListTable
+              data={filteredStudents}
+              onSelectStudent={setSelectedStudent}
+  />
 
-        {selectedStudent && (
-          <StudentDetailsPanel student={selectedStudent} />
+              {selectedStudent && (
+           <StudentDetailsPanel student={selectedStudent} />
         )}
+      </LoginContainer>
       </BackgroundContainer>
     </div>
   );
