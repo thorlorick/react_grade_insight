@@ -1,0 +1,259 @@
+/* TeacherDashboardTable.module.css */
+
+.container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 14px;
+  z-index: -1;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+/* Header Styles */
+.headerCell {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  color: #7dd3fc;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(125, 211, 252, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  user-select: none;
+}
+
+.headerCell:hover {
+  background: rgba(125, 211, 252, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.staticHeader {
+  background: rgba(0, 0, 0, 0.4);
+  min-width: 150px;
+}
+
+.staticHeader:first-child {
+  min-width: 180px;
+}
+
+.dynamicHeader {
+  min-width: 120px;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sortIcon {
+  font-size: 0.75rem;
+  color: #7dd3fc;
+  opacity: 0.8;
+}
+
+/* Row Styles */
+.row {
+  transition: all 0.2s ease;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.row:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Cell Styles */
+.cell {
+  padding: 12px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.staticCell {
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.2);
+  position: sticky;
+  left: 0;
+  z-index: 5;
+}
+
+.staticCell:first-child {
+  left: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.staticCell:nth-child(2) {
+  left: 180px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gradeCell {
+  text-align: center;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  font-size: 0.8rem;
+  min-width: 80px;
+}
+
+.missingGrade {
+  background: rgba(239, 68, 68, 0.2);
+  border-left: 3px solid rgba(239, 68, 68, 0.6);
+  position: relative;
+}
+
+.missingGrade::after {
+  content: '-';
+  color: rgba(239, 68, 68, 0.7);
+  font-weight: bold;
+}
+
+/* Loading and Empty States */
+.loading, .emptyState {
+  padding: 60px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.loading {
+  color: #7dd3fc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    border-radius: 8px;
+    margin: 0 -16px;
+  }
+  
+  .headerCell, .cell {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .staticCell:nth-child(2) {
+    left: 140px;
+  }
+  
+  .staticCell:first-child {
+    min-width: 140px;
+  }
+  
+  .dynamicHeader {
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerCell, .cell {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .staticCell:first-child {
+    min-width: 120px;
+  }
+  
+  .staticCell:nth-child(2) {
+    left: 120px;
+  }
+  
+  .dynamicHeader {
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .gradeCell {
+    font-size: 0.7rem;
+  }
+}
+
+/* Scrollbar Styling */
+.tableWrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tableWrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: rgba(125, 211, 252, 0.3);
+  border-radius: 4px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 211, 252, 0.5);
+}
+
+/* Tooltip Enhancement for Assignment Headers */
+.dynamicHeader {
+  position: relative;
+}
+
+.dynamicHeader:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  white-space: nowrap;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
