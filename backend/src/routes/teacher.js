@@ -6,7 +6,7 @@ const router = express.Router();
 
 // === GET /api/teacher/data ===
 router.get('/data', async (req, res) => {
-  const teacherId = req.session?.teacher_id;
+  const teacherId = req.session.teacher_id;
   if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {

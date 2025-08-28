@@ -37,7 +37,7 @@ Johnson,bob,bobjohnson@email.com,75,88,90`;
 router.post('/template', upload.single('csv'), async (req, res) => {
   const conn = await pool.getConnection();
   try {
-    const teacherId = req.session.teacher.id;
+    const teacherId = req.session.teacher_id;
     if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
     if (!req.file) return res.status(400).json({ error: 'Missing CSV file' });
 
