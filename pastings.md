@@ -484,3 +484,6 @@ still not sure about the "logic" or the philosophy of the login system
 
 # database issues  
 I have the teacher logged in, and session stored (i think) but I can't seem to make the csv uploads actually upload.
+
+# database connected 
+so far it's working...i have a test teacher working and the upload is working. I need to make the table a component and then style it
