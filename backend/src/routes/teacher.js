@@ -9,18 +9,14 @@ const { pool } = require('../db'); // your MySQL connection
 const upload = multer({ dest: 'tmp/' });
 
 // === GET /api/teacher/data ===
-// In teacher.js, replace the current query with:
 router.get('/data', async (req, res) => {
   const teacherId = req.session?.teacher_id;
-  if (!teacherId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const [rows] = await pool.execute(
       `SELECT 
         s.id as student_id,
-        s.student_number,
         s.first_name,
         s.last_name,
         s.email,
@@ -57,40 +53,40 @@ router.post('/upload-csv', upload.single('file'), async (req, res) => {
     .on('end', async () => {
       try {
         for (const row of results) {
-          // 1. Insert/update student
+          // 1. Insert/update student by email
           const [studentResult] = await pool.execute(
-            `INSERT INTO students (student_number, first_name, last_name, email, teacher_id)
-             VALUES (?, ?, ?, ?, ?)
-             ON DUPLICATE KEY UPDATE first_name=VALUES(first_name), last_name=VALUES(last_name), email=VALUES(email)`,
-            [row.student_number, row.first_name, row.last_name, row.email, teacherId]
+            `INSERT INTO students (first_name, last_name, email)
+             VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE first_name=VALUES(first_name), last_name=VALUES(last_name)`,
+            [row.first_name, row.last_name, row.email]
           );
 
           const [[student]] = await pool.execute(
-            `SELECT student_id FROM students WHERE student_number=? AND teacher_id=?`,
-            [row.student_number, teacherId]
+            `SELECT id FROM students WHERE email=?`,
+            [row.email]
           );
-          const studentId = student.student_id;
+          const studentId = student.id;
 
           // 2. Insert/update assignment
           const [assignmentResult] = await pool.execute(
-            `INSERT INTO assignments (title, date, max_points, teacher_id)
+            `INSERT INTO assignments (name, due_date, max_points, teacher_id)
              VALUES (?, ?, ?, ?)
-             ON DUPLICATE KEY UPDATE max_points=VALUES(max_points), date=VALUES(date)`,
-            [row.assignment_title, row.date, row.max_points, teacherId]
+             ON DUPLICATE KEY UPDATE max_points=VALUES(max_points), due_date=VALUES(due_date)`,
+            [row.assignment_name, row.assignment_date, row.max_points, teacherId]
           );
 
           const [[assignment]] = await pool.execute(
-            `SELECT assignment_id FROM assignments WHERE title=? AND teacher_id=?`,
-            [row.assignment_title, teacherId]
+            `SELECT id FROM assignments WHERE name=? AND teacher_id=?`,
+            [row.assignment_name, teacherId]
           );
-          const assignmentId = assignment.assignment_id;
+          const assignmentId = assignment.id;
 
           // 3. Insert/update grade
           await pool.execute(
-            `INSERT INTO grades (student_id, assignment_id, score)
-             VALUES (?, ?, ?)
-             ON DUPLICATE KEY UPDATE score=VALUES(score)`,
-            [studentId, assignmentId, row.score]
+            `INSERT INTO grades (student_id, assignment_id, teacher_id, grade)
+             VALUES (?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE grade=VALUES(grade)`,
+            [studentId, assignmentId, teacherId, row.grade]
           );
         }
 
