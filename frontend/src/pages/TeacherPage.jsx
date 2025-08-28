@@ -4,16 +4,15 @@ import Navbar from "../components/Navbar";
 import BackgroundContainer from "../components/BackgroundContainer";
 import SearchBar from "../components/SearchBar";
 import GenericButton from "../components/GenericButton";
-import StudentListTable from "../components/StudentListTable";
-import StudentDetailsPanel from "../components/StudentDetailsPanel";
-import UploadButton from "../components/UploadButton"; // NEW
+import TeacherDashboardTable from "../components/TeacherDashboardTable";
+import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
 const TeacherPage = () => {
-  const [studentsData, setStudentsData] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [teacherData, setTeacherData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [uploadSummary, setUploadSummary] = useState(null);
   const [uploadError, setUploadError] = useState(null);
 
@@ -21,11 +20,14 @@ const TeacherPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        setLoading(true);
         const data = await getTeacherData();
-        setStudentsData(data);
-        setFilteredStudents(data);
+        setTeacherData(data);
+        setFilteredData(data);
       } catch (error) {
         console.error("Failed to fetch teacher data:", error);
+      } finally {
+        setLoading(false);
       }
     }
     fetchData();
@@ -33,20 +35,39 @@ const TeacherPage = () => {
 
   // Handle search input
   const handleSearch = (query) => {
-    const filtered = studentsData.filter(
-      (student) =>
-        student.first_name.toLowerCase().includes(query.toLowerCase()) ||
-        student.last_name.toLowerCase().includes(query.toLowerCase()) ||
-        student.email.toLowerCase().includes(query.toLowerCase())
+    if (!query.trim()) {
+      setFilteredData(teacherData);
+      return;
+    }
+
+    const filtered = teacherData.filter(
+      (row) =>
+        row.first_name.toLowerCase().includes(query.toLowerCase()) ||
+        row.last_name.toLowerCase().includes(query.toLowerCase()) ||
+        row.email.toLowerCase().includes(query.toLowerCase()) ||
+        row.assignment_name.toLowerCase().includes(query.toLowerCase())
     );
-    setFilteredStudents(filtered);
+    setFilteredData(filtered);
   };
 
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
-    link.href = "/upload_template.csv"; // file must be in /public
+    link.href = "/upload_template.csv";
     link.download = "upload_template.csv";
     link.click();
+  };
+
+  const refreshData = async () => {
+    try {
+      setLoading(true);
+      const data = await getTeacherData();
+      setTeacherData(data);
+      setFilteredData(data);
+    } catch (error) {
+      console.error("Failed to refresh teacher data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,21 +75,19 @@ const TeacherPage = () => {
       <Navbar brand="Grade Insight">
         <SearchBar onSearch={handleSearch} />
 
-        {/* UploadButton replaces old GenericButton */}
-        <UploadButton onUploadSuccess={(data) => {
-          if (data.ok) {
-            setUploadSummary(data);
-            setUploadError(null);
-            // Optionally refresh student data after upload
-          } else {
-            setUploadError(data.error);
-            setUploadSummary(null);
-          }
-        }} 
-         refreshStudents={(refreshed) => {
-            setStudentsData(refreshed);
-            setFilteredStudents(refreshed);
-            }}
+        <UploadButton 
+          onUploadSuccess={(data) => {
+            if (data.ok) {
+              setUploadSummary(data);
+              setUploadError(null);
+              // Refresh data after successful upload
+              refreshData();
+            } else {
+              setUploadError(data.error);
+              setUploadSummary(null);
+            }
+          }} 
+          refreshStudents={refreshData}
         />
 
         <GenericButton onClick={handleDownloadTemplate}>
@@ -76,30 +95,27 @@ const TeacherPage = () => {
         </GenericButton>
       </Navbar>
 
-      {/* Show upload summary or error */}
+      {/* Upload feedback */}
       {uploadSummary && (
-        <div style={{ padding: '1rem', color: 'green' }}>
+        <div className={styles.uploadSuccess}>
+          <p>✅ Upload successful!</p>
           <p>File: {uploadSummary.file}</p>
           <p>Assignments processed: {uploadSummary.assignmentsCount}</p>
           <p>Students processed: {uploadSummary.studentsCount}</p>
         </div>
       )}
+      
       {uploadError && (
-        <div style={{ padding: '1rem', color: 'red' }}>
-          <p>Error: {uploadError}</p>
+        <div className={styles.uploadError}>
+          <p>❌ Upload failed: {uploadError}</p>
         </div>
       )}
 
-     
       <div className={styles.pageWrapper}>
-        <StudentListTable
-          data={filteredStudents}
-          onSelectStudent={setSelectedStudent}
+        <TeacherDashboardTable 
+          data={filteredData} 
+          loading={loading}
         />
-
-        {selectedStudent && (
-          <StudentDetailsPanel student={selectedStudent} />
-        )}
       </div>
     </div>
   );
