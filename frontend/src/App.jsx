@@ -8,6 +8,7 @@ import './App.css';
 // Import your pages
 import Gradeinsight from './pages/Gradeinsight';
 import TeacherLogin from './pages/TeacherLogin';
+import StudentLogin from './pages/StudentLogin';
 import Signup from './pages/Signup'; 
 import Skeleton from './pages/Skeleton'; 
 import TeacherPage from './pages/TeacherPage'; 
@@ -24,6 +25,7 @@ const App = () => {
         {/* Pages */}
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/teacherLogin" element={<TeacherLogin />} />
+        <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/skeleton" element={<Skeleton />} />
         <Route path="/teacher" element={<TeacherPage />} />
