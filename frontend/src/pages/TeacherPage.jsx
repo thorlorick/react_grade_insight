@@ -7,7 +7,7 @@ import GenericButton from "../components/GenericButton";
 import StudentListTable from "../components/StudentListTable";
 import StudentDetailsPanel from "../components/StudentDetailsPanel";
 import UploadButton from "../components/UploadButton"; // NEW
-import styles from './Gradeinsight.module.css';
+import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
 const TeacherPage = () => {
