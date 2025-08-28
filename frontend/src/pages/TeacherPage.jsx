@@ -64,7 +64,12 @@ const TeacherPage = () => {
             setUploadError(data.error);
             setUploadSummary(null);
           }
-        }} />
+        }} 
+         refreshStudents={(refreshed) => {
+            setStudentsData(refreshed);
+            setFilteredStudents(refreshed);
+            }}
+        />
 
         <GenericButton onClick={handleDownloadTemplate}>
           Download Template
