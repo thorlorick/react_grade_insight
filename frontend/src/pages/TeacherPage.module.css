@@ -312,7 +312,7 @@
 .StudentListTable {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(250, 248, 141, 0.05);
   backdrop-filter: blur(8px);
   border-radius: 12px;
   overflow: hidden;
