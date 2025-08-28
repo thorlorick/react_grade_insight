@@ -1,3 +1,17 @@
+// backend/src/routes/student.js
+const express = require('express');
+const { pool } = require('../db');
+
+const router = express.Router();
+
+// Simple auth check function (no separate middleware needed)
+const checkStudentAuth = (req, res, next) => {
+  if (!req.session.student_id) {
+    return res.status(401).json({ error: 'Student authentication required' });
+  }
+  next();
+};
+
 // === GET /api/student/data ===
 router.get('/data', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
