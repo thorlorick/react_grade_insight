@@ -11,6 +11,7 @@ import TeacherLogin from './pages/TeacherLogin';
 import Signup from './pages/Signup'; 
 import Skeleton from './pages/Skeleton'; 
 import TeacherPage from './pages/TeacherPage'; 
+import StudentPage from './pages/StudentPage';
 
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/skeleton" element={<Skeleton />} />
         <Route path="/teacher" element={<TeacherPage />} />
         <Route path="/TeacherPage" element={<TeacherPage />} />
+        <Route path="/StudentPage" element={<StudentPage />} />
 
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />

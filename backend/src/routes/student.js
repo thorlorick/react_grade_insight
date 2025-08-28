@@ -1,0 +1,102 @@
+// backend/src/routes/student.js
+const express = require('express');
+const { pool } = require('../db');
+
+const router = express.Router();
+
+// === GET /api/student/data ===
+router.get('/data', async (req, res) => {
+  const studentId = req.session.student_id;
+  if (!studentId) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    const [rows] = await pool.execute(
+      `SELECT 
+        a.id AS assignment_id,
+        a.name AS assignment_name,
+        a.due_date,
+        a.max_points,
+        a.subject,
+        a.assignment_type,
+        g.grade,
+        g.submitted,
+        g.date_submitted,
+        g.feedback,
+        CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+        CASE 
+          WHEN g.grade IS NOT NULL AND a.max_points > 0 
+          THEN ROUND((g.grade / a.max_points) * 100, 1)
+          ELSE NULL 
+        END AS percentage
+      FROM assignments a
+      LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?
+      LEFT JOIN teachers t ON a.teacher_id = t.id
+      ORDER BY a.due_date DESC, a.name`,
+      [studentId]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching student data:', err);
+    res.status(500).json({ error: 'Failed to fetch student data' });
+  }
+});
+
+// === GET /api/student/profile ===
+router.get('/profile', async (req, res) => {
+  const studentId = req.session.student_id;
+  if (!studentId) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    const [rows] = await pool.execute(
+      `SELECT 
+        id,
+        first_name,
+        last_name,
+        email,
+        grade_level,
+        student_number
+      FROM students 
+      WHERE id = ?`,
+      [studentId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Error fetching student profile:', err);
+    res.status(500).json({ error: 'Failed to fetch student profile' });
+  }
+});
+
+// === GET /api/student/summary ===
+router.get('/summary', async (req, res) => {
+  const studentId = req.session.student_id;
+  if (!studentId) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    const [rows] = await pool.execute(
+      `SELECT 
+        COUNT(*) AS total_assignments,
+        COUNT(g.grade) AS graded_assignments,
+        COUNT(CASE WHEN g.submitted = 1 THEN 1 END) AS submitted_assignments,
+        ROUND(AVG(CASE 
+          WHEN g.grade IS NOT NULL AND a.max_points > 0 
+          THEN (g.grade / a.max_points) * 100 
+        END), 1) AS overall_average
+      FROM assignments a
+      LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?`,
+      [studentId]
+    );
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Error fetching student summary:', err);
+    res.status(500).json({ error: 'Failed to fetch student summary' });
+  }
+});
+
+module.exports = router;

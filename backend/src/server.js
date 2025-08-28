@@ -19,6 +19,8 @@ const { pool } = require('./db'); // your MySQL connection
 const authRoutes = require('./routes/auth');
 const teacherRoutes = require('./routes/teacher');
 const uploadRoutes = require('./routes/uploads');
+const studentRoutes = require('./routes/student');
+
 
 const app = express();
 
@@ -62,6 +64,9 @@ app.use('/api/auth', authRoutes);
 
 // Teacher routes
 app.use('/api/teacher', teacherRoutes);
+
+// Student routes
+app.use('/api/student', require('./routes/student'));
 
 // Upload routes
 app.use('/api/uploads', uploadRoutes);
