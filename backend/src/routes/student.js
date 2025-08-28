@@ -1,13 +1,6 @@
-// backend/src/routes/student.js
-const express = require('express');
-const { pool } = require('../db');
-
-const router = express.Router();
-
 // === GET /api/student/data ===
-router.get('/data', async (req, res) => {
+router.get('/data', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-  if (!studentId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const [rows] = await pool.execute(
@@ -43,9 +36,8 @@ router.get('/data', async (req, res) => {
 });
 
 // === GET /api/student/profile ===
-router.get('/profile', async (req, res) => {
+router.get('/profile', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-  if (!studentId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const [rows] = await pool.execute(
@@ -73,9 +65,8 @@ router.get('/profile', async (req, res) => {
 });
 
 // === GET /api/student/summary ===
-router.get('/summary', async (req, res) => {
+router.get('/summary', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-  if (!studentId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const [rows] = await pool.execute(
