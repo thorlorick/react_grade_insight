@@ -90,8 +90,8 @@ CREATE TABLE login_attempt (
 
 -- Step 3: Insert a test teacher account
 -- Password: 'testpass123' (hashed with bcrypt)
-INSERT INTO teachers (name, email, password_hash) VALUES 
-('Test Teacher', 'teacher@test.com', '$2b$10$k5Y1hXWP3gOdXjz5kOgN0.YFrVOT2pE8FjMCH5FzMt9w4sP4Cs3kG');
+INSERT INTO teachers (first_name, last_name, email, password_hash, school_name) VALUES 
+('Test', 'Teacher', 'teacher@test.com', '$2b$10$k5Y1hXWP3gOdXjz5kOgN0.YFrVOT2pE8FjMCH5FzMt9w4sP4Cs3kG', 'Test High School');
 
 -- Verify the setup
 SELECT 'Database reset complete!' AS status;
