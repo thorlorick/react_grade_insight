@@ -54,27 +54,31 @@ router.post('/template', upload.single('csv'), async (req, res) => {
     );
     const uploadId = uploadResult.insertId;
 
-    // 2. Upsert assignments
-    const assignmentIdMap = {}; // name+date => assignment_id
-    for (const a of assignments) {
-      const [existing] = await conn.query(
-        'SELECT id FROM assignments WHERE teacher_id=? AND name=? AND due_date=?',
-        [teacherId, a.name, a.date]
-      );
-      if (existing.length > 0) {
-        assignmentIdMap[a.name] = existing[0].id;
-        await conn.query(
-          'UPDATE assignments SET max_points=?, upload_id=? WHERE id=?',
-          [a.max_points, uploadId, existing[0].id]
-        );
-      } else {
-        const [inserted] = await conn.query(
-          'INSERT INTO assignments (teacher_id, upload_id, name, due_date, max_points) VALUES (?, ?, ?, ?, ?)',
-          [teacherId, uploadId, a.name, a.date, a.max_points]
-        );
-        assignmentIdMap[a.name] = inserted.insertId;
-      }
-    }
+   // 2. Upsert assignments
+const assignmentIdMap = {}; // name => assignment_id
+for (const a of assignments) {
+  const dueDate = a.date || null; // convert empty/undefined to null
+
+  const [existing] = await conn.query(
+    'SELECT id FROM assignments WHERE teacher_id=? AND name=? AND (due_date=? OR (due_date IS NULL AND ? IS NULL))',
+    [teacherId, a.name, dueDate, dueDate]
+  );
+
+  if (existing.length > 0) {
+    assignmentIdMap[a.name] = existing[0].id;
+    await conn.query(
+      'UPDATE assignments SET max_points=?, upload_id=?, due_date=? WHERE id=?',
+      [a.max_points, uploadId, dueDate, existing[0].id]
+    );
+  } else {
+    const [inserted] = await conn.query(
+      'INSERT INTO assignments (teacher_id, upload_id, name, due_date, max_points) VALUES (?, ?, ?, ?, ?)',
+      [teacherId, uploadId, a.name, dueDate, a.max_points]
+    );
+    assignmentIdMap[a.name] = inserted.insertId;
+  }
+}
+
 
     // 3. Upsert students and grades
     for (const s of students) {
