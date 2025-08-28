@@ -23,10 +23,10 @@ const upload = multer({ storage });
 
 // Add this GET route for template download (before your existing POST route)
 router.get('/template', (req, res) => {
-  const csvTemplate = `first_name,last_name,email,Math Quiz 1,Science Test,History Essay
-John,Doe,john.doe@email.com,85,92,78
-Jane,Smith,jane.smith@email.com,88,95,82
-Bob,Johnson,bob.johnson@email.com,75,88,90`;
+  const csvTemplate = `last_name,first_name,email,Math Quiz 1,Science Test,History Essay
+Doe,John,john.doe@email.com,85,92,78
+Smith,Jane,jsmith@email.com,88,95,82
+Johnson,bob,bobjohnson@email.com,75,88,90`;
 
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename="grade_upload_template.csv"');
@@ -53,8 +53,8 @@ router.post('/template', upload.single('csv'), async (req, res) => {
 
     // 1. Record the upload
     const [uploadResult] = await conn.query(
-      'INSERT INTO uploads (teacher_id, filename, notes) VALUES (?, ?, ?)',
-      [teacherId, req.file.filename, req.query.notes || '']
+      'INSERT INTO uploads (teacher_id, filename) VALUES (?, ?)',
+      [teacherId, req.file.filename || '']
     );
     const uploadId = uploadResult.insertId;
 
