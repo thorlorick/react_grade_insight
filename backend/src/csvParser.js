@@ -26,7 +26,10 @@ async function parseTemplate(filePath) {
         // Build assignments array safely
         const assignments = assignmentNames.map(name => {
           let dateVal = dateRow[name]?.trim() || null;
-          if (dateVal === '-' || !dateVal) dateVal = null;
+          // Only accept valid YYYY-MM-DD; otherwise null
+          if (!dateVal || dateVal === '-' || !/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+            dateVal = null;
+          }
 
           let pointsVal = Number(pointsRow[name]);
           if (!Number.isFinite(pointsVal)) pointsVal = null;
@@ -38,6 +41,7 @@ async function parseTemplate(filePath) {
           };
         });
 
+        // Parse student rows
         const studentRows = rows.slice(3);
         const students = studentRows.map(r => ({
           last_name: r['last_name'],
