@@ -84,7 +84,7 @@ app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 // Serve React app for all non-API routes (ADD THIS)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '../../frontend', 'index.js'));
 });
 
 // Start servers
