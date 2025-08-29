@@ -5,6 +5,8 @@ const express = require('express');
 const multer = require('multer');
 const { parseTemplate } = require('../csvParser');
 const { pool } = require('../db'); // MySQL connection
+const { sendPasswordCreationEmail } = require('../emailService');
+const { createPasswordToken } = require('./password');
 
 const router = express.Router();
 
@@ -79,7 +81,6 @@ for (const a of assignments) {
   }
 }
 
-
     // 3. Upsert students and grades
     for (const s of students) {
       // Check student by email
@@ -94,13 +95,29 @@ for (const a of assignments) {
           'UPDATE students SET first_name=?, last_name=? WHERE id=?',
           [s.first_name, s.last_name, studentId]
         );
-      } else {
-        const [inserted] = await conn.query(
-          'INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)',
-          [s.first_name, s.last_name, s.email]
-        );
-        studentId = inserted.insertId;
-      }
+     } else {
+  // NEW STUDENT - insert and send password creation email
+  const [inserted] = await conn.query(
+    'INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)',
+    [s.first_name, s.last_name, s.email]
+  );
+  studentId = inserted.insertId;
+  
+  // Generate token and send email for new student
+  try {
+    const tokenResult = await createPasswordToken(studentId);
+    if (tokenResult.success) {
+      const studentName = `${s.first_name} ${s.last_name}`;
+      await sendPasswordCreationEmail(s.email, studentName, tokenResult.token);
+      console.log(`✅ Password creation email sent to ${s.email}`);
+    } else {
+      console.error(`❌ Failed to create token for student ${s.email}:`, tokenResult.error);
+    }
+  } catch (emailError) {
+    console.error(`❌ Failed to send email to ${s.email}:`, emailError);
+    // Don't fail the entire upload process for email errors
+  }
+}
 
       // Insert or overwrite grades
       for (let i = 0; i < assignments.length; i++) {
