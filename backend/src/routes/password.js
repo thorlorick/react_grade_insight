@@ -15,10 +15,16 @@ const createPasswordToken = async (studentId) => {
     const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hours from now
 
     // Store token in database
-    await pool.execute(
-      'INSERT INTO password_reset_tokens (student_id, token, expires_at) VALUES (?, ?, ?)',
-      [studentId, token, expiresAt]
-    );
+   const conn = await pool.getConnection();
+try {
+  await conn.execute(
+    'INSERT INTO password_reset_tokens (student_id, token, expires_at) VALUES (?, ?, ?)',
+    [studentId, token, expiresAt]
+  );
+} finally {
+  conn.release();  // <-- critical to avoid lock buildup
+}
+
 
     return { success: true, token };
   } catch (error) {
