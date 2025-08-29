@@ -21,6 +21,10 @@ const teacherRoutes = require('./routes/teacher');
 const uploadRoutes = require('./routes/uploads');
 const studentRoutes = require('./routes/student');
 
+// Test email service on startup
+const { testEmailConnection } = require('./emailService');
+testEmailConnection();
+
 
 const app = express();
 
