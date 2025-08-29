@@ -82,6 +82,11 @@ app.use('/api/password', passwordRoutes.router);
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
+// Serve React app for all non-API routes (ADD THIS)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend', 'index.html'));
+});
+
 // Start servers
 const HTTP_PORT = process.env.PORT || 8082;
 const HTTPS_PORT = process.env.HTTPS_PORT || 8083;
