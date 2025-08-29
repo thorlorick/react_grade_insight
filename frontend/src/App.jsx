@@ -14,6 +14,10 @@ import Skeleton from './pages/Skeleton';
 import TeacherPage from './pages/TeacherPage'; 
 import StudentPage from './pages/StudentPage';
 
+// Test email service on startup
+const { testEmailConnection } = require('./src/emailService');
+testEmailConnection();
+
 
 const App = () => {
   return (
