@@ -62,7 +62,7 @@ app.use(session({
 }));
 
 // Serve frontend
-app.use(express.static(path.join(__dirname, '../../frontend')));
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
 // Auth routes
 app.use('/api/auth', authRoutes);
