@@ -9,27 +9,35 @@ const router = express.Router();
 // === POST /api/password/create-token ===
 // Creates a password reset token for a student (used internally by upload process)
 const createPasswordToken = async (studentId) => {
+  const conn = await pool.getConnection();
   try {
-    // Generate secure token
+    await conn.beginTransaction();
+
+    // Remove any existing token for this student
+    await conn.execute(
+      'DELETE FROM password_reset_tokens WHERE student_id = ?',
+      [studentId]
+    );
+
+    // Generate new secure token
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hours from now
+    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hours
 
     // Store token in database
-   const conn = await pool.getConnection();
-try {
-  await conn.execute(
-    'INSERT INTO password_reset_tokens (student_id, token, expires_at) VALUES (?, ?, ?)',
-    [studentId, token, expiresAt]
-  );
-} finally {
-  conn.release();  // <-- critical to avoid lock buildup
-}
+    await conn.execute(
+      'INSERT INTO password_reset_tokens (student_id, token, expires_at) VALUES (?, ?, ?)',
+      [studentId, token, expiresAt]
+    );
 
-
+    await conn.commit();
     return { success: true, token };
+
   } catch (error) {
+    await conn.rollback();
     console.error('Error creating password token:', error);
     return { success: false, error: error.message };
+  } finally {
+    conn.release();
   }
 };
 
@@ -48,9 +56,7 @@ router.get('/verify/:token', async (req, res) => {
     );
 
     if (rows.length === 0) {
-      return res.status(400).json({ 
-        error: 'Invalid or expired token' 
-      });
+      return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
     const student = rows[0];
@@ -76,15 +82,11 @@ router.post('/set', async (req, res) => {
   const { token, password } = req.body;
 
   if (!token || !password) {
-    return res.status(400).json({ 
-      error: 'Token and password are required' 
-    });
+    return res.status(400).json({ error: 'Token and password are required' });
   }
 
   if (password.length < 6) {
-    return res.status(400).json({ 
-      error: 'Password must be at least 6 characters long' 
-    });
+    return res.status(400).json({ error: 'Password must be at least 6 characters long' });
   }
 
   const conn = await pool.getConnection();
@@ -102,16 +104,13 @@ router.post('/set', async (req, res) => {
 
     if (tokenRows.length === 0) {
       await conn.rollback();
-      return res.status(400).json({ 
-        error: 'Invalid or expired token' 
-      });
+      return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
     const { student_id } = tokenRows[0];
 
     // Hash password
-    const saltRounds = 12;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await bcrypt.hash(password, 12);
 
     // Update student password
     await conn.execute(
@@ -126,11 +125,7 @@ router.post('/set', async (req, res) => {
     );
 
     await conn.commit();
-
-    res.json({ 
-      success: true, 
-      message: 'Password set successfully' 
-    });
+    res.json({ success: true, message: 'Password set successfully' });
 
   } catch (error) {
     await conn.rollback();
@@ -141,7 +136,7 @@ router.post('/set', async (req, res) => {
   }
 });
 
-// Export both the router and the internal function
+// Export router and internal token creation function
 module.exports = {
   router,
   createPasswordToken
