@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import BackgroundContainer from "../components/BackgroundContainer";
-import SearchBar from "../components/SearchBar";
+
 import GenericButton from "../components/GenericButton";
 import StudentDashboardTable from "../components/StudentDashboardTable";
 import styles from './StudentPage.module.css';
@@ -30,7 +30,7 @@ const StudentPage = () => {
     fetchData();
   }, []);
 
-  // Handle search input
+  // Handle search input - simplified for assignment names only
   const handleSearch = (query) => {
     if (!query.trim()) {
       setFilteredData(studentData);
@@ -39,22 +39,17 @@ const StudentPage = () => {
 
     const filtered = studentData.filter(
       (row) =>
-        row.assignment_name.toLowerCase().includes(query.toLowerCase()) ||
-        row.subject.toLowerCase().includes(query.toLowerCase()) ||
-        row.teacher_name.toLowerCase().includes(query.toLowerCase())
+        row.assignment_name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredData(filtered);
   };
 
   const handleDownloadGrades = () => {
-    // Create CSV content from student data
-    const csvHeaders = ['Assignment', 'Subject', 'Grade', 'Teacher', 'Date'];
-    const csvRows = filteredData.map(row => [
+    // Create simplified CSV content
+    const csvHeaders = ['Assignment', 'Grade'];
+    const csvRows = studentData.map(row => [
       row.assignment_name || '',
-      row.subject || '',
-      row.grade || '',
-      row.teacher_name || '',
-      row.date_submitted || ''
+      row.grade ? (row.max_points ? `${row.grade}/${row.max_points}` : row.grade) : 'Not graded'
     ]);
     
     const csvContent = [csvHeaders, ...csvRows]
@@ -75,7 +70,6 @@ const StudentPage = () => {
       setLoading(true);
       const data = await getStudentData();
       setStudentData(data);
-      setFilteredData(data);
     } catch (error) {
       console.error("Failed to refresh student data:", error);
     } finally {
@@ -86,8 +80,6 @@ const StudentPage = () => {
   return (
     <div className={styles.body}>
       <Navbar brand="Grade Insight">
-        <SearchBar onSearch={handleSearch} />
-
         <GenericButton onClick={handleDownloadGrades}>
           Download My Grades
         </GenericButton>
@@ -99,7 +91,7 @@ const StudentPage = () => {
 
       <div className={styles.pageWrapper}>
         <StudentDashboardTable 
-          data={filteredData} 
+          data={studentData} 
           loading={loading}
         />
       </div>
