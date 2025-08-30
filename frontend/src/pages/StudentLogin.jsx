@@ -56,24 +56,54 @@ const StudentLogin = () => {
     setErrors({});
     
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/auth/studentLogin', {
+      // First, check if student needs to change password
+      const checkResponse = await fetch('https://gradeinsight.com:8083/api/auth/checkStudentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Important for sessions
+        credentials: 'include',
+        body: JSON.stringify({ email: formData.email })
+      });
+
+      const checkData = await checkResponse.json();
+
+      if (!checkResponse.ok) {
+        // Email doesn't exist or other error
+        setErrors({ form: checkData.message || 'Email not found' });
+        return;
+      }
+
+      // If student must change password, redirect to SetPassword page
+      if (checkData.mustChangePassword) {
+        navigate('/set-password', { 
+          state: { 
+            email: formData.email,
+            message: 'Please set your password for first-time login'
+          }
+        });
+        return;
+      }
+
+      // If password doesn't need to be changed, proceed with normal login
+      const loginResponse = await fetch('https://gradeinsight.com:8083/api/auth/studentLogin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+      const loginData = await loginResponse.json();
 
-      if (response.ok) {
+      if (loginResponse.ok) {
         // Login successful - redirect to dashboard
-        console.log('Login successful:', data);
-        navigate('/StudentPage'); // Use React Router navigation
+        console.log('Login successful:', loginData);
+        navigate('/StudentPage');
       } else {
         // Login failed
-        setErrors({ form: data.message });
+        setErrors({ form: loginData.message || 'Invalid login credentials' });
       }
 
     } catch (error) {
@@ -116,14 +146,6 @@ const StudentLogin = () => {
           )}
 
           <div className={loginStyles.formGroup}>
-           {/* 
-           <label 
-              htmlFor="email" 
-              className={loginStyles.formLabel}
-            >
-              User E-mail
-            </label> 
-            */}
             <input
               id="email"
               name="email"
@@ -132,7 +154,6 @@ const StudentLogin = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              // autoComplete="email"
               disabled={isLoading}
             />
             {errors.email && (
@@ -146,14 +167,6 @@ const StudentLogin = () => {
           </div>
 
           <div className={loginStyles.formGroup}>
-            {/*
-            <label 
-              htmlFor="password" 
-              className={loginStyles.formLabel}
-            >
-              Password
-            </label>
-            */}
             <input
               id="password"
               name="password"
@@ -162,7 +175,6 @@ const StudentLogin = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              // autoComplete="current-password"
               disabled={isLoading}
             />
             {errors.password && (
@@ -185,7 +197,7 @@ const StudentLogin = () => {
               cursor: isLoading ? 'not-allowed' : 'pointer'
             }}
           >
-            {isLoading ? 'Logging in...' : 'Log In'}
+            {isLoading ? 'Checking...' : 'Log In'}
           </button>
 
         </LoginContainer>
