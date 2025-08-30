@@ -4,7 +4,7 @@ import BackgroundContainer from '../components/BackgroundContainer';
 import styles from './ParentPage.module.css';
 
 const ParentPage = () => {
-  //Uncomment this if you want to refresh student data
+  // Uncomment this if you want to refresh student data
   const [students, setStudents] = React.useState([]);
 
   return (
