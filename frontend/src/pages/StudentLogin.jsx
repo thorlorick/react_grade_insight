@@ -76,7 +76,7 @@ const StudentLogin = () => {
 
       // If student must change password, redirect to SetPassword page
       if (checkData.mustChangePassword) {
-        navigate('/set-password', { 
+        navigate('/setPassword', { 
           state: { 
             email: formData.email,
             message: 'Please set your password for first-time login'
