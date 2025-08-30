@@ -159,8 +159,6 @@ const SetPassword = () => {
                 onChange={handleChange}
                 placeholder="Create your password"
                 disabled={isLoading}
-                onFocus={() => setShowPasswordRequirements(true)}
-                onBlur={() => setShowPasswordRequirements(false)}
               />
               {errors.password && (
                 <span className={setPasswordStyles.fieldError}>
