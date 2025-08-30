@@ -1,18 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useUploadCSV } from '../hooks/useUploadCSV';
 import styles from './Navbar.module.css';
 
-const Navbar = ({ brand = "Grade Insight", links = [], children, onUploadSuccess, refreshStudents }) => {
-  const fileInputRef = useRef(null);
-  const { handleFileChange, loading } = useUploadCSV({ onUploadSuccess, refreshStudents });
-
-  const triggerFileSelect = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
+const Navbar = ({ brand = "Grade Insight", links = [], children }) => {
   return (
     <nav className={styles.navbar}>
       <Link to="/" className={styles.navLogo}>{brand}</Link>
@@ -24,25 +14,7 @@ const Navbar = ({ brand = "Grade Insight", links = [], children, onUploadSuccess
           </Link>
         ))}
 
-        {/* CSV Upload Text Link */}
-        <span
-          className={styles.navLink}
-          onClick={triggerFileSelect}
-          style={{ cursor: 'pointer' }}
-        >
-          {loading ? 'Uploading...' : 'Upload CSV'}
-        </span>
-
-        {/* Hidden file input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          style={{ display: 'none' }}
-        />
-
-        {/* Render other children if needed */}
+        {/* Render whatever is passed inside Navbar as children */}
         {children}
       </div>
     </nav>
