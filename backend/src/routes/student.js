@@ -18,18 +18,12 @@ router.get('/data', checkStudentAuth, async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      `SELECT 
+     `SELECT 
         a.id AS assignment_id,
         a.name AS assignment_name,
         a.due_date,
         a.max_points,
-        a.subject,
-        a.assignment_type,
         g.grade,
-        g.submitted,
-        g.date_submitted,
-        g.feedback,
-        CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
         CASE 
           WHEN g.grade IS NOT NULL AND a.max_points > 0 
           THEN ROUND((g.grade / a.max_points) * 100, 1)
@@ -37,7 +31,6 @@ router.get('/data', checkStudentAuth, async (req, res) => {
         END AS percentage
       FROM assignments a
       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?
-      LEFT JOIN teachers t ON a.teacher_id = t.id
       ORDER BY a.due_date DESC, a.name`,
       [studentId]
     );
