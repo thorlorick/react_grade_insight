@@ -146,7 +146,7 @@ router.post('/studentLogin', async (req, res) => {
   try {
     // Find student by email - updated to include must_change_password
     const [rows] = await pool.execute(
-      'SELECT id, first_name, last_name, email, password_hash, must_change_password, teacher_id, session_id FROM students WHERE email = ?',
+      'SELECT id, first_name, last_name, email, password_hash, must_change_password FROM students WHERE email = ?',
       [email]
     );
 
@@ -184,8 +184,6 @@ router.post('/studentLogin', async (req, res) => {
     req.session.student_email = student.email;
     req.session.student_name = `${student.first_name} ${student.last_name}`;
     req.session.user_type = 'student';
-    req.session.teacher_id = student.teacher_id;
-    req.session.session_id = student.session_id;
 
     res.json({
       message: 'Login successful',
@@ -193,9 +191,7 @@ router.post('/studentLogin', async (req, res) => {
         id: student.id,
         first_name: student.first_name,
         last_name: student.last_name,
-        email: student.email,
-        teacher_id: student.teacher_id,
-        session_id: student.session_id
+        email: student.email
       }
     });
 
