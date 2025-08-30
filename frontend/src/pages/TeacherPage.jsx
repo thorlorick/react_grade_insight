@@ -3,9 +3,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import BackgroundContainer from "../components/BackgroundContainer";
 import SearchBar from "../components/SearchBar";
-import GenericButton from "../components/GenericButton";
 import TeacherDashboardTable from "../components/TeacherDashboardTable";
-import UploadButton from "../components/UploadButton";
+import { useUploadCSV } from '../hooks/useUploadCSV';
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
@@ -13,12 +12,20 @@ const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Upload feedback
   const [uploadSummary, setUploadSummary] = useState(null);
   const [uploadError, setUploadError] = useState(null);
 
-  // Fetch data when component mounts
+  // Hook for uploading CSVs
+  const { uploadCSV } = useUploadCSV(async (refreshedData) => {
+    setTeacherData(refreshedData);
+    setFilteredData(refreshedData);
+  });
+
+  // Fetch teacher data on mount
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
         setLoading(true);
         const data = await getTeacherData();
@@ -29,16 +36,13 @@ const TeacherPage = () => {
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchData();
   }, []);
 
-  // Handle search input
+  // Search handler
   const handleSearch = (query) => {
-    if (!query.trim()) {
-      setFilteredData(teacherData);
-      return;
-    }
+    if (!query.trim()) return setFilteredData(teacherData);
 
     const filtered = teacherData.filter(
       (row) =>
@@ -50,6 +54,26 @@ const TeacherPage = () => {
     setFilteredData(filtered);
   };
 
+  // File upload handler triggered from Navbar
+  const handleUploadCSV = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.csv';
+    fileInput.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const data = await uploadCSV(file);
+      if (data.ok) {
+        setUploadSummary(data);
+        setUploadError(null);
+      } else {
+        setUploadError(data.error);
+        setUploadSummary(null);
+      }
+    };
+    fileInput.click();
+  };
+
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
     link.href = "/upload_template.csv";
@@ -57,42 +81,22 @@ const TeacherPage = () => {
     link.click();
   };
 
-  const refreshData = async () => {
-    try {
-      setLoading(true);
-      const data = await getTeacherData();
-      setTeacherData(data);
-      setFilteredData(data);
-    } catch (error) {
-      console.error("Failed to refresh teacher data:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleLogout = async () => {
+    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = '/login';
   };
 
   return (
     <div className={styles.body}>
-      <Navbar brand="Grade Insight">
+      <Navbar
+        brand="Grade Insight"
+        links={[
+          { label: 'Upload CSV', onClick: handleUploadCSV },
+          { label: 'Download Template', onClick: handleDownloadTemplate },
+          { label: 'Logout', onClick: handleLogout },
+        ]}
+      >
         <SearchBar onSearch={handleSearch} />
-
-        <UploadButton 
-          onUploadSuccess={(data) => {
-            if (data.ok) {
-              setUploadSummary(data);
-              setUploadError(null);
-              // Refresh data after successful upload
-              refreshData();
-            } else {
-              setUploadError(data.error);
-              setUploadSummary(null);
-            }
-          }} 
-          refreshStudents={refreshData}
-        />
-
-        <GenericButton onClick={handleDownloadTemplate}>
-          Download Template
-        </GenericButton>
       </Navbar>
 
       {/* Upload feedback */}
