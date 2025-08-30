@@ -13,7 +13,6 @@ import Signup from './pages/Signup';
 import Skeleton from './pages/Skeleton'; 
 import TeacherPage from './pages/TeacherPage'; 
 import StudentPage from './pages/StudentPage';
-import CreatePassword from './components/CreatePassword';
 
 
 const App = () => {
@@ -33,7 +32,7 @@ const App = () => {
         <Route path="/TeacherPage" element={<TeacherPage />} />
         <Route path="/StudentPage" element={<StudentPage />} />
         <Route path="/StudentPage" element={<StudentPage />} />
-        <Route path="/create-password/:token" element={<CreatePassword />} />
+      
 
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />

@@ -20,12 +20,6 @@ const authRoutes = require('./routes/auth');
 const teacherRoutes = require('./routes/teacher');
 const uploadRoutes = require('./routes/uploads');
 const studentRoutes = require('./routes/student');
-const passwordRoutes = require('./routes/password');
-
-// Test email service on startup
-const { testEmailConnection } = require('./emailService');
-testEmailConnection();
-
 
 const app = express();
 
@@ -76,8 +70,6 @@ app.use('/api/student', require('./routes/student'));
 // Upload routes
 app.use('/api/uploads', uploadRoutes);
 
-// Password routes
-app.use('/api/password', passwordRoutes.router);
 
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
