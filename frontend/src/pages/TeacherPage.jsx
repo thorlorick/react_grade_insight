@@ -3,9 +3,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import BackgroundContainer from "../components/BackgroundContainer";
 import SearchBar from "../components/SearchBar";
-import GenericButton from "../components/GenericButton";
 import TeacherDashboardTable from "../components/TeacherDashboardTable";
-import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
@@ -33,7 +31,7 @@ const TeacherPage = () => {
     fetchData();
   }, []);
 
-  // Handle search input
+  // Search filter
   const handleSearch = (query) => {
     if (!query.trim()) {
       setFilteredData(teacherData);
@@ -50,13 +48,7 @@ const TeacherPage = () => {
     setFilteredData(filtered);
   };
 
-  const handleDownloadTemplate = () => {
-    const link = document.createElement("a");
-    link.href = "/upload_template.csv";
-    link.download = "upload_template.csv";
-    link.click();
-  };
-
+  // Refresh teacher data
   const refreshData = async () => {
     try {
       setLoading(true);
@@ -70,29 +62,36 @@ const TeacherPage = () => {
     }
   };
 
+  // Download template handler
+  const handleDownloadTemplate = () => {
+    const link = document.createElement("a");
+    link.href = "/upload_template.csv";
+    link.download = "upload_template.csv";
+    link.click();
+  };
+
   return (
     <div className={styles.body}>
-      <Navbar brand="Grade Insight">
+      <Navbar
+        brand="Grade Insight"
+        links={[]} // add other links if needed
+        onUploadSuccess={(data) => {
+          if (data.ok) {
+            setUploadSummary(data);
+            setUploadError(null);
+            refreshData();
+          } else {
+            setUploadError(data.error);
+            setUploadSummary(null);
+          }
+        }}
+        refreshStudents={refreshData}
+        uploadLabel="Upload CSV"
+        downloadLabel="Download Template"
+        onDownload={handleDownloadTemplate}
+      >
+        {/* Optional: Search bar inside navbar */}
         <SearchBar onSearch={handleSearch} />
-
-        <UploadButton 
-          onUploadSuccess={(data) => {
-            if (data.ok) {
-              setUploadSummary(data);
-              setUploadError(null);
-              // Refresh data after successful upload
-              refreshData();
-            } else {
-              setUploadError(data.error);
-              setUploadSummary(null);
-            }
-          }} 
-          refreshStudents={refreshData}
-        />
-
-        <GenericButton onClick={handleDownloadTemplate}>
-          Download Template
-        </GenericButton>
       </Navbar>
 
       {/* Upload feedback */}
@@ -104,7 +103,6 @@ const TeacherPage = () => {
           <p>Students processed: {uploadSummary.studentsCount}</p>
         </div>
       )}
-      
       {uploadError && (
         <div className={styles.uploadError}>
           <p>❌ Upload failed: {uploadError}</p>
@@ -112,8 +110,8 @@ const TeacherPage = () => {
       )}
 
       <div className={styles.pageWrapper}>
-        <TeacherDashboardTable 
-          data={filteredData} 
+        <TeacherDashboardTable
+          data={filteredData}
           loading={loading}
         />
       </div>
