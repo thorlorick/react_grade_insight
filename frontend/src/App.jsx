@@ -14,6 +14,7 @@ import Skeleton from './pages/Skeleton';
 import TeacherPage from './pages/TeacherPage'; 
 import StudentPage from './pages/StudentPage';
 import SetPassword from './pages/SetPassword';
+import ParentPage from './pages/ParentPage';
 
 
 const App = () => {
@@ -33,6 +34,8 @@ const App = () => {
         <Route path="/TeacherPage" element={<TeacherPage />} />
         <Route path="/StudentPage" element={<StudentPage />} />
         <Route path="/setPassword" element={<SetPassword />} />
+        <Route path="/parent" element={<ParentPage />} />
+
       
       
 
