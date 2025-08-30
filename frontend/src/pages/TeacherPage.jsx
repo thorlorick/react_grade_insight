@@ -77,7 +77,7 @@ const TeacherPage = () => {
         links={[
     { label: 'Upload CSV', onClick: handleUpload },
     { label: 'Download Template', onClick: handleDownloadTemplate },
-    { label: 'Logout', onClick: handleLogout }
+    // { label: 'Logout', onClick: handleLogout }
   ]}
       </Navbar>
 
