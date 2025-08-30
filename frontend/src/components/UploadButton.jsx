@@ -37,8 +37,7 @@ const UploadButton = ({ onUploadSuccess, refreshStudents }) => {
 
   return (
     <label className={styles.button}>
-      Upload <br />
-      CSV
+      Upload CSV
       <input
         type="file"
         accept=".csv"
