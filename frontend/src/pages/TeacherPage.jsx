@@ -74,25 +74,11 @@ const TeacherPage = () => {
     <div className={styles.body}>
       <Navbar brand="Grade Insight">
         <SearchBar onSearch={handleSearch} />
-
-        <UploadButton 
-          onUploadSuccess={(data) => {
-            if (data.ok) {
-              setUploadSummary(data);
-              setUploadError(null);
-              // Refresh data after successful upload
-              refreshData();
-            } else {
-              setUploadError(data.error);
-              setUploadSummary(null);
-            }
-          }} 
-          refreshStudents={refreshData}
-        />
-
-        <GenericButton onClick={handleDownloadTemplate}>
-          Download Template
-        </GenericButton>
+        links={[
+    { label: 'Upload CSV', onClick: handleUpload },
+    { label: 'Download Template', onClick: handleDownloadTemplate },
+    { label: 'Logout', onClick: handleLogout }
+  ]}
       </Navbar>
 
       {/* Upload feedback */}
