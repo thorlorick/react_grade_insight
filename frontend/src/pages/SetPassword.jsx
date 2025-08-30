@@ -149,22 +149,25 @@ const SetPassword = () => {
           )}
 
           <div className={setPasswordStyles.formGroup}>
-            <input
-              id="password"
-              name="password"
-              className={`${setPasswordStyles.formInput} ${errors.password ? setPasswordStyles.inputError : ''}`}
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Create your password"
-              disabled={isLoading}
-              onFocus={() => setShowPasswordRequirements(true)}
-            />
-            {errors.password && (
-              <span className={setPasswordStyles.fieldError}>
-                {errors.password}
-              </span>
-            )}
+            <div className={setPasswordStyles.passwordInputWrapper}>
+              <input
+                id="password"
+                name="password"
+                className={`${setPasswordStyles.formInput} ${errors.password ? setPasswordStyles.inputError : ''}`}
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create your password"
+                disabled={isLoading}
+                onFocus={() => setShowPasswordRequirements(true)}
+                onBlur={() => setShowPasswordRequirements(false)}
+              />
+              {errors.password && (
+                <span className={setPasswordStyles.fieldError}>
+                  {errors.password}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className={setPasswordStyles.formGroup}>
@@ -185,27 +188,29 @@ const SetPassword = () => {
             )}
           </div>
 
-          {/* Password Requirements */}
-          {(showPasswordRequirements || formData.password) && (
-            <div className={setPasswordStyles.passwordRequirements}>
-              <div className={setPasswordStyles.requirementsTitle}>Password Requirements:</div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.length ? setPasswordStyles.met : ''}`}>
-                ✓ At least 8 characters
+          {/* Password Requirements Popup */}
+          <div className={setPasswordStyles.passwordInputWrapper}>
+            {showPasswordRequirements && (
+              <div className={setPasswordStyles.passwordRequirementsPopup}>
+                <div className={setPasswordStyles.requirementsTitle}>Password Requirements:</div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.length ? setPasswordStyles.met : ''}`}>
+                  ✓ At least 8 characters
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.uppercase ? setPasswordStyles.met : ''}`}>
+                  ✓ One uppercase letter
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.lowercase ? setPasswordStyles.met : ''}`}>
+                  ✓ One lowercase letter
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.number ? setPasswordStyles.met : ''}`}>
+                  ✓ One number
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.special ? setPasswordStyles.met : ''}`}>
+                  ✓ One special character (!@#$%^&*)
+                </div>
               </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.uppercase ? setPasswordStyles.met : ''}`}>
-                ✓ One uppercase letter
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.lowercase ? setPasswordStyles.met : ''}`}>
-                ✓ One lowercase letter
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.number ? setPasswordStyles.met : ''}`}>
-                ✓ One number
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.special ? setPasswordStyles.met : ''}`}>
-                ✓ One special character (!@#$%^&*)
-              </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <button 
             className={setPasswordStyles.loginButton} 
