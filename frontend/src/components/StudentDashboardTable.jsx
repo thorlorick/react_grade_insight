@@ -5,51 +5,39 @@ import styles from './StudentDashboardTable.module.css';
 const StudentDashboardTable = ({ data, loading, studentName }) => {
   if (loading) {
     return (
-      <div className={styles.tableContainer}>
-        <div className={styles.loadingMessage}>
-          Loading your grades...
-        </div>
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading your grades...</div>
       </div>
     );
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className={styles.tableContainer}>
-        <div className={styles.noDataMessage}>
+      <div className={styles.container}>
+        <div className={styles.emptyState}>
           No grades found. Check back later for updates!
         </div>
       </div>
     );
   }
 
-  // Helper function to format grade display
   const formatGrade = (grade, maxPoints) => {
     if (!grade && grade !== 0) return "Not graded";
-    
-    if (maxPoints) {
-      return `${grade}/${maxPoints}`;
-    }
-    
-    // If it's a percentage or letter grade
-    if (typeof grade === 'string') {
-      return grade;
-    }
-    
+    if (maxPoints) return `${grade}/${maxPoints}`;
+    if (typeof grade === 'string') return grade;
     return grade.toString();
   };
 
-  // Helper function to get grade color class
   const getGradeColorClass = (grade, maxPoints) => {
-    if (!grade && grade !== 0) return styles.notGraded;
-    
+    if (!grade && grade !== 0) return styles.missingGrade;
+
     let percentage;
     if (maxPoints) {
       percentage = (grade / maxPoints) * 100;
     } else if (typeof grade === 'number' && grade <= 100) {
       percentage = grade;
     } else {
-      return styles.defaultGrade;
+      return '';
     }
 
     if (percentage >= 90) return styles.gradeA;
@@ -60,44 +48,36 @@ const StudentDashboardTable = ({ data, loading, studentName }) => {
   };
 
   return (
-    <div className={styles.tableContainer}>
-      <div className={styles.tableHeader}>
-        <h2>{studentName ? `${studentName}'s Grades` : 'My Grades'}</h2>
-        <div className={styles.gradeStats}>
-          <span>Total Assignments: {data.length}</span>
-        </div>
-      </div>
-      
+    <div className={styles.container}>
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Assignment</th>
-              <th>Grade</th>
+              <th className={`${styles.headerCell} ${styles.staticHeader}`}>
+                Assignment
+              </th>
+              <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>
+                Grade
+              </th>
             </tr>
           </thead>
           <tbody>
             {data.map((row, index) => (
-              <tr key={index} className={styles.tableRow}>
-                <td className={styles.assignmentCell}>
-                  <div className={styles.assignmentName}>
-                    {row.assignment_name || "Unnamed Assignment"}
-                  </div>
+              <tr key={index} className={styles.row}>
+                <td className={`${styles.cell} ${styles.staticCell}`}>
+                  <div>{row.assignment_name || "Unnamed Assignment"}</div>
                   {row.assignment_type && (
-                    <div className={styles.assignmentType}>
+                    <small style={{ opacity: 0.7 }}>
                       {row.assignment_type}
-                    </div>
+                    </small>
                   )}
                 </td>
-                
-                <td className={styles.gradeCell}>
-                  <span 
-                    className={`${styles.gradeValue} ${getGradeColorClass(row.grade, row.max_points)}`}
-                  >
+                <td className={`${styles.cell} ${styles.gradeCell}`}>
+                  <span className={getGradeColorClass(row.grade, row.max_points)}>
                     {formatGrade(row.grade, row.max_points)}
                   </span>
                   {row.percentage && (
-                    <div className={styles.percentage}>
+                    <div style={{ fontSize: "0.75rem", opacity: 0.7 }}>
                       ({row.percentage}%)
                     </div>
                   )}

@@ -1,51 +1,28 @@
-/* src/components/StudentDashboardTable.module.css */
+/* StudentDashboardTable.module.css */
 
-.tableContainer {
-  background: white;
+.container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 20px;
   overflow: hidden;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
-.tableHeader {
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.tableHeader h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.gradeStats {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.loadingMessage,
-.noDataMessage {
-  padding: 60px 20px;
-  text-align: center;
-  color: #666;
-  font-size: 18px;
-}
-
-.loadingMessage::after {
+.container::before {
   content: '';
-  animation: dots 1.5s steps(5, end) infinite;
-}
-
-@keyframes dots {
-  0%, 20% { content: '.'; }
-  40% { content: '..'; }
-  60% { content: '...'; }
-  80%, 100% { content: ''; }
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 14px;
+  z-index: -1;
 }
 
 .tableWrapper {
@@ -57,227 +34,226 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  background: transparent;
 }
 
-.table th {
-  background-color: #f8f9fa;
-  color: #495057;
-  font-weight: 600;
+/* Header Styles */
+.headerCell {
   padding: 16px 12px;
   text-align: left;
-  border-bottom: 2px solid #e9ecef;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  color: #7dd3fc;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(125, 211, 252, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
   position: sticky;
   top: 0;
   z-index: 10;
+  user-select: none;
 }
 
-.tableRow {
-  border-bottom: 1px solid #e9ecef;
-  transition: background-color 0.2s ease;
+.headerCell:hover {
+  background: rgba(125, 211, 252, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.tableRow:hover {
-  background-color: #f8f9fa;
-}
-
-.table td {
-  padding: 16px 12px;
-  vertical-align: top;
-}
-
-/* Assignment Cell */
-.assignmentCell {
-  min-width: 200px;
-}
-
-.assignmentName {
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 4px;
-}
-
-.assignmentType {
-  font-size: 12px;
-  color: #6c757d;
-  background-color: #e9ecef;
-  padding: 2px 8px;
-  border-radius: 12px;
-  display: inline-block;
-}
-
-/* Subject Cell */
-.subjectCell {
-  min-width: 120px;
-  font-weight: 500;
-  color: #495057;
-}
-
-/* Grade Cell */
-.gradeCell {
-  min-width: 100px;
-  text-align: center;
-}
-
-.gradeValue {
-  font-weight: 700;
-  font-size: 16px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  display: inline-block;
-  min-width: 60px;
-}
-
-.percentage {
-  font-size: 12px;
-  color: #6c757d;
-  margin-top: 4px;
-}
-
-/* Grade Colors */
-.gradeA {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-.gradeB {
-  background-color: #d1ecf1;
-  color: #0c5460;
-  border: 1px solid #b8daff;
-}
-
-.gradeC {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeaa7;
-}
-
-.gradeD {
-  background-color: #ffeaa7;
-  color: #b8860b;
-  border: 1px solid #fdcb6e;
-}
-
-.gradeF {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-.notGraded {
-  background-color: #e2e3e5;
-  color: #383d41;
-  border: 1px solid #d6d8db;
-}
-
-.defaultGrade {
-  background-color: #e9ecef;
-  color: #495057;
-  border: 1px solid #ced4da;
-}
-
-/* Teacher Cell */
-.teacherCell {
+.staticHeader {
+  background: rgba(0, 0, 0, 0.4);
   min-width: 150px;
-  color: #495057;
 }
 
-/* Date Cells */
-.dateCell {
-  min-width: 100px;
-  color: #6c757d;
-  font-size: 13px;
+.staticHeader:first-child {
+  min-width: 180px;
 }
 
-/* Submission Status */
-.submittedCell {
+.dynamicHeader {
   min-width: 120px;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.submissionStatus {
-  font-weight: 600;
-  font-size: 13px;
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.submitted {
-  color: #28a745;
+.sortIcon {
+  font-size: 0.75rem;
+  color: #7dd3fc;
+  opacity: 0.8;
 }
 
-.notSubmitted {
-  color: #dc3545;
+/* Row Styles */
+.row {
+  transition: all 0.2s ease;
 }
 
-.submittedDate {
-  font-size: 11px;
-  color: #6c757d;
-  margin-top: 4px;
+.row:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* Feedback Cell */
-.feedbackCell {
-  min-width: 200px;
-  max-width: 250px;
+.row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.feedbackText {
-  color: #495057;
-  line-height: 1.4;
-  cursor: help;
+.row:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.noFeedback {
-  color: #6c757d;
-  font-style: italic;
-  font-size: 13px;
+/* Cell Styles */
+.cell {
+  padding: 12px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.staticCell {
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.2);
+  position: sticky;
+  left: 0;
+  z-index: 5;
+}
+
+.staticCell:first-child {
+  left: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.staticCell:nth-child(2) {
+  left: 180px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gradeCell {
+  text-align: center;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  font-size: 0.8rem;
+  min-width: 80px;
+}
+
+.missingGrade {
+  background: rgba(239, 68, 68, 0.2);
+  border-left: 3px solid rgba(239, 68, 68, 0.6);
+  position: relative;
+}
+
+.missingGrade::after {
+  content: '-';
+  color: rgba(239, 68, 68, 0.7);
+  font-weight: bold;
+}
+
+/* Loading and Empty States */
+.loading, .emptyState {
+  padding: 60px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.loading {
+  color: #7dd3fc;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .tableContainer {
-    margin: 10px;
+  .container {
+    border-radius: 8px;
+    margin: 0 -16px;
   }
   
-  .tableHeader {
-    padding: 16px 20px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  .headerCell, .cell {
+    padding: 10px 8px;
+    font-size: 0.8rem;
   }
   
-  .tableHeader h2 {
-    font-size: 20px;
+  .staticCell:nth-child(2) {
+    left: 140px;
   }
   
-  .table th,
-  .table td {
-    padding: 12px 8px;
-    font-size: 13px;
+  .staticCell:first-child {
+    min-width: 140px;
   }
   
-  .assignmentName {
-    font-size: 13px;
-  }
-  
-  .gradeValue {
-    font-size: 14px;
-    padding: 4px 8px;
+  .dynamicHeader {
+    min-width: 100px;
   }
 }
 
 @media (max-width: 480px) {
-  .table th,
-  .table td {
+  .headerCell, .cell {
     padding: 8px 6px;
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   
-  .assignmentCell,
-  .feedbackCell {
-    min-width: 150px;
+  .staticCell:first-child {
+    min-width: 120px;
+  }
+  
+  .staticCell:nth-child(2) {
+    left: 120px;
+  }
+  
+  .dynamicHeader {
+    min-width: 80px;
+    max-width: 100px;
   }
   
   .gradeCell {
-    min-width: 80px;
+    font-size: 0.7rem;
   }
+}
+
+/* Scrollbar Styling */
+.tableWrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tableWrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: rgba(125, 211, 252, 0.3);
+  border-radius: 4px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 211, 252, 0.5);
+}
+
+/* Tooltip Enhancement for Assignment Headers */
+.dynamicHeader {
+  position: relative;
+}
+
+.dynamicHeader:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  white-space: nowrap;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
