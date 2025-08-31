@@ -141,7 +141,7 @@ const TeacherSignup = () => {
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
-                  <LoginContainer title="Teacher Sign Up">
+                  <LoginContainer>
           {/* Form Error Display */}
           {errors.form && (
             <div className={loginStyles.errorMessage}>
