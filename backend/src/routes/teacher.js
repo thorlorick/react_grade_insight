@@ -40,7 +40,7 @@ router.get('/data', async (req, res) => {
 // Add these routes to your existing teacher.js file
 
 // === GET /api/teacher/notes/:studentId ===
-router.get('/notes/:studentId', checkTeacherAuth, async (req, res) => {
+router.get('/notes/:studentId', async (req, res) => {
   const teacherId = req.session.teacher_id;
   const studentId = req.params.studentId;
 
@@ -68,7 +68,7 @@ router.get('/notes/:studentId', checkTeacherAuth, async (req, res) => {
 });
 
 // === POST /api/teacher/notes/:studentId ===
-router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
+router.post('/notes/:studentId', async (req, res) => {
   const teacherId = req.session.teacher_id;
   const studentId = req.params.studentId;
   const { note } = req.body;
@@ -101,7 +101,7 @@ router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
 });
 
 // === DELETE /api/teacher/notes/:studentId ===
-router.delete('/notes/:studentId', checkTeacherAuth, async (req, res) => {
+router.delete('/notes/:studentId', async (req, res) => {
   const teacherId = req.session.teacher_id;
   const studentId = req.params.studentId;
 
