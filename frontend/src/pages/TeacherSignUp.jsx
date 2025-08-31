@@ -141,7 +141,11 @@ const TeacherSignup = () => {
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer title="Teacher Sign Up">
+                  <LoginContainer title="Teacher Sign Up" style={{ 
+            width: '320px', 
+            minHeight: '320px',
+            padding: '30px 25px'
+          }}>
           {/* Form Error Display */}
           {errors.form && (
             <div 
@@ -161,7 +165,7 @@ const TeacherSignup = () => {
           )}
 
           {/* First Name and Last Name Row */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
             <div className={loginStyles.formGroup} style={{ flex: '1', marginBottom: '0' }}>
               <input
                 id="firstName"
@@ -172,6 +176,7 @@ const TeacherSignup = () => {
                 onChange={handleChange}
                 placeholder="First Name"
                 disabled={isLoading}
+                style={{ fontSize: '0.875rem', padding: '10px 12px' }}
               />
               {errors.firstName && (
                 <span 
@@ -193,6 +198,7 @@ const TeacherSignup = () => {
                 onChange={handleChange}
                 placeholder="Last Name"
                 disabled={isLoading}
+                style={{ fontSize: '0.875rem', padding: '10px 12px' }}
               />
               {errors.lastName && (
                 <span 
@@ -205,7 +211,7 @@ const TeacherSignup = () => {
             </div>
           </div>
 
-          <div className={loginStyles.formGroup}>
+          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
             <input
               id="schoolName"
               name="schoolName"
@@ -215,6 +221,7 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="School Name"
               disabled={isLoading}
+              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.schoolName && (
               <span 
@@ -226,7 +233,7 @@ const TeacherSignup = () => {
             )}
           </div>
 
-          <div className={loginStyles.formGroup}>
+          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
             <input
               id="email"
               name="email"
@@ -236,6 +243,7 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="Email Address"
               disabled={isLoading}
+              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.email && (
               <span 
@@ -247,7 +255,7 @@ const TeacherSignup = () => {
             )}
           </div>
 
-          <div className={loginStyles.formGroup}>
+          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
             <input
               id="password"
               name="password"
@@ -257,6 +265,7 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="Password"
               disabled={isLoading}
+              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.password && (
               <span 
@@ -270,40 +279,41 @@ const TeacherSignup = () => {
             {/* Password Requirements Indicator */}
             {formData.password && (
               <div style={{ 
-                marginTop: '8px', 
-                padding: '8px', 
-                backgroundColor: '#f5f5f5', 
+                marginTop: '6px', 
+                padding: '6px', 
+                backgroundColor: 'rgba(255, 255, 255, 0.1)', 
                 borderRadius: '4px',
-                fontSize: '12px'
+                fontSize: '10px',
+                backdropFilter: 'blur(8px)'
               }}>
-                <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#666' }}>
-                  Password Requirements:
+                <div style={{ fontWeight: 'bold', marginBottom: '3px', color: '#6ee7b7' }}>
+                  Requirements:
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px' }}>
-                  <div style={{ color: passwordValidation.requirements.length ? '#4caf50' : '#999' }}>
-                    ✓ 8+ characters
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px' }}>
+                  <div style={{ color: passwordValidation.requirements.length ? '#34d399' : '#86efac' }}>
+                    ✓ 8+ chars
                   </div>
-                  <div style={{ color: passwordValidation.requirements.uppercase ? '#4caf50' : '#999' }}>
-                    ✓ Uppercase
+                  <div style={{ color: passwordValidation.requirements.uppercase ? '#34d399' : '#86efac' }}>
+                    ✓ Upper
                   </div>
-                  <div style={{ color: passwordValidation.requirements.lowercase ? '#4caf50' : '#999' }}>
-                    ✓ Lowercase
+                  <div style={{ color: passwordValidation.requirements.lowercase ? '#34d399' : '#86efac' }}>
+                    ✓ Lower
                   </div>
-                  <div style={{ color: passwordValidation.requirements.number ? '#4caf50' : '#999' }}>
+                  <div style={{ color: passwordValidation.requirements.number ? '#34d399' : '#86efac' }}>
                     ✓ Number
                   </div>
                   <div style={{ 
-                    color: passwordValidation.requirements.special ? '#4caf50' : '#999',
+                    color: passwordValidation.requirements.special ? '#34d399' : '#86efac',
                     gridColumn: '1 / -1'
                   }}>
-                    ✓ Special character
+                    ✓ Special char
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          <div className={loginStyles.formGroup}>
+          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
             <input
               id="confirmPassword"
               name="confirmPassword"
@@ -313,6 +323,7 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="Confirm Password"
               disabled={isLoading}
+              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.confirmPassword && (
               <span 
