@@ -188,12 +188,7 @@ const TeacherLogin = () => {
             {isLoading ? 'Logging in...' : 'Log In'}
           </button>
 
-          <div className={loginStyles.signupLink}>
-            Don't have an account?{' '}
-            <Link to="/signup" className={loginStyles.signupLinkAnchor}>
-              Sign up here
-            </Link>
-          </div>
+         
         </LoginContainer>
       </BackgroundContainer>
     </div>
