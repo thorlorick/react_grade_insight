@@ -3,7 +3,7 @@
 .loginForm {
   opacity: 1; /* Keep this as 1 since you removed the fade animation */
   position: absolute;
-  top: 10%;
+  top: 50%;
   right: 40px;
   transform: translateY(-50%);
   width: 380px;
