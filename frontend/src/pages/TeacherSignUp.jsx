@@ -304,13 +304,6 @@ const TeacherSignup = () => {
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
-
-          <div className={loginStyles.signupLink}>
-            Already have an account?{' '}
-            <Link to="/TeacherLogin" className={loginStyles.signupLinkAnchor}>
-              Sign in here
-            </Link>
-          </div>
         </LoginContainer>
       </BackgroundContainer>
     </div>
