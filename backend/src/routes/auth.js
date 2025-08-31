@@ -328,4 +328,106 @@ router.get('/teacherCheck', (req, res) => {
   }
 });
 
+// === Teacher Signup ===
+router.post('/teacherSignup', async (req, res) => {
+  const { firstName, lastName, email, password, confirmPassword, schoolName } = req.body;
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+
+  try {
+    // Validate required fields
+    if (!firstName || !lastName || !email || !password || !confirmPassword || !schoolName) {
+      await logLoginAttempt(email || 'unknown', ipAddress, 'signup_failure', 'teacher');
+      return res.status(400).json({ 
+        message: 'All fields are required' 
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      await logLoginAttempt(email, ipAddress, 'signup_failure', 'teacher');
+      return res.status(400).json({ 
+        message: 'Please enter a valid email address' 
+      });
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      await logLoginAttempt(email, ipAddress, 'signup_failure', 'teacher');
+      return res.status(400).json({ 
+        message: 'Passwords do not match' 
+      });
+    }
+
+    // Password validation (same as student requirements)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      await logLoginAttempt(email, ipAddress, 'weak_password', 'teacher');
+      return res.status(400).json({ 
+        message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character' 
+      });
+    }
+
+    // Check if teacher already exists
+    const [existingTeacher] = await pool.execute(
+      'SELECT id FROM teachers WHERE email = ?',
+      [email.toLowerCase()]
+    );
+
+    if (existingTeacher.length > 0) {
+      await logLoginAttempt(email, ipAddress, 'signup_duplicate_email', 'teacher');
+      return res.status(409).json({ 
+        message: 'An account with this email already exists' 
+      });
+    }
+
+    // Hash the password
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert new teacher
+    const [result] = await pool.execute(
+      'INSERT INTO teachers (first_name, last_name, email, password_hash, school_name, created_at) VALUES (?, ?, ?, ?, ?, NOW())',
+      [firstName.trim(), lastName.trim(), email.toLowerCase(), hashedPassword, schoolName.trim()]
+    );
+
+    const teacherId = result.insertId;
+
+    // Log successful signup
+    await logLoginAttempt(email, ipAddress, 'signup_success', 'teacher');
+
+    // Automatically log them in after successful signup
+    req.session.teacher_id = teacherId;
+    req.session.teacher_email = email.toLowerCase();
+    req.session.teacher_name = `${firstName.trim()} ${lastName.trim()}`;
+
+    // Log the automatic login
+    await logLoginAttempt(email, ipAddress, 'success', 'teacher');
+
+    res.status(201).json({
+      message: 'Account created successfully',
+      teacher: {
+        id: teacherId,
+        name: req.session.teacher_name,
+        email: email.toLowerCase()
+      }
+    });
+
+  } catch (error) {
+    console.error('Teacher signup error:', error);
+    await logLoginAttempt(email || 'unknown', ipAddress, 'signup_failure', 'teacher');
+    
+    // Check for specific database errors
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ 
+        message: 'An account with this email already exists' 
+      });
+    }
+    
+    res.status(500).json({ 
+      message: 'Server error during account creation' 
+    });
+  }
+});
+
 module.exports = router;
