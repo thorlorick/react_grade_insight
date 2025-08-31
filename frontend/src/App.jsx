@@ -9,11 +9,11 @@ import './App.css';
 import Gradeinsight from './pages/Gradeinsight';
 import TeacherLogin from './pages/TeacherLogin';
 import StudentLogin from './pages/StudentLogin';
-import Signup from './pages/Signup'; 
 import TeacherPage from './pages/TeacherPage'; 
 import StudentPage from './pages/StudentPage';
 import SetPassword from './pages/SetPassword';
 import ParentPage from './pages/ParentPage';
+import SignUp from './pages/TeacherSignUp';
 
 
 const App = () => {
@@ -27,12 +27,12 @@ const App = () => {
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/teacherLogin" element={<TeacherLogin />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/teacher" element={<TeacherPage />} />
         <Route path="/TeacherPage" element={<TeacherPage />} />
         <Route path="/StudentPage" element={<StudentPage />} />
         <Route path="/setPassword" element={<SetPassword />} />
         <Route path="/parent" element={<ParentPage />} />
+        <Route path="/signUp" element={<SignUp />} />
 
       
       
