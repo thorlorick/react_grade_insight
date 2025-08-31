@@ -141,32 +141,17 @@ const TeacherSignup = () => {
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
-                  <LoginContainer title="Teacher Sign Up" style={{ 
-            width: '320px', 
-            minHeight: '320px',
-            padding: '30px 25px'
-          }}>
+                  <LoginContainer title="Teacher Sign Up">
           {/* Form Error Display */}
           {errors.form && (
-            <div 
-              className={loginStyles.errorMessage}
-              style={{ 
-                color: '#d32f2f', 
-                backgroundColor: '#ffebee', 
-                padding: '12px', 
-                borderRadius: '4px', 
-                marginBottom: '16px',
-                border: '1px solid #ffcdd2',
-                fontSize: '14px'
-              }}
-            >
+            <div className={loginStyles.errorMessage}>
               {errors.form}
             </div>
           )}
 
           {/* First Name and Last Name Row */}
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-            <div className={loginStyles.formGroup} style={{ flex: '1', marginBottom: '0' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div className={loginStyles.formGroup} style={{ flex: '1' }}>
               <input
                 id="firstName"
                 name="firstName"
@@ -176,19 +161,15 @@ const TeacherSignup = () => {
                 onChange={handleChange}
                 placeholder="First Name"
                 disabled={isLoading}
-                style={{ fontSize: '0.875rem', padding: '10px 12px' }}
               />
               {errors.firstName && (
-                <span 
-                  className={loginStyles.fieldError}
-                  style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
-                >
+                <span className={loginStyles.fieldError}>
                   {errors.firstName}
                 </span>
               )}
             </div>
 
-            <div className={loginStyles.formGroup} style={{ flex: '1', marginBottom: '0' }}>
+            <div className={loginStyles.formGroup} style={{ flex: '1' }}>
               <input
                 id="lastName"
                 name="lastName"
@@ -198,20 +179,16 @@ const TeacherSignup = () => {
                 onChange={handleChange}
                 placeholder="Last Name"
                 disabled={isLoading}
-                style={{ fontSize: '0.875rem', padding: '10px 12px' }}
               />
               {errors.lastName && (
-                <span 
-                  className={loginStyles.fieldError}
-                  style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
-                >
+                <span className={loginStyles.fieldError}>
                   {errors.lastName}
                 </span>
               )}
             </div>
           </div>
 
-          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
+          <div className={loginStyles.formGroup}>
             <input
               id="schoolName"
               name="schoolName"
@@ -221,19 +198,15 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="School Name"
               disabled={isLoading}
-              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.schoolName && (
-              <span 
-                className={loginStyles.fieldError}
-                style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
-              >
+              <span className={loginStyles.fieldError}>
                 {errors.schoolName}
               </span>
             )}
           </div>
 
-          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
+          <div className={loginStyles.formGroup}>
             <input
               id="email"
               name="email"
@@ -243,19 +216,15 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="Email Address"
               disabled={isLoading}
-              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.email && (
-              <span 
-                className={loginStyles.fieldError}
-                style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
-              >
+              <span className={loginStyles.fieldError}>
                 {errors.email}
               </span>
             )}
           </div>
 
-          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
+          <div className={loginStyles.formGroup}>
             <input
               id="password"
               name="password"
@@ -265,13 +234,9 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="Password"
               disabled={isLoading}
-              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.password && (
-              <span 
-                className={loginStyles.fieldError}
-                style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
-              >
+              <span className={loginStyles.fieldError}>
                 {errors.password}
               </span>
             )}
@@ -313,7 +278,7 @@ const TeacherSignup = () => {
             )}
           </div>
 
-          <div className={loginStyles.formGroup} style={{ marginBottom: '16px' }}>
+          <div className={loginStyles.formGroup}>
             <input
               id="confirmPassword"
               name="confirmPassword"
@@ -323,13 +288,9 @@ const TeacherSignup = () => {
               onChange={handleChange}
               placeholder="Confirm Password"
               disabled={isLoading}
-              style={{ fontSize: '0.875rem', padding: '10px 12px' }}
             />
             {errors.confirmPassword && (
-              <span 
-                className={loginStyles.fieldError}
-                style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
-              >
+              <span className={loginStyles.fieldError}>
                 {errors.confirmPassword}
               </span>
             )}
@@ -340,10 +301,6 @@ const TeacherSignup = () => {
             type="submit"
             onClick={handleSubmit}
             disabled={isLoading}
-            style={{
-              opacity: isLoading ? 0.7 : 1,
-              cursor: isLoading ? 'not-allowed' : 'pointer'
-            }}
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
