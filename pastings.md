@@ -487,3 +487,8 @@ I have the teacher logged in, and session stored (i think) but I can't seem to m
 
 # database connected 
 so far it's working...i have a test teacher working and the upload is working. I need to make the table a component and then style it
+
+
+# MOVING ALONG NICELY!!!
+I've got the teacher login, student login and pages all set up with nice tables. I have a parent page idea, but not done yet. 
+I need to change the navbar to NewGenericNavbar so that it's more like a component and we can get rid of the buttons on the teacher page and just make it nav links (but upload csv, download csv, logout)
