@@ -4,10 +4,26 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { pool } = require('../db'); // Import pool from your db connection
 
+// Enhanced helper function to log all login attempts with user type
+const logLoginAttempt = async (email, ipAddress, status, userType = 'unknown') => {
+  try {
+    await pool.execute(
+      'INSERT INTO login_attempt (user_email, ip_address, status, user_type, attempt_time) VALUES (?, ?, ?, ?, NOW())',
+      [email, ipAddress, status, userType]
+    );
+  } catch (error) {
+    console.error('Error logging login attempt:', error);
+    // Don't fail the login process if logging fails
+  }
+};
+
 router.post('/teacherLogin', async (req, res) => {
   const { email, password } = req.body;
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
   
   if (!email || !password) {
+    // Log failed attempt for missing credentials
+    await logLoginAttempt(email || 'unknown', ipAddress, 'failure', 'teacher');
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
@@ -19,6 +35,8 @@ router.post('/teacherLogin', async (req, res) => {
     );
     
     if (rows.length === 0) {
+      // Log failed attempt - user not found
+      await logLoginAttempt(email, ipAddress, 'failure', 'teacher');
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
@@ -26,8 +44,13 @@ router.post('/teacherLogin', async (req, res) => {
     const match = await bcrypt.compare(password, teacher.password_hash);
     
     if (!match) {
+      // Log failed attempt - wrong password
+      await logLoginAttempt(email, ipAddress, 'failure', 'teacher');
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // Log successful attempt
+    await logLoginAttempt(email, ipAddress, 'success', 'teacher');
 
     // Store teacher info in session
     req.session.teacher_id = teacher.id;
@@ -46,16 +69,20 @@ router.post('/teacherLogin', async (req, res) => {
 
   } catch (err) {
     console.error('Login error:', err);
+    // Log failed attempt for server error
+    await logLoginAttempt(email, ipAddress, 'failure', 'teacher');
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// === NEW: Check if student email exists and needs password change ===
+// === Check if student email exists and needs password change ===
 router.post('/checkStudentLogin', async (req, res) => {
+  const { email } = req.body;
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+  
   try {
-    const { email } = req.body;
-    
     if (!email) {
+      await logLoginAttempt('unknown', ipAddress, 'failure', 'student');
       return res.status(400).json({ message: 'Email is required' });
     }
 
@@ -66,10 +93,14 @@ router.post('/checkStudentLogin', async (req, res) => {
     );
 
     if (rows.length === 0) {
+      await logLoginAttempt(email, ipAddress, 'email_not_found', 'student');
       return res.status(404).json({ message: 'Student email not found' });
     }
 
     const student = rows[0];
+    
+    // Log the email check (successful verification that email exists)
+    await logLoginAttempt(email, ipAddress, 'email_verified', 'student');
     
     res.json({
       studentExists: true,
@@ -79,22 +110,26 @@ router.post('/checkStudentLogin', async (req, res) => {
 
   } catch (error) {
     console.error('Check student login error:', error);
+    await logLoginAttempt(email || 'unknown', ipAddress, 'failure', 'student');
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// === NEW: Set new password for student ===
+// === Set new password for student ===
 router.post('/setStudentPassword', async (req, res) => {
+  const { email, password } = req.body;
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+  
   try {
-    const { email, password } = req.body;
-    
     if (!email || !password) {
+      await logLoginAttempt(email || 'unknown', ipAddress, 'failure', 'student');
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Password validation (modern requirements)
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (!passwordRegex.test(password)) {
+      await logLoginAttempt(email, ipAddress, 'weak_password', 'student');
       return res.status(400).json({ 
         message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character' 
       });
@@ -107,10 +142,12 @@ router.post('/setStudentPassword', async (req, res) => {
     );
 
     if (studentRows.length === 0) {
+      await logLoginAttempt(email, ipAddress, 'failure', 'student');
       return res.status(404).json({ message: 'Student not found' });
     }
 
     if (!studentRows[0].must_change_password) {
+      await logLoginAttempt(email, ipAddress, 'unauthorized_password_change', 'student');
       return res.status(400).json({ message: 'Password change not required for this student' });
     }
 
@@ -124,6 +161,9 @@ router.post('/setStudentPassword', async (req, res) => {
       [hashedPassword, email]
     );
 
+    // Log successful password setup
+    await logLoginAttempt(email, ipAddress, 'password_set', 'student');
+
     res.json({ 
       message: 'Password set successfully',
       success: true 
@@ -131,15 +171,19 @@ router.post('/setStudentPassword', async (req, res) => {
 
   } catch (error) {
     console.error('Set password error:', error);
+    await logLoginAttempt(email || 'unknown', ipAddress, 'failure', 'student');
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// === UPDATED: Student login with password change checks ===
+// === Student login with password change checks ===
 router.post('/studentLogin', async (req, res) => {
   const { email, password } = req.body;
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
 
   if (!email || !password) {
+    // Log failed attempt for missing credentials
+    await logLoginAttempt(email || 'unknown', ipAddress, 'failure', 'student');
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
@@ -151,6 +195,8 @@ router.post('/studentLogin', async (req, res) => {
     );
 
     if (rows.length === 0) {
+      // Log failed attempt - student not found
+      await logLoginAttempt(email, ipAddress, 'failure', 'student');
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
@@ -158,6 +204,8 @@ router.post('/studentLogin', async (req, res) => {
 
     // Check if student still needs to change password
     if (student.must_change_password) {
+      // Log failed attempt - password change required
+      await logLoginAttempt(email, ipAddress, 'password_change_required', 'student');
       return res.status(403).json({ 
         message: 'Password must be changed before login',
         mustChangePassword: true 
@@ -166,6 +214,8 @@ router.post('/studentLogin', async (req, res) => {
 
     // Check if password is set (in case it's null)
     if (!student.password_hash) {
+      // Log failed attempt - no password set
+      await logLoginAttempt(email, ipAddress, 'no_password_set', 'student');
       return res.status(403).json({ 
         message: 'Password must be set before login',
         mustChangePassword: true 
@@ -176,8 +226,13 @@ router.post('/studentLogin', async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, student.password_hash);
 
     if (!isValidPassword) {
+      // Log failed attempt - wrong password
+      await logLoginAttempt(email, ipAddress, 'failure', 'student');
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // Log successful attempt
+    await logLoginAttempt(email, ipAddress, 'success', 'student');
 
     // Set session - keeping your existing session structure
     req.session.student_id = student.id;
@@ -197,16 +252,45 @@ router.post('/studentLogin', async (req, res) => {
 
   } catch (error) {
     console.error('Student login error:', error);
+    // Log failed attempt for server error
+    await logLoginAttempt(email, ipAddress, 'failure', 'student');
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
 // === POST /api/auth/studentLogout ===
 router.post('/studentLogout', (req, res) => {
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+  const email = req.session.student_email || 'unknown';
+  
   req.session.destroy((err) => {
     if (err) {
+      // Log failed logout attempt
+      logLoginAttempt(email, ipAddress, 'logout_failure', 'student').catch(console.error);
       return res.status(500).json({ message: 'Could not log out' });
     }
+    
+    // Log successful logout
+    logLoginAttempt(email, ipAddress, 'logout_success', 'student').catch(console.error);
+    res.clearCookie('connect.sid'); // Clear session cookie
+    res.json({ message: 'Logged out successfully' });
+  });
+});
+
+// === Teacher Logout (if you don't have one) ===
+router.post('/teacherLogout', (req, res) => {
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+  const email = req.session.teacher_email || 'unknown';
+  
+  req.session.destroy((err) => {
+    if (err) {
+      // Log failed logout attempt
+      logLoginAttempt(email, ipAddress, 'logout_failure', 'teacher').catch(console.error);
+      return res.status(500).json({ message: 'Could not log out' });
+    }
+    
+    // Log successful logout
+    logLoginAttempt(email, ipAddress, 'logout_success', 'teacher').catch(console.error);
     res.clearCookie('connect.sid'); // Clear session cookie
     res.json({ message: 'Logged out successfully' });
   });
@@ -221,6 +305,22 @@ router.get('/studentCheck', (req, res) => {
         id: req.session.student_id,
         email: req.session.student_email,
         name: req.session.student_name
+      }
+    });
+  } else {
+    res.json({ isAuthenticated: false });
+  }
+});
+
+// === GET /api/auth/teacherCheck ===
+router.get('/teacherCheck', (req, res) => {
+  if (req.session.teacher_id) {
+    res.json({
+      isAuthenticated: true,
+      teacher: {
+        id: req.session.teacher_id,
+        email: req.session.teacher_email,
+        name: req.session.teacher_name
       }
     });
   } else {
