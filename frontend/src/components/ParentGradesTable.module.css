@@ -1,0 +1,173 @@
+/* src/components/ParentGradesTable.module.css */
+
+.container {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.loading, .emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.tableWrapper {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.headerCell {
+  background: rgba(255, 255, 255, 0.1);
+  color: #67e8f9;
+  font-weight: 600;
+  padding: 1rem 1.2rem;
+  text-align: left;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.assignmentHeader {
+  width: 40%;
+}
+
+.dueDateHeader {
+  width: 20%;
+}
+
+.maxPointsHeader {
+  width: 15%;
+}
+
+.gradeHeader {
+  width: 25%;
+}
+
+.row {
+  transition: background-color 0.2s ease;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.row:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cell {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  vertical-align: top;
+}
+
+.assignmentCell {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.dueDateCell {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.maxPointsCell {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.gradeCell {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Grade color coding - bright colors for easy scanning */
+.gradeA {
+  color: #22c55e; /* Bright green */
+  font-weight: 700;
+}
+
+.gradeB {
+  color: #84cc16; /* Lime green */
+  font-weight: 600;
+}
+
+.gradeC {
+  color: #eab308; /* Yellow */
+  font-weight: 600;
+}
+
+.gradeD {
+  color: #f97316; /* Orange */
+  font-weight: 600;
+}
+
+.gradeF {
+  color: #ef4444; /* Bright red */
+  font-weight: 700;
+}
+
+.missingGrade {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .headerCell, .cell {
+    padding: 0.75rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .assignmentHeader {
+    width: 35%;
+  }
+
+  .dueDateHeader {
+    width: 25%;
+  }
+
+  .maxPointsHeader {
+    width: 15%;
+  }
+
+  .gradeHeader {
+    width: 25%;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerCell, .cell {
+    padding: 0.6rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .tableWrapper {
+    border-radius: 8px;
+  }
+}

@@ -88,6 +88,18 @@ CREATE TABLE login_attempt (
   status ENUM('success', 'failure') NOT NULL 
 );
 
+CREATE TABLE teacher_notes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  teacher_id INT NOT NULL,
+  student_id INT NOT NULL,
+  note TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_teacher_student (teacher_id, student_id)
+);
+
 -- Step 3: Insert a test teacher account
 -- Password: 'testpass123' (hashed with bcrypt)
 INSERT INTO teachers (first_name, last_name, email, password_hash, school_name) VALUES 

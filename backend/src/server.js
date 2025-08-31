@@ -67,6 +67,9 @@ app.use('/api/teacher', teacherRoutes);
 // Student routes
 app.use('/api/student', require('./routes/student'));
 
+// Parent routes
+app.use('/api/parent', require('./routes/parent'));
+
 // Upload routes
 app.use('/api/uploads', uploadRoutes);
 
