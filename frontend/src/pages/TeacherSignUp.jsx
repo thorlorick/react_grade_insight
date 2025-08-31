@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import BackgroundContainer from '../components/BackgroundContainer';
 import LoginContainer from '../components/LoginContainer';
-import loginStyles from './TeacherLogin.module.css'; // Reusing the same styles
+import loginStyles from './TeacherSignUp.module.css'; 
 
 const TeacherSignup = () => {
   const navigate = useNavigate();
