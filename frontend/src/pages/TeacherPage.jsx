@@ -52,8 +52,8 @@ const TeacherPage = () => {
 
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
-    link.href = "/upload_template.csv";
-    link.download = "upload_template.csv";
+    link.href = "/template.csv";
+    link.download = "template.csv";
     link.click();
   };
 
