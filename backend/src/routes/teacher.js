@@ -37,8 +37,6 @@ router.get('/data', async (req, res) => {
 });
 
 
-// Add these routes to your existing teacher.js file
-
 // === GET /api/teacher/notes/:studentId ===
 router.get('/notes/:studentId', async (req, res) => {
   const teacherId = req.session.teacher_id;

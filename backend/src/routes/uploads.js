@@ -144,4 +144,25 @@ for (const a of assignments) {
   }
 });
 
+const handleDownloadTemplate = async () => {
+  try {
+    const res = await fetch('/api/uploads/template');
+    if (!res.ok) throw new Error('Failed to download template');
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'upload_template.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error(err);
+    alert('Could not download template');
+  }
+};
+
+
 module.exports = router;
