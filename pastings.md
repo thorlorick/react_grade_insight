@@ -500,3 +500,6 @@ honestly, it's coming along. still a lot of things to fix...navbar needs to be c
 ## HAVE TO PROTECT SIGNUP ---- ONLY REACHABLE THROUGH PURCHASE 
 need to have this /page kept away from the public...buy a link!!!!
 
+# DEPLOYMENT TOMORROW...or at least very soon.
+I'm going to run a beta test with some my classes this year to see what works, what is missing, what I need...definitely going to need some admin tools. 
+But for now, i think we are letting it loose to the wind....
