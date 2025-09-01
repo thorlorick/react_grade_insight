@@ -1,5 +1,5 @@
 -- Schema for grade_insight database
--- GitHub-friendly, minimal, ready to import
+-- Clean, minimal, GitHub-ready
 
 DROP TABLE IF EXISTS `assignments`;
 CREATE TABLE `assignments` (
