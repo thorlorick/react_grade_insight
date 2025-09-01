@@ -65,6 +65,7 @@ async function parseTemplate(filePath) {
         }));
 
         // Filter assignments with < MIN_FILLED_PERCENT filled grades
+        const keepIndices = [];
         const filteredAssignments = assignments.filter((assignment, index) => {
           const filledCount = students.filter(s => s.grades[index] !== null).length;
           const filledPercent = filledCount / students.length;
@@ -72,14 +73,15 @@ async function parseTemplate(filePath) {
             console.log(`Skipping assignment "${assignment.name}" — only ${Math.round(filledPercent * 100)}% filled`);
             return false;
           }
+          keepIndices.push(index);
           return true;
         });
 
-        // Remove corresponding grades from students
+        // Remove corresponding grades from students using the same indices
         const filteredStudents = students.map(s => {
           return {
             ...s,
-            grades: s.grades.filter((_, i) => filteredAssignments.includes(assignments[i])),
+            grades: keepIndices.map(i => s.grades[i]),
           };
         });
 
