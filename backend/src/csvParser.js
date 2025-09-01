@@ -1,5 +1,11 @@
 const fs = require('fs');
 const csv = require('csv-parser');
+require('dotenv').config(); // load env variables
+
+// Minimum percent of filled grades required to keep an assignment
+const MIN_FILLED_PERCENT = process.env.MIN_FILLED_PERCENT
+  ? Number(process.env.MIN_FILLED_PERCENT)
+  : 0.4; // default 40%
 
 /**
  * Parse CSV into assignments and students
@@ -11,6 +17,7 @@ const csv = require('csv-parser');
 async function parseTemplate(filePath) {
   return new Promise((resolve, reject) => {
     const rows = [];
+
     fs.createReadStream(filePath)
       .pipe(csv({ mapHeaders: ({ header }) => header.trim() }))
       .on('data', row => rows.push(row))
@@ -23,10 +30,9 @@ async function parseTemplate(filePath) {
         const dateRow = rows[1];
         const pointsRow = rows[2];
 
-        // Build assignments array safely
+        // Build assignments array
         const assignments = assignmentNames.map(name => {
           let dateVal = dateRow[name]?.trim() || null;
-          // Only accept valid YYYY-MM-DD; otherwise null
           if (!dateVal || dateVal === '-' || !/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
             dateVal = null;
           }
@@ -54,7 +60,26 @@ async function parseTemplate(filePath) {
           }),
         }));
 
-        resolve({ assignments, students });
+        // Filter assignments with < MIN_FILLED_PERCENT filled grades
+        const filteredAssignments = assignments.filter((assignment, index) => {
+          const filledCount = students.filter(s => s.grades[index] !== null).length;
+          const filledPercent = filledCount / students.length;
+          if (filledPercent < MIN_FILLED_PERCENT) {
+            console.log(`Skipping assignment "${assignment.name}" — only ${Math.round(filledPercent * 100)}% filled`);
+            return false;
+          }
+          return true;
+        });
+
+        // Remove corresponding grades from students
+        const filteredStudents = students.map(s => {
+          return {
+            ...s,
+            grades: s.grades.filter((_, i) => filteredAssignments.includes(assignments[i])),
+          };
+        });
+
+        resolve({ assignments: filteredAssignments, students: filteredStudents });
       })
       .on('error', err => reject(err));
   });
