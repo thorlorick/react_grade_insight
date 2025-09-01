@@ -496,3 +496,7 @@ I need to change the navbar to NewGenericNavbar so that it's more like a compone
 
 # COULDN'T BE HAPPIER RIGHT NOW
 honestly, it's coming along. still a lot of things to fix...navbar needs to be cleaned up, i want each row to be clickable and lead to an individual "card", need to make the components more generic (loginContainer in particular!!)..and then somehow get pm2 to keep the backend running at all times
+
+## HAVE TO PROTECT SIGNUP ---- ONLY REACHABLE THROUGH PURCHASE 
+need to have this /page kept away from the public...buy a link!!!!
+

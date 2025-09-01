@@ -27,8 +27,12 @@ async function parseTemplate(filePath) {
         const headers = Object.keys(rows[0]);
         const assignmentNames = headers.slice(3);
 
-        const dateRow = rows[1];
-        const pointsRow = rows[2];
+        // Fix: csv-parser treats first row as headers, so:
+        // rows[0] = DATE row
+        // rows[1] = POINTS row  
+        // rows[2+] = student data
+        const dateRow = rows[0];
+        const pointsRow = rows[1];
 
         // Build assignments array
         const assignments = assignmentNames.map(name => {
@@ -47,8 +51,8 @@ async function parseTemplate(filePath) {
           };
         });
 
-        // Parse student rows
-        const studentRows = rows.slice(3);
+        // Parse student rows (start from index 2)
+        const studentRows = rows.slice(2);
         const students = studentRows.map(r => ({
           last_name: r['last_name'],
           first_name: r['first_name'],
