@@ -147,7 +147,24 @@ for (const a of assignments) {
 const handleDownloadTemplate = async () => {
   try {
     const res = await fetch('/api/uploads/template');
-    if (!res.ok) throw new Error('Failed to download template');
+    
+    // Debug: Check what content type is being returned
+    console.log('Content-Type:', res.headers.get('content-type'));
+    console.log('Status:', res.status);
+    
+    if (!res.ok) {
+      const text = await res.text();
+      console.log('Error response:', text);
+      throw new Error('Failed to download template');
+    }
+
+    // Debug: Check if it's actually CSV
+    const contentType = res.headers.get('content-type');
+    if (!contentType || !contentType.includes('csv')) {
+      const text = await res.text();
+      console.log('Unexpected response:', text);
+      throw new Error('Response is not CSV');
+    }
 
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
