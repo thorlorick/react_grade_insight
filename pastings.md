@@ -492,3 +492,7 @@ so far it's working...i have a test teacher working and the upload is working. I
 # MOVING ALONG NICELY!!!
 I've got the teacher login, student login and pages all set up with nice tables. I have a parent page idea, but not done yet. 
 I need to change the navbar to NewGenericNavbar so that it's more like a component and we can get rid of the buttons on the teacher page and just make it nav links (but upload csv, download csv, logout)
+
+
+# COULDN'T BE HAPPIER RIGHT NOW
+honestly, it's coming along. still a lot of things to fix...navbar needs to be cleaned up, i want each row to be clickable and lead to an individual "card", need to make the components more generic (loginContainer in particular!!)..and then somehow get pm2 to keep the backend running at all times
