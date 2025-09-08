@@ -49,8 +49,7 @@
   border-bottom: 2px solid rgba(125, 211, 252, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
-  position: sticky;
-  top: 0;
+  position: static;
   z-index: 10;
   user-select: none;
 }
@@ -256,4 +255,5 @@
   z-index: 1000;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
 }
