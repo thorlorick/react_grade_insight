@@ -25,6 +25,12 @@ async function parseTemplate(filePath) {
         if (rows.length < 3) return reject(new Error('CSV must have at least 3 rows'));
 
         const headers = Object.keys(rows[0]);
+        
+        // First 3 columns are always: last_name, first_name, email
+        // Remaining columns are assignments
+        const lastNameCol = headers[0];
+        const firstNameCol = headers[1];
+        const emailCol = headers[2];
         const assignmentNames = headers.slice(3);
 
         // Fix: csv-parser treats first row as headers, so:
@@ -54,9 +60,9 @@ async function parseTemplate(filePath) {
         // Parse student rows (start from index 2)
         const studentRows = rows.slice(2);
         const students = studentRows.map(r => ({
-          last_name: r['last_name'],
-          first_name: r['first_name'],
-          email: r['email'],
+          last_name: r[lastNameCol]?.trim() || null,
+          first_name: r[firstNameCol]?.trim() || null,
+          email: r[emailCol]?.trim() || null,
           grades: assignmentNames.map(name => {
             const val = r[name]?.trim();
             const num = Number(val);
@@ -64,11 +70,24 @@ async function parseTemplate(filePath) {
           }),
         }));
 
+        // Filter out students with missing required fields
+        const validStudents = students.filter(student => {
+          if (!student.last_name || !student.first_name || !student.email) {
+            console.log(`Skipping student with missing required fields:`, {
+              last_name: student.last_name,
+              first_name: student.first_name,
+              email: student.email
+            });
+            return false;
+          }
+          return true;
+        });
+
         // Filter assignments with < MIN_FILLED_PERCENT filled grades
         const keepIndices = [];
         const filteredAssignments = assignments.filter((assignment, index) => {
-          const filledCount = students.filter(s => s.grades[index] !== null).length;
-          const filledPercent = filledCount / students.length;
+          const filledCount = validStudents.filter(s => s.grades[index] !== null).length;
+          const filledPercent = filledCount / validStudents.length;
           if (filledPercent < MIN_FILLED_PERCENT) {
             console.log(`Skipping assignment "${assignment.name}" — only ${Math.round(filledPercent * 100)}% filled`);
             return false;
@@ -78,7 +97,7 @@ async function parseTemplate(filePath) {
         });
 
         // Remove corresponding grades from students using the same indices
-        const filteredStudents = students.map(s => {
+        const filteredStudents = validStudents.map(s => {
           return {
             ...s,
             grades: keepIndices.map(i => s.grades[i]),
