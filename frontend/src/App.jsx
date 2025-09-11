@@ -2,7 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedTeacherRoute from './components/ProtectedTeacherRoute';
 import './App.css';
+
 // Import your pages
 import Gradeinsight from './pages/Gradeinsight';
 import TeacherLogin from './pages/TeacherLogin';
