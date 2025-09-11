@@ -2,6 +2,7 @@
 const express = require('express');
 const { pool } = require('../db');
 
+
 const router = express.Router();
 
 // === GET /api/teacher/data ===
@@ -122,3 +123,4 @@ router.delete('/notes/:studentId', async (req, res) => {
 });
 
 module.exports = router;
+
