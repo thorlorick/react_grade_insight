@@ -23,8 +23,16 @@ const App = () => {
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/teacherLogin" element={<TeacherLogin />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
-        <Route path="/teacher" element={<TeacherPage />} />
-        <Route path="/TeacherPage" element={<TeacherPage />} />
+        <Route path="/teacher" element={
+          <ProtectedTeacherRoute>
+            <TeacherPage />
+          </ProtectedTeacherRoute>
+        } />
+        <Route path="/TeacherPage" element={
+          <ProtectedTeacherRoute>
+            <TeacherPage />
+          </ProtectedTeacherRoute>
+        } />
         <Route path="/StudentPage" element={<StudentPage />} />
         <Route path="/setPassword" element={<SetPassword />} />
         <Route path="/parent" element={<ParentPage />} />
