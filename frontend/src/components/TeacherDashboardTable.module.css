@@ -25,10 +25,25 @@
   z-index: -1;
 }
 
+/* Table wrapper remains scrollable */
 .tableWrapper {
-  overflow-x: auto;
-  max-height: 70vh;
+  max-height: 70vh; /* fixed height so vertical scrolling occurs */
   overflow-y: auto;
+  overflow-x: auto; /* horizontal scroll stays */
+}
+
+/* Make the header row sticky */
+.table thead th {
+  position: sticky;
+  top: 0; /* stick to top of scroll container */
+  background: #0a0a0a; /* solid background */
+  z-index: 10;
+}
+
+/* Optional: enhance contrast with bottom border */
+.table thead th {
+  border-bottom: 2px solid #7dd3fc;
+  color: #7dd3fc;
 }
 
 .table {
@@ -58,21 +73,6 @@
 .headerCell:hover {
   background: rgba(125, 211, 252, 0.1);
   color: rgba(255, 255, 255, 0.9);
-}
-
-/* Make the entire header row sticky */
-.table thead tr {
-  position: sticky;
-  top: 0;
-  z-index: 20; /* above all table rows */
-}
-
-/* Make header cells solid so rows don’t show through */
-.table thead th, 
-.headerCell {
-  background: #000; /* fully solid black, or adjust */
-  color: #7dd3fc;
-  border-bottom: 2px solid rgba(125, 211, 252, 0.3);
 }
 
 .staticHeader {
@@ -272,6 +272,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
 }
+
 
 
 
