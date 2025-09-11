@@ -45,12 +45,13 @@
   font-size: 0.875rem;
   letter-spacing: 0.02em;
   color: #7dd3fc;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.95); /* make it nearly solid */
   border-bottom: 2px solid rgba(125, 211, 252, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
-  position: static;
-  z-index: 10;
+  position: sticky; /* make it sticky */
+  top: 0; /* stick to top of container */
+  z-index: 20; /* above all rows */
   user-select: none;
 }
 
@@ -256,4 +257,5 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
 }
+
 
