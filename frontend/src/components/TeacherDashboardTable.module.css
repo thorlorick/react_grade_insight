@@ -60,6 +60,21 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* Make the entire header row sticky */
+.table thead tr {
+  position: sticky;
+  top: 0;
+  z-index: 20; /* above all table rows */
+}
+
+/* Make header cells solid so rows don’t show through */
+.table thead th, 
+.headerCell {
+  background: #000; /* fully solid black, or adjust */
+  color: #7dd3fc;
+  border-bottom: 2px solid rgba(125, 211, 252, 0.3);
+}
+
 .staticHeader {
   background: rgba(0, 0, 0, 0.4);
   min-width: 150px;
@@ -257,5 +272,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
 }
+
 
 
