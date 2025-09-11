@@ -12,13 +12,14 @@ import StudentPage from './pages/StudentPage';
 import SetPassword from './pages/SetPassword';
 import ParentPage from './pages/ParentPage';
 import SignUp from './pages/TeacherSignUp';
+
 const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Default route /}
+        {/* Default route */}
         <Route path="/" element={<Gradeinsight />} />
-        {/ Pages */}
+        {/* Pages */}
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/teacherLogin" element={<TeacherLogin />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
@@ -28,11 +29,13 @@ const App = () => {
         <Route path="/setPassword" element={<SetPassword />} />
         <Route path="/parent" element={<ParentPage />} />
         <Route path="/signup" element={<SignUp />} />
-
-        {/* Catch-all for 404 /}
-        <Route path="" element={<div>Page Not Found</div>} />
+      
+      
+        {/* Catch-all for 404 */}
+        <Route path="*" element={<div>Page Not Found</div>} />
       </Routes>
     </Router>
   );
 };
+
 export default App;
