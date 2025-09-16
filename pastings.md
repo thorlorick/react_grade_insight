@@ -503,3 +503,6 @@ need to have this /page kept away from the public...buy a link!!!!
 # DEPLOYMENT TOMORROW...or at least very soon.
 I'm going to run a beta test with some my classes this year to see what works, what is missing, what I need...definitely going to need some admin tools. 
 But for now, i think we are letting it loose to the wind....
+
+# Messy, Messy, Messy
+Right now the Teacher Dashboard is very messy. There seems to be an issue with renaming assignments. BUT, the site itself is not clear. it's hard to see what we need. I need to clean up the table or the parser or something else maybe. I haven't let students or parents in on the site yet. First, get a couple teachers to try it out and give me feedback....need outside input!!!
