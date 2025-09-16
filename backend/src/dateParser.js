@@ -43,3 +43,5 @@ function parseDate(cellValue) {
 
   return null;
 }
+
+module.exports = { parseDate };
