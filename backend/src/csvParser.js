@@ -1,5 +1,7 @@
 const fs = require('fs');
 const csv = require('csv-parser');
+const { parseDate } = require('./dateParser');
+
 require('dotenv').config();
 
 // Minimum number of filled grades required to keep an assignment
@@ -32,10 +34,7 @@ async function parseTemplate(filePath) {
 
         // Build assignments
         const assignments = assignmentNames.map(name => {
-          let dateVal = dateRow[name]?.trim() || null;
-          if (!dateVal || dateVal === '-' || !/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
-            dateVal = null;
-          }
+          const dateVal = parseDate(dateRow[name]);
 
           let pointsVal = Number(pointsRow[name]);
           if (!Number.isFinite(pointsVal)) pointsVal = null;
