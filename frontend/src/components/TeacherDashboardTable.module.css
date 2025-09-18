@@ -25,25 +25,10 @@
   z-index: -1;
 }
 
-/* Table wrapper remains scrollable */
 .tableWrapper {
-  max-height: 70vh; /* fixed height so vertical scrolling occurs */
+  max-height: 70vh;
   overflow-y: auto;
-  overflow-x: auto; /* horizontal scroll stays */
-}
-
-/* Make the header row sticky */
-.table thead th {
-  position: sticky;
-  top: 0; /* stick to top of scroll container */
-  background: #0a0a0a; /* solid background */
-  z-index: 10;
-}
-
-/* Optional: enhance contrast with bottom border */
-.table thead th {
-  border-bottom: 2px solid #7dd3fc;
-  color: #7dd3fc;
+  overflow-x: auto;
 }
 
 .table {
@@ -60,13 +45,13 @@
   font-size: 0.875rem;
   letter-spacing: 0.02em;
   color: #7dd3fc;
-  background: rgba(0, 0, 0, 0.95); /* make it nearly solid */
+  background: rgba(0, 0, 0, 0.95);
   border-bottom: 2px solid rgba(125, 211, 252, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
-  position: sticky; /* make it sticky */
-  top: 0; /* stick to top of container */
-  z-index: 20; /* above all rows */
+  position: sticky;
+  top: 0;
+  z-index: 20;
   user-select: none;
 }
 
@@ -153,18 +138,148 @@
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   font-size: 0.8rem;
   min-width: 80px;
-}
-
-.missingGrade {
-  background: rgba(239, 68, 68, 0.2);
-  border-left: 3px solid rgba(239, 68, 68, 0.6);
   position: relative;
 }
 
-.missingGrade::after {
-  content: '-';
+/* Grade Container for better layout */
+.gradeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.gradeScore {
+  font-weight: 600;
+}
+
+.letterGrade {
+  font-size: 0.65rem;
+  opacity: 0.8;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.noGrade {
+  color: rgba(107, 114, 128, 0.7);
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+/* Enhanced Grade Classification Styles */
+.excellentGrade {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.25) 100%);
+  border-left: 4px solid #22c55e;
+  color: #22c55e;
+  font-weight: 600;
+  position: relative;
+}
+
+.excellentGrade::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.1) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.excellentGrade .letterGrade {
+  color: #16a34a;
+}
+
+.highGrade {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%);
+  border-left: 4px solid #10b981;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.highGrade .letterGrade {
+  color: #059669;
+}
+
+.goodGrade {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.25) 100%);
+  border-left: 4px solid #3b82f6;
+  color: #60a5fa;
+  font-weight: 500;
+}
+
+.goodGrade .letterGrade {
+  color: #2563eb;
+}
+
+.midGrade {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.25) 100%);
+  border-left: 4px solid #fbbf24;
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+.midGrade .letterGrade {
+  color: #f59e0b;
+}
+
+.lowGrade {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.25) 100%);
+  border-left: 4px solid #ef4444;
+  color: #f87171;
+  font-weight: 500;
+  position: relative;
+}
+
+.lowGrade::after {
+  content: '⚠';
+  position: absolute;
+  right: 6px;
+  top: 4px;
   color: rgba(239, 68, 68, 0.7);
-  font-weight: bold;
+  font-size: 0.6rem;
+}
+
+.lowGrade .letterGrade {
+  color: #dc2626;
+}
+
+.missingGrade {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.2) 100%);
+  border-left: 4px solid #6b7280;
+  color: #9ca3af;
+  font-style: italic;
+  position: relative;
+}
+
+.missingGrade .noGrade {
+  color: rgba(107, 114, 128, 0.8);
+}
+
+/* Hover effects for better interactivity */
+.excellentGrade:hover,
+.highGrade:hover,
+.goodGrade:hover,
+.midGrade:hover,
+.lowGrade:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.missingGrade:hover {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.15) 0%, rgba(75, 85, 99, 0.25) 100%);
+  transition: all 0.2s ease;
+}
+
+/* Optional: Subtle pulse animation for missing grades */
+@keyframes pulse-missing {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.missingGrade {
+  animation: pulse-missing 3s infinite;
 }
 
 /* Loading and Empty States */
@@ -203,6 +318,18 @@
   .dynamicHeader {
     min-width: 100px;
   }
+
+  .letterGrade {
+    display: none;
+  }
+
+  .lowGrade::after {
+    display: none;
+  }
+
+  .gradeContainer {
+    gap: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -226,6 +353,10 @@
   
   .gradeCell {
     font-size: 0.7rem;
+  }
+
+  .gradeScore {
+    font-size: 0.65rem;
   }
 }
 
@@ -270,45 +401,4 @@
   z-index: 1000;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-
 }
-
-.highGrade {
-  background: rgba(16, 185, 129, 0.2); /* emerald-500 tint */
-  border-left: 3px solid rgba(16, 185, 129, 0.6);
-  color: #34d399;
-}
-
-.midGrade {
-  background: rgba(251, 191, 36, 0.2); /* amber-500 tint */
-  border-left: 3px solid rgba(251, 191, 36, 0.6);
-  color: #fbbf24;
-}
-
-.lowGrade {
-  background: rgba(239, 68, 68, 0.2); /* red-500 tint */
-  border-left: 3px solid rgba(239, 68, 68, 0.6);
-  color: #f87171;
-}
-
-.missingGrade {
-  background: rgba(107, 114, 128, 0.2); /* gray-500 tint */
-  border-left: 3px solid rgba(107, 114, 128, 0.6);
-  color: #9ca3af;
-  font-style: italic;
-}
-
-.nullGrade {
-  background: rgba(128, 128, 128, 0.2); /* light gray */
-  border-left: 3px solid rgba(128, 128, 128, 0.6);
-  color: rgba(128, 128, 128, 0.9);
-  font-style: italic;
-}
-
-
-
-
-
-
-
-
