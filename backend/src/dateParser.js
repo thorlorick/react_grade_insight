@@ -10,14 +10,10 @@ function parseDate(cellValue) {
   // Try native Date parsing
   let d = new Date(raw);
   if (!isNaN(d)) {
-    return d.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }); // e.g., "Jan 15, 2026"
+    return d.toISOString().split('T')[0]; // YYYY-MM-DD for MySQL
   }
 
-  // Fallback for numeric formats (MM/DD/YYYY, DD/MM/YYYY)
+  // Fallback for numeric formats (MM/DD/YYYY, DD/MM/YYYY, etc.)
   const parts = raw.match(/(\d{1,4})[\/.-](\d{1,2})[\/.-](\d{1,4})/);
   if (parts) {
     let [_, p1, p2, p3] = parts.map(Number);
@@ -33,11 +29,7 @@ function parseDate(cellValue) {
 
     d = new Date(year, month - 1, day);
     if (!isNaN(d)) {
-      return d.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
+      return d.toISOString().split('T')[0];
     }
   }
 
