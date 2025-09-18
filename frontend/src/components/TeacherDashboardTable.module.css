@@ -273,6 +273,33 @@
 
 }
 
+.highGrade {
+  background: rgba(16, 185, 129, 0.2); /* emerald-500 tint */
+  border-left: 3px solid rgba(16, 185, 129, 0.6);
+  color: #34d399;
+}
+
+.midGrade {
+  background: rgba(251, 191, 36, 0.2); /* amber-500 tint */
+  border-left: 3px solid rgba(251, 191, 36, 0.6);
+  color: #fbbf24;
+}
+
+.lowGrade {
+  background: rgba(239, 68, 68, 0.2); /* red-500 tint */
+  border-left: 3px solid rgba(239, 68, 68, 0.6);
+  color: #f87171;
+}
+
+.missingGrade {
+  background: rgba(107, 114, 128, 0.2); /* gray-500 tint */
+  border-left: 3px solid rgba(107, 114, 128, 0.6);
+  color: #9ca3af;
+  font-style: italic;
+}
+
+
+
 
 
 
