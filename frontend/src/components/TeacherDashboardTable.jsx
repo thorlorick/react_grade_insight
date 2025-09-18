@@ -190,10 +190,19 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
                 </td>
                 {tableData.assignments.map((assignment) => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
+                  let gradeClass = styles.missingGrade;
+
+                  if (grade) {
+                    const pct = grade.score / grade.max_points;
+                    if (pct >= 0.8) gradeClass = styles.highGrade;
+                    else if (pct >= 0.5) gradeClass = styles.midGrade;
+                    else gradeClass = styles.lowGrade;
+                  }
+
                   return (
                     <td 
                       key={assignment.assignment_id} 
-                      className={`${styles.cell} ${styles.gradeCell} ${!grade ? styles.missingGrade : ''}`}
+                      className={`${styles.cell} ${styles.gradeCell} ${gradeClass}`}
                     >
                       {grade ? `${grade.score}/${grade.max_points}` : ''}
                     </td>
