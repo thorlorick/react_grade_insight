@@ -298,6 +298,15 @@
   font-style: italic;
 }
 
+.nullGrade {
+  background: rgba(128, 128, 128, 0.2); /* light gray */
+  border-left: 3px solid rgba(128, 128, 128, 0.6);
+  color: rgba(128, 128, 128, 0.9);
+  font-style: italic;
+}
+
+
+
 
 
 
