@@ -4,11 +4,9 @@ import styles from './TeacherDashboardTable.module.css';
 const TeacherDashboardTable = ({ data = [], loading = false }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // Transform flat API data into structured table data
   const tableData = useMemo(() => {
     if (!data || data.length === 0) return { students: [], assignments: [] };
 
-    // Get unique students
     const studentsMap = new Map();
     const assignmentsMap = new Map();
 
@@ -16,7 +14,6 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
       const studentKey = `${row.student_id}`;
       const assignmentKey = `${row.assignment_id}`;
 
-      // Build students map
       if (!studentsMap.has(studentKey)) {
         studentsMap.set(studentKey, {
           student_id: row.student_id,
@@ -26,7 +23,6 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
         });
       }
 
-      // Build assignments map
       if (!assignmentsMap.has(assignmentKey)) {
         assignmentsMap.set(assignmentKey, {
           assignment_id: row.assignment_id,
@@ -36,7 +32,6 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
         });
       }
 
-      // Add grade to student
       studentsMap.get(studentKey).grades.set(assignmentKey, {
         score: row.score,
         max_points: row.max_points
@@ -54,18 +49,12 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
     return { students, assignments };
   }, [data]);
 
-  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return 'No due date';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    });
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  // Handle sorting
   const handleSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -74,7 +63,6 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
     setSortConfig({ key, direction });
   };
 
-  // Sort students based on current sort config
   const sortedStudents = useMemo(() => {
     if (!sortConfig.key) return tableData.students;
 
@@ -82,32 +70,26 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
       if (sortConfig.key === 'name') {
         const aVal = a.name.toLowerCase();
         const bVal = b.name.toLowerCase();
-        return sortConfig.direction === 'asc' 
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
+        return sortConfig.direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
-      
+
       if (sortConfig.key === 'email') {
         const aVal = a.email.toLowerCase();
         const bVal = b.email.toLowerCase();
-        return sortConfig.direction === 'asc'
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
+        return sortConfig.direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
 
-      // Assignment column sorting
       const assignmentId = sortConfig.key;
       const aGrade = a.grades.get(assignmentId);
       const bGrade = b.grades.get(assignmentId);
-      
-      // Handle missing grades
+
       if (!aGrade && !bGrade) return 0;
       if (!aGrade) return sortConfig.direction === 'asc' ? 1 : -1;
       if (!bGrade) return sortConfig.direction === 'asc' ? -1 : 1;
-      
+
       const aScore = aGrade.score || 0;
       const bScore = bGrade.score || 0;
-      
+
       return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
     });
   }, [tableData.students, sortConfig]);
@@ -127,6 +109,14 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
       </div>
     );
   }
+
+  const getGradeClass = (grade) => {
+    if (!grade) return styles.nullGrade; // for null grades
+    const pct = grade.score / grade.max_points;
+    if (pct >= 0.8) return styles.highGrade;
+    if (pct >= 0.5) return styles.midGrade;
+    return styles.lowGrade;
+  };
 
   return (
     <div className={styles.container}>
@@ -190,19 +180,10 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
                 </td>
                 {tableData.assignments.map((assignment) => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
-                  let gradeClass = styles.missingGrade;
-
-                  if (grade) {
-                    const pct = grade.score / grade.max_points;
-                    if (pct >= 0.8) gradeClass = styles.highGrade;
-                    else if (pct >= 0.5) gradeClass = styles.midGrade;
-                    else gradeClass = styles.lowGrade;
-                  }
-
                   return (
                     <td 
                       key={assignment.assignment_id} 
-                      className={`${styles.cell} ${styles.gradeCell} ${gradeClass}`}
+                      className={`${styles.cell} ${styles.gradeCell} ${getGradeClass(grade)}`}
                     >
                       {grade ? `${grade.score}/${grade.max_points}` : ''}
                     </td>
