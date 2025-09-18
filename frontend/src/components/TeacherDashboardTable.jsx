@@ -55,6 +55,58 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
+  const getGradeClass = (grade) => {
+    // No grade submitted/recorded
+    if (!grade || grade.score === null || grade.score === undefined) {
+      return styles.missingGrade;
+    }
+    
+    // Ensure we have valid numbers for calculation
+    const score = Number(grade.score);
+    const maxPoints = Number(grade.max_points);
+    
+    if (isNaN(score) || isNaN(maxPoints) || maxPoints === 0) {
+      return styles.missingGrade;
+    }
+    
+    const percentage = score / maxPoints;
+    
+    // Grade classifications
+    if (percentage >= 0.9) return styles.excellentGrade;  // 90%+ - A
+    if (percentage >= 0.8) return styles.highGrade;       // 80-89% - B  
+    if (percentage >= 0.7) return styles.goodGrade;       // 70-79% - C
+    if (percentage >= 0.6) return styles.midGrade;        // 60-69% - D
+    return styles.lowGrade;                               // Below 60% - F
+  };
+
+  const getGradeDisplay = (grade) => {
+    if (!grade || grade.score === null || grade.score === undefined) {
+      return { display: '', letterGrade: '' };
+    }
+    
+    const score = Number(grade.score);
+    const maxPoints = Number(grade.max_points);
+    
+    if (isNaN(score) || isNaN(maxPoints) || maxPoints === 0) {
+      return { display: '', letterGrade: '' };
+    }
+    
+    const percentage = (score / maxPoints) * 100;
+    let letterGrade = '';
+    
+    if (percentage >= 90) letterGrade = 'A';
+    else if (percentage >= 80) letterGrade = 'B';
+    else if (percentage >= 70) letterGrade = 'C';
+    else if (percentage >= 60) letterGrade = 'D';
+    else letterGrade = 'F';
+    
+    return {
+      display: `${score}/${maxPoints}`,
+      letterGrade,
+      percentage: percentage.toFixed(1)
+    };
+  };
+
   const handleSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -109,14 +161,6 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
       </div>
     );
   }
-
-  const getGradeClass = (grade) => {
-    if (!grade) return styles.missingGrade; // for null grades
-    const pct = grade.score / grade.max_points;
-    if (pct >= 0.8) return styles.highGrade;
-    if (pct >= 0.5) return styles.midGrade;
-    return styles.lowGrade;
-  };
 
   return (
     <div className={styles.container}>
@@ -180,12 +224,23 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
                 </td>
                 {tableData.assignments.map((assignment) => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
+                  const gradeInfo = getGradeDisplay(grade);
                   return (
                     <td 
                       key={assignment.assignment_id} 
                       className={`${styles.cell} ${styles.gradeCell} ${getGradeClass(grade)}`}
+                      title={gradeInfo.letterGrade ? `${gradeInfo.percentage}% (${gradeInfo.letterGrade})` : 'Not submitted'}
                     >
-                      {grade ? `${grade.score}/${grade.max_points}` : ''}
+                      {grade ? (
+                        <div className={styles.gradeContainer}>
+                          <span className={styles.gradeScore}>{gradeInfo.display}</span>
+                          {gradeInfo.letterGrade && (
+                            <small className={styles.letterGrade}>{gradeInfo.letterGrade}</small>
+                          )}
+                        </div>
+                      ) : (
+                        <span className={styles.noGrade}>—</span>
+                      )}
                     </td>
                   );
                 })}
@@ -199,4 +254,3 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
 };
 
 export default TeacherDashboardTable;
-
