@@ -111,7 +111,7 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
   }
 
   const getGradeClass = (grade) => {
-    if (!grade) return styles.nullGrade; // for null grades
+    if (!grade) return styles.missingGrade; // for null grades
     const pct = grade.score / grade.max_points;
     if (pct >= 0.8) return styles.highGrade;
     if (pct >= 0.5) return styles.midGrade;
@@ -199,3 +199,4 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
 };
 
 export default TeacherDashboardTable;
+
