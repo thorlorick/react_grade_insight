@@ -80,38 +80,34 @@ const TeacherPage = () => {
 
       {/* Navbar */}
       <Navbar brand="Grade Insight">
-        {/* Add data-tour attribute to SearchBar */}
-        <div data-tour="search">
-          <SearchBar onSearch={handleSearch} />
-        </div>
+        <SearchBar 
+          onSearch={handleSearch} 
+          data-tour="search"
+        />
 
-        {/* Add data-tour attribute to UploadButton */}
-        <div data-tour="upload">
-          <UploadButton 
-            className={styles.uploadButton}
-            onUploadSuccess={(data) => {
-              if (data.ok) {
-                setUploadSummary(data);
-                setUploadError(null);
-                refreshData();
-              } else {
-                setUploadError(data.error);
-                setUploadSummary(null);
-              }
-            }} 
-            refreshStudents={refreshData}
-          />
-        </div>
+        <UploadButton 
+          className={styles.uploadButton}
+          data-tour="upload"
+          onUploadSuccess={(data) => {
+            if (data.ok) {
+              setUploadSummary(data);
+              setUploadError(null);
+              refreshData();
+            } else {
+              setUploadError(data.error);
+              setUploadSummary(null);
+            }
+          }} 
+          refreshStudents={refreshData}
+        />
 
-        {/* Add data-tour attribute to Download Template button */}
-        <div data-tour="download">
-          <GenericButton 
-            className={styles.downloadTemplate}
-            onClick={handleDownloadTemplate}
-          >
-            Download Template
-          </GenericButton>
-        </div>
+        <GenericButton 
+          className={styles.downloadTemplate}
+          data-tour="download"
+          onClick={handleDownloadTemplate}
+        >
+          Download Template
+        </GenericButton>
       </Navbar>
 
       {/* Upload feedback */}
