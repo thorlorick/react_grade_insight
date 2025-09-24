@@ -8,11 +8,21 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const res = await fetch(`/api/student/${studentId}/details`);
+        const res = await fetch(`https://www.gradeinsight.com:8083/api/student/${studentId}/details`, {
+          credentials: 'include' // important for session cookies
+        });
+
+        if (!res.ok) {
+          console.error('Failed to fetch student data', res.status);
+          setStudentData(null);
+          return;
+        }
+
         const data = await res.json();
         setStudentData(data);
       } catch (err) {
         console.error('Failed to fetch student data', err);
+        setStudentData(null);
       } finally {
         setLoading(false);
       }
@@ -25,9 +35,10 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
     if (!newNote.trim()) return;
 
     try {
-      const res = await fetch(`/api/student/${studentId}/notes`, {
+      const res = await fetch(`https://www.gradeinsight.com:8083/api/student/${studentId}/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // important for session cookies
         body: JSON.stringify({ teacher_id: teacherId, note: newNote })
       });
 
@@ -39,10 +50,10 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
         });
         setNewNote('');
       } else {
-        console.error('Failed to save note');
+        console.error('Failed to save note', res.status);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error saving note', err);
     }
   };
 
