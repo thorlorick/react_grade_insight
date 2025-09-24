@@ -29,15 +29,15 @@ export default function AppTour() {
 
   const steps = [
     {
-      target: '[data-tour="search"]',
+      target: 'input[type="text"]', // Target the search input directly
       content: "Use this search bar to find specific students or assignments quickly.",
     },
     {
-      target: '[data-tour="upload"]',
+      target: `.${styles.uploadButton}`, // Use your existing CSS module class
       content: "Click here to upload your student grades from a CSV file.",
     },
     {
-      target: '[data-tour="download"]',
+      target: `.${styles.downloadTemplate}`, // Use your existing CSS module class
       content: "Download a CSV template to see the correct format for uploading grades.",
     }
   ];
