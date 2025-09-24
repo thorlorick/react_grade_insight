@@ -48,9 +48,9 @@ router.get('/profile', checkStudentAuth, async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      `SELECT id, first_name, last_name, email, grade_level, student_number
+      `SELECT student_id, first_name, last_name, email, grade_level, student_number
        FROM students
-       WHERE id = ?`,
+       WHERE student_id = ?`,
       [studentId]
     );
 
@@ -96,18 +96,23 @@ router.get('/summary', checkStudentAuth, async (req, res) => {
   }
 });
 
-// GET /api/student/:id/details
-router.get('/:id/details', async (req, res) => {
-  const studentId = req.params.id;
+// === GET /api/student/:student_id/details ===
+router.get('/:student_id/details', async (req, res) => {
+  const studentId = req.params.student_id;
 
   try {
-    // Example: query your database for student details
-    const [studentRows] = await pool.query('SELECT * FROM students WHERE student_id = ?', [studentId]);
-    if (studentRows.length === 0) return res.status(404).json({ error: 'Student not found' });
+    // Fetch student details
+    const [studentRows] = await pool.query(
+      'SELECT student_id, first_name, last_name, email, grade_level, student_number FROM students WHERE student_id = ?',
+      [studentId]
+    );
 
+    if (studentRows.length === 0) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
     const student = studentRows[0];
 
-    // Example: get assignments for this student
+    // Fetch assignments
     const [assignmentRows] = await pool.query(
       `SELECT a.assignment_id, a.assignment_name, a.max_points, g.score
        FROM assignments a
@@ -115,7 +120,7 @@ router.get('/:id/details', async (req, res) => {
       [studentId]
     );
 
-    // Example: get teacher notes for this student
+    // Fetch teacher notes
     const [noteRows] = await pool.query(
       'SELECT id, teacher_id, note, created_at FROM notes WHERE student_id = ? ORDER BY created_at ASC',
       [studentId]
@@ -127,11 +132,9 @@ router.get('/:id/details', async (req, res) => {
       notes: noteRows
     });
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching student details:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-
 module.exports = router;
-
