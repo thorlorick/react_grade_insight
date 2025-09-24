@@ -1,3 +1,4 @@
+// src/AppTour.jsx
 import { useState, useEffect } from "react";
 import Joyride from "react-joyride";
 
@@ -5,7 +6,6 @@ export default function AppTour() {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
-    // Check localStorage to see if the tour was already shown
     if (!localStorage.getItem("seenTour")) {
       setRun(true);
     }
@@ -20,16 +20,16 @@ export default function AppTour() {
 
   const steps = [
     {
-      target: ".sidebar",
-      content: "This is the sidebar where you can navigate through sections.",
+      target: ".teacher-dashboard",
+      content: "This is your dashboard where you can see all students and assignments."
     },
     {
-      target: ".dashboard",
-      content: "Here’s your dashboard with an overview of everything.",
+      target: ".uploadButton",
+      content: "Use this button to upload student grades."
     },
     {
-      target: ".settings",
-      content: "Click here to access settings.",
+      target: ".downloadTemplate",
+      content: "Click here to download a CSV template for uploading."
     },
   ];
 
@@ -39,10 +39,11 @@ export default function AppTour() {
       run={run}
       continuous
       showSkipButton
+      showProgress
       callback={handleCallback}
       styles={{
         options: {
-          primaryColor: "#181ED9", // match your theme
+          primaryColor: "#181ED9",
           zIndex: 10000,
         },
       }}
