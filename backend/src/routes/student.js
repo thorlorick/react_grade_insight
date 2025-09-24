@@ -1,99 +1,72 @@
-// backend/src/routes/student.js
 const express = require('express');
 const { pool } = require('../db');
 
 const router = express.Router();
 
-// Simple auth check function (no separate middleware needed)
-const checkStudentAuth = (req, res, next) => {
-  if (!req.session.student_id) {
-    return res.status(401).json({ error: 'Student authentication required' });
-  }
-  next();
-};
-
-// === GET /api/student/data ===
-router.get('/data', checkStudentAuth, async (req, res) => {
-  const studentId = req.session.student_id;
+// === Student modal data for teacher ===
+router.get('/:student_id/details', async (req, res) => {
+  const { student_id } = req.params;
 
   try {
-    const [rows] = await pool.execute(
-     `SELECT 
-        a.id AS assignment_id,
-        a.name AS assignment_name,
-        a.due_date,
-        a.max_points,
-        g.grade,
-        CASE 
-          WHEN g.grade IS NOT NULL AND a.max_points > 0 
-          THEN ROUND((g.grade / a.max_points) * 100, 1)
-          ELSE NULL 
-        END AS percentage
-      FROM assignments a
-      LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?
-      ORDER BY a.due_date DESC, a.name`,
-      [studentId]
+    // Student info
+    const [studentRows] = await pool.execute(
+      'SELECT id AS student_id, first_name, last_name, email FROM students WHERE id = ?',
+      [student_id]
+    );
+    if (!studentRows.length) return res.status(404).json({ error: 'Student not found' });
+    const student = studentRows[0];
+    student.name = `${student.first_name} ${student.last_name}`;
+
+    // Assignments + grades
+    const [assignmentRows] = await pool.execute(
+      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.max_points, g.grade AS score
+       FROM assignments a
+       LEFT JOIN grades g ON g.assignment_id = a.id AND g.student_id = ?
+       ORDER BY a.due_date ASC`,
+      [student_id]
     );
 
-    res.json(rows);
-  } catch (err) {
-    console.error('Error fetching student data:', err);
-    res.status(500).json({ error: 'Failed to fetch student data' });
-  }
-});
-
-// === GET /api/student/profile ===
-router.get('/profile', checkStudentAuth, async (req, res) => {
-  const studentId = req.session.student_id;
-
-  try {
-    const [rows] = await pool.execute(
-      `SELECT 
-        id,
-        first_name,
-        last_name,
-        email,
-        grade_level,
-        student_number
-      FROM students 
-      WHERE id = ?`,
-      [studentId]
+    // Teacher notes
+    const [noteRows] = await pool.execute(
+      'SELECT id, teacher_id, note, created_at FROM teacher_notes WHERE student_id = ? ORDER BY created_at ASC',
+      [student_id]
     );
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'Student not found' });
-    }
+    res.json({
+      student,
+      assignments: assignmentRows,
+      notes: noteRows
+    });
 
-    res.json(rows[0]);
   } catch (err) {
-    console.error('Error fetching student profile:', err);
-    res.status(500).json({ error: 'Failed to fetch student profile' });
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// === GET /api/student/summary ===
-router.get('/summary', checkStudentAuth, async (req, res) => {
-  const studentId = req.session.student_id;
+// === Add a new teacher note ===
+router.post('/:student_id/notes', async (req, res) => {
+  const { student_id } = req.params;
+  const { teacher_id, note } = req.body;
+
+  if (!teacher_id || !note) return res.status(400).json({ error: 'Missing teacher_id or note' });
 
   try {
-    const [rows] = await pool.execute(
-      `SELECT 
-        COUNT(*) AS total_assignments,
-        COUNT(g.grade) AS graded_assignments,
-        COUNT(CASE WHEN g.submitted = 1 THEN 1 END) AS submitted_assignments,
-        ROUND(AVG(CASE 
-          WHEN g.grade IS NOT NULL AND a.max_points > 0 
-          THEN (g.grade / a.max_points) * 100 
-        END), 1) AS overall_average
-      FROM assignments a
-      LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?`,
-      [studentId]
+    const [result] = await pool.execute(
+      'INSERT INTO teacher_notes (student_id, teacher_id, note) VALUES (?, ?, ?)',
+      [student_id, teacher_id, note]
     );
 
-    res.json(rows[0]);
+    // Return the inserted note
+    const [insertedRow] = await pool.execute(
+      'SELECT id, teacher_id, note, created_at FROM teacher_notes WHERE id = ?',
+      [result.insertId]
+    );
+
+    res.json(insertedRow[0]);
   } catch (err) {
-    console.error('Error fetching student summary:', err);
-    res.status(500).json({ error: 'Failed to fetch student summary' });
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
