@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const StudentModal = ({ studentData, onClose }) => {
-  const { student, assignments, notes } = studentData;
+const StudentModal = ({ studentId, teacherId, onClose }) => {
+  const [studentData, setStudentData] = useState(null);
   const [newNote, setNewNote] = useState('');
-  const [allNotes, setAllNotes] = useState(notes || []);
+  const [loading, setLoading] = useState(true);
 
-  // Handle adding a note
+  // Fetch student details on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`/api/student/${studentId}/details`);
+        const data = await res.json();
+        setStudentData(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [studentId]);
+
   const handleAddNote = async () => {
     if (!newNote.trim()) return;
 
     try {
-      const res = await fetch(`/api/teacher_notes`, {
+      const res = await fetch(`/api/student/${studentId}/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          student_id: student.student_id,
-          note: newNote
-        })
+        body: JSON.stringify({ teacher_id: teacherId, note: newNote })
       });
 
       if (res.ok) {
         const savedNote = await res.json();
-        setAllNotes([...allNotes, savedNote]);
+        setStudentData({
+          ...studentData,
+          notes: [...studentData.notes, savedNote]
+        });
         setNewNote('');
       } else {
         console.error('Failed to save note');
@@ -31,57 +46,46 @@ const StudentModal = ({ studentData, onClose }) => {
     }
   };
 
-  // Close modal if background clicked
-  const handleBackgroundClick = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  if (loading) return <div>Loading...</div>;
+  if (!studentData) return <div>Student data not found.</div>;
+
+  const { student, assignments, notes } = studentData;
 
   return (
-    <div 
+    <div
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
         backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center',
         zIndex: 1000
       }}
-      onClick={handleBackgroundClick}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div 
-        style={{
-          backgroundColor: '#fff', padding: 20, borderRadius: 8,
-          width: '400px', maxHeight: '80%', overflowY: 'auto', position: 'relative'
-        }}
-      >
-        <button 
-          onClick={onClose} 
-          style={{ position: 'absolute', top: 10, right: 10 }}
-        >
-          ✕
-        </button>
+      <div style={{
+        backgroundColor: '#fff', padding: 20, borderRadius: 8,
+        width: '400px', maxHeight: '80%', overflowY: 'auto', position: 'relative'
+      }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: 10, right: 10 }}>✕</button>
 
-        {/* Student Info */}
         <h2>{student.name}</h2>
         <p>{student.email}</p>
 
-        {/* Assignments */}
         <h3>Assignments</h3>
         <ul>
           {assignments.map(a => {
-            const grade = a.score !== undefined ? `${a.score}/${a.max_points}` : '—';
+            const grade = a.score !== null && a.score !== undefined ? `${a.score}/${a.max_points}` : '—';
             return <li key={a.assignment_id}>{a.assignment_name}: {grade}</li>;
           })}
         </ul>
 
-        {/* Notes */}
         <h3>Teacher Notes</h3>
         <ul>
-          {allNotes.map(n => (
+          {notes.map(n => (
             <li key={n.id}>{n.note} <small>({new Date(n.created_at).toLocaleString()})</small></li>
           ))}
         </ul>
 
-        {/* Add Note */}
-        <textarea 
-          value={newNote} 
+        <textarea
+          value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
           placeholder="Add a note..."
           style={{ width: '100%', minHeight: 60, marginTop: 10 }}
