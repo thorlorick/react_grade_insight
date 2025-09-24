@@ -44,8 +44,7 @@
   font-weight: 600;
   font-size: 0.875rem;
   letter-spacing: 0.02em;
-  background: #000; /* solid black */
-  background: rgba(0, 0, 0, 0.95);
+  background: #000; /* fully opaque */
   border-bottom: 2px solid rgba(125, 211, 252, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -53,6 +52,7 @@
   top: 0;
   z-index: 20;
   user-select: none;
+  color: #7dd3fc;
 }
 
 .headerCell:hover {
@@ -61,24 +61,33 @@
 }
 
 .staticHeader {
-  background: rgba(0, 0, 0, 0.4);
+  background: #000; /* opaque */
   min-width: 150px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 25; /* higher than other headers */
 }
 
 .staticHeader:first-child {
   min-width: 180px;
 }
 
+.staticHeader:nth-child(2) {
+  left: 180px;
+}
+
 .dynamicHeader {
   min-width: 120px;
   max-width: 150px;
-  background: #000; /* solid black */
+  background: #000; /* opaque */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-   position: sticky;
+  position: sticky;
   top: 0;
   z-index: 20;
+  color: #7dd3fc;
 }
 
 .headerContent {
@@ -122,9 +131,10 @@
 
 .staticCell {
   font-weight: 500;
-  background: rgba(0, 0, 0, 0.2);
-  position: static;
-  z-index: 5;
+  background: #000; /* opaque */
+  position: sticky;
+  top: 0;
+  z-index: 15;
 }
 
 .staticCell:first-child {
@@ -145,7 +155,7 @@
   position: relative;
 }
 
-/* Grade Container for better layout */
+/* Grade Container */
 .gradeContainer {
   display: flex;
   flex-direction: column;
@@ -170,7 +180,7 @@
   font-weight: 300;
 }
 
-/* Enhanced Grade Classification Styles */
+/* Grade Classification Styles */
 .excellentGrade {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.25) 100%);
   border-left: 4px solid #22c55e;
@@ -260,7 +270,7 @@
   color: rgba(107, 114, 128, 0.8);
 }
 
-/* Hover effects for better interactivity */
+/* Hover effects */
 .excellentGrade:hover,
 .highGrade:hover,
 .goodGrade:hover,
@@ -276,7 +286,7 @@
   transition: all 0.2s ease;
 }
 
-/* Optional: Subtle pulse animation for missing grades */
+/* Pulse animation for missing grades */
 @keyframes pulse-missing {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
@@ -385,15 +395,6 @@
 }
 
 /* Tooltip Enhancement for Assignment Headers */
-.dynamicHeader {
-  position: relative;
-   position: sticky;
-  top: 0;
-  left: [cumulative offset of previous columns];
-  z-index: 20;
-  background: #000; /* same opaque background */
-}
-
 .dynamicHeader:hover::after {
   content: attr(title);
   position: absolute;
@@ -411,5 +412,3 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-
-
