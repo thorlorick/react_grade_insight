@@ -1,6 +1,8 @@
 // src/components/AppTour.jsx
 import { useState, useEffect } from "react";
 import Joyride from "react-joyride";
+import styles from './AppTour.module.css';
+
 
 export default function AppTour() {
   const [run, setRun] = useState(false);
