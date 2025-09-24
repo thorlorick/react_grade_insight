@@ -1,0 +1,39 @@
+/* AppTour.module.css */
+
+/* Upload button styling */
+.uploadButton {
+  background-color: #181ED9;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.uploadButton:hover {
+  background-color: #141AB0;
+}
+
+/* Download template button styling */
+.downloadTemplate {
+  background-color: #00B894;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.downloadTemplate:hover {
+  background-color: #009F7F;
+}
+
+/* Optional: small highlight for tour targets */
+.joyride-highlight {
+  outline: 3px solid #FFB800;
+  border-radius: 6px;
+}
