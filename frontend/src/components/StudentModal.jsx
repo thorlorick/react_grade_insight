@@ -5,20 +5,20 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Fetch student details on mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchStudentData = async () => {
       try {
         const res = await fetch(`/api/student/${studentId}/details`);
         const data = await res.json();
         setStudentData(data);
       } catch (err) {
-        console.error(err);
+        console.error('Failed to fetch student data', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    fetchStudentData();
   }, [studentId]);
 
   const handleAddNote = async () => {
