@@ -1,12 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import styles from './TeacherDashboardTable.module.css';
-import StudentModal from './StudentModal'; // placeholder modal component
+import StudentModal from './StudentModal';
 
-const TeacherDashboardTable = ({ data = [], loading = false }) => {
+const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  
-  // --- Modal state ---
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const tableData = useMemo(() => {
@@ -54,21 +52,6 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
     return { students, assignments };
   }, [data]);
 
-  // --- Click handler to open modal ---
-  const handleStudentClick = async (studentEmail) => {
-    // Fetch student data + assignments + notes from backend
-    try {
-      const res = await fetch(`/api/students/${encodeURIComponent(studentEmail)}/details`);
-      const studentData = await res.json();
-      setSelectedStudent(studentData);
-      setIsModalOpen(true);
-    } catch (err) {
-      console.error('Failed to fetch student data', err);
-    }
-  };
-
-  // ...sorting and grade helpers (same as your current code)...
-
   const sortedStudents = useMemo(() => {
     if (!sortConfig.key) return tableData.students;
 
@@ -89,16 +72,16 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
       const aGrade = a.grades.get(assignmentId);
       const bGrade = b.grades.get(assignmentId);
 
-      if (!aGrade && !bGrade) return 0;
-      if (!aGrade) return sortConfig.direction === 'asc' ? 1 : -1;
-      if (!bGrade) return sortConfig.direction === 'asc' ? -1 : 1;
-
-      const aScore = aGrade.score || 0;
-      const bScore = bGrade.score || 0;
-
+      const aScore = aGrade?.score ?? 0;
+      const bScore = bGrade?.score ?? 0;
       return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
     });
   }, [tableData.students, sortConfig]);
+
+  const handleStudentClick = (studentId) => {
+    setSelectedStudentId(studentId);
+    setIsModalOpen(true);
+  };
 
   if (loading) return <div className={styles.loading}>Loading grades...</div>;
   if (!data || data.length === 0) return <div className={styles.emptyState}>No grade data available</div>;
@@ -119,10 +102,8 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
           <tbody>
             {sortedStudents.map(student => (
               <tr key={student.student_id}>
-                <td>
-                  <button onClick={() => handleStudentClick(student.email)}>
-                    {student.name}
-                  </button>
+                <td onClick={() => handleStudentClick(student.student_id)} style={{ cursor: 'pointer', color: '#1a73e8' }}>
+                  {student.name}
                 </td>
                 <td>{student.email}</td>
                 {tableData.assignments.map(assignment => {
@@ -136,11 +117,11 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
         </table>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && selectedStudent && (
-        <StudentModal 
-          studentData={selectedStudent} 
-          onClose={() => setIsModalOpen(false)} 
+      {isModalOpen && selectedStudentId && (
+        <StudentModal
+          studentId={selectedStudentId}
+          teacherId={currentTeacherId}
+          onClose={() => setIsModalOpen(false)}
         />
       )}
     </div>
