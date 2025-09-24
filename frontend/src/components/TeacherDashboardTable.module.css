@@ -44,7 +44,7 @@
   font-weight: 600;
   font-size: 0.875rem;
   letter-spacing: 0.02em;
-  color: #7dd3fc;
+  background: #000; /* solid black */
   background: rgba(0, 0, 0, 0.95);
   border-bottom: 2px solid rgba(125, 211, 252, 0.3);
   cursor: pointer;
@@ -72,6 +72,7 @@
 .dynamicHeader {
   min-width: 120px;
   max-width: 150px;
+  background: #000; /* solid black */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -386,6 +387,11 @@
 /* Tooltip Enhancement for Assignment Headers */
 .dynamicHeader {
   position: relative;
+   position: sticky;
+  top: 0;
+  left: [cumulative offset of previous columns];
+  z-index: 20;
+  background: #000; /* same opaque background */
 }
 
 .dynamicHeader:hover::after {
@@ -405,4 +411,5 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
 
