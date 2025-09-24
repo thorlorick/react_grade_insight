@@ -2,17 +2,15 @@ import React, { useState, useMemo } from 'react';
 import styles from './TeacherDashboardTable.module.css';
 
 const TeacherDashboardTable = ({ data = [], loading = false }) => {
-  // --- Sorting state ---
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // --- Transform raw data into table-friendly structure ---
   const tableData = useMemo(() => {
     if (!data || data.length === 0) return { students: [], assignments: [] };
 
     const studentsMap = new Map();
     const assignmentsMap = new Map();
 
-    data.forEach((row) => {
+    data.forEach(row => {
       const studentKey = `${row.student_id}`;
       const assignmentKey = `${row.assignment_id}`;
 
@@ -21,7 +19,7 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
           student_id: row.student_id,
           name: `${row.first_name} ${row.last_name}`,
           email: row.email,
-          grades: new Map(),
+          grades: new Map()
         });
       }
 
@@ -30,13 +28,13 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
           assignment_id: row.assignment_id,
           assignment_name: row.assignment_name,
           assignment_date: row.assignment_date,
-          max_points: row.max_points,
+          max_points: row.max_points
         });
       }
 
       studentsMap.get(studentKey).grades.set(assignmentKey, {
         score: row.score,
-        max_points: row.max_points,
+        max_points: row.max_points
       });
     });
 
@@ -51,7 +49,72 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
     return { students, assignments };
   }, [data]);
 
-  // --- Sorted students based on sortConfig ---
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No due date';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
+  const getGradeClass = (grade) => {
+    // No grade submitted/recorded
+    if (!grade || grade.score === null || grade.score === undefined) {
+      return styles.missingGrade;
+    }
+    
+    // Ensure we have valid numbers for calculation
+    const score = Number(grade.score);
+    const maxPoints = Number(grade.max_points);
+    
+    if (isNaN(score) || isNaN(maxPoints) || maxPoints === 0) {
+      return styles.missingGrade;
+    }
+    
+    const percentage = score / maxPoints;
+    
+    // Grade classifications
+    if (percentage >= 0.9) return styles.excellentGrade;  // 90%+ - A
+    if (percentage >= 0.8) return styles.highGrade;       // 80-89% - B  
+    if (percentage >= 0.7) return styles.goodGrade;       // 70-79% - C
+    if (percentage >= 0.6) return styles.midGrade;        // 60-69% - D
+    return styles.lowGrade;                               // Below 60% - F
+  };
+
+  const getGradeDisplay = (grade) => {
+    if (!grade || grade.score === null || grade.score === undefined) {
+      return { display: '', letterGrade: '' };
+    }
+    
+    const score = Number(grade.score);
+    const maxPoints = Number(grade.max_points);
+    
+    if (isNaN(score) || isNaN(maxPoints) || maxPoints === 0) {
+      return { display: '', letterGrade: '' };
+    }
+    
+    const percentage = (score / maxPoints) * 100;
+    let letterGrade = '';
+    
+    if (percentage >= 90) letterGrade = 'A';
+    else if (percentage >= 80) letterGrade = 'B';
+    else if (percentage >= 70) letterGrade = 'C';
+    else if (percentage >= 60) letterGrade = 'D';
+    else letterGrade = 'F';
+    
+    return {
+      display: `${score}/${maxPoints}`,
+      letterGrade,
+      percentage: percentage.toFixed(1)
+    };
+  };
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
   const sortedStudents = useMemo(() => {
     if (!sortConfig.key) return tableData.students;
 
@@ -78,12 +141,26 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
 
       const aScore = aGrade.score || 0;
       const bScore = bGrade.score || 0;
+
       return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
     });
   }, [tableData.students, sortConfig]);
 
-  if (loading) return <div className={styles.loading}>Loading grades...</div>;
-  if (!data || data.length === 0) return <div className={styles.emptyState}>No grade data available</div>;
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading grades...</div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.emptyState}>No grade data available</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -91,22 +168,81 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th onClick={() => setSortConfig({ key: 'name', direction: 'asc' })}>Name</th>
-              <th onClick={() => setSortConfig({ key: 'email', direction: 'asc' })}>Email</th>
-              {tableData.assignments.map((a) => (
-                <th key={a.assignment_id}>{a.assignment_name}</th>
+              <th 
+                className={`${styles.headerCell} ${styles.staticHeader}`}
+                onClick={() => handleSort('name')}
+              >
+                <span className={styles.headerContent}>
+                  Name
+                  {sortConfig.key === 'name' && (
+                    <span className={styles.sortIcon}>
+                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                    </span>
+                  )}
+                </span>
+              </th>
+              <th 
+                className={`${styles.headerCell} ${styles.staticHeader}`}
+                onClick={() => handleSort('email')}
+              >
+                <span className={styles.headerContent}>
+                  Email
+                  {sortConfig.key === 'email' && (
+                    <span className={styles.sortIcon}>
+                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                    </span>
+                  )}
+                </span>
+              </th>
+              {tableData.assignments.map((assignment) => (
+                <th
+                  key={assignment.assignment_id}
+                  className={`${styles.headerCell} ${styles.dynamicHeader}`}
+                  onClick={() => handleSort(assignment.assignment_id.toString())}
+                  title={`Due: ${formatDate(assignment.assignment_date)}`}
+                >
+                  <span className={styles.headerContent}>
+                    {assignment.assignment_name}
+                    {sortConfig.key === assignment.assignment_id.toString() && (
+                      <span className={styles.sortIcon}>
+                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
+                  </span>
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {sortedStudents.map((student) => (
-              <tr key={student.student_id}>
-                <td>{student.name}</td>
-                <td>{student.email}</td>
+              <tr key={student.student_id} className={styles.row}>
+                <td className={`${styles.cell} ${styles.staticCell}`}>
+                  {student.name}
+                </td>
+                <td className={`${styles.cell} ${styles.staticCell}`}>
+                  {student.email}
+                </td>
                 {tableData.assignments.map((assignment) => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
-                  const display = grade ? `${grade.score}/${grade.max_points}` : '—';
-                  return <td key={assignment.assignment_id}>{display}</td>;
+                  const gradeInfo = getGradeDisplay(grade);
+                  return (
+                    <td 
+                      key={assignment.assignment_id} 
+                      className={`${styles.cell} ${styles.gradeCell} ${getGradeClass(grade)}`}
+                      title={gradeInfo.letterGrade ? `${gradeInfo.percentage}% (${gradeInfo.letterGrade})` : 'Not submitted'}
+                    >
+                      {grade ? (
+                        <div className={styles.gradeContainer}>
+                          <span className={styles.gradeScore}>{gradeInfo.display}</span>
+                          {gradeInfo.letterGrade && (
+                            <small className={styles.letterGrade}>{gradeInfo.letterGrade}</small>
+                          )}
+                        </div>
+                      ) : (
+                        <span className={styles.noGrade}>—</span>
+                      )}
+                    </td>
+                  );
                 })}
               </tr>
             ))}
