@@ -1,8 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import styles from './TeacherDashboardTable.module.css';
+import StudentModal from './StudentModal';
 
-const TeacherDashboardTable = ({ data = [], loading = false }) => {
+const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  // --- Modal state ---
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
 
   const tableData = useMemo(() => {
     if (!data || data.length === 0) return { students: [], assignments: [] };
@@ -107,29 +111,21 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
     };
   };
 
-  const handleSort = (key) => {
+ const handleSort = (key) => {
     let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
+    if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
     setSortConfig({ key, direction });
   };
 
   const sortedStudents = useMemo(() => {
     if (!sortConfig.key) return tableData.students;
-
     return [...tableData.students].sort((a, b) => {
-      if (sortConfig.key === 'name') {
-        const aVal = a.name.toLowerCase();
-        const bVal = b.name.toLowerCase();
-        return sortConfig.direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-      }
-
-      if (sortConfig.key === 'email') {
-        const aVal = a.email.toLowerCase();
-        const bVal = b.email.toLowerCase();
-        return sortConfig.direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-      }
+      if (sortConfig.key === 'name') return sortConfig.direction === 'asc'
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
+      if (sortConfig.key === 'email') return sortConfig.direction === 'asc'
+        ? a.email.localeCompare(b.email)
+        : b.email.localeCompare(a.email);
 
       const assignmentId = sortConfig.key;
       const aGrade = a.grades.get(assignmentId);
@@ -139,28 +135,14 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
       if (!aGrade) return sortConfig.direction === 'asc' ? 1 : -1;
       if (!bGrade) return sortConfig.direction === 'asc' ? -1 : 1;
 
-      const aScore = aGrade.score || 0;
-      const bScore = bGrade.score || 0;
-
-      return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
+      return sortConfig.direction === 'asc'
+        ? (aGrade.score || 0) - (bGrade.score || 0)
+        : (bGrade.score || 0) - (aGrade.score || 0);
     });
   }, [tableData.students, sortConfig]);
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading grades...</div>
-      </div>
-    );
-  }
-
-  if (!data || data.length === 0) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.emptyState}>No grade data available</div>
-      </div>
-    );
-  }
+  if (loading) return <div className={styles.container}><div className={styles.loading}>Loading grades...</div></div>;
+  if (!data || data.length === 0) return <div className={styles.container}><div className={styles.emptyState}>No grade data available</div></div>;
 
   return (
     <div className={styles.container}>
@@ -168,79 +150,35 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th 
-                className={`${styles.headerCell} ${styles.staticHeader}`}
-                onClick={() => handleSort('name')}
-              >
-                <span className={styles.headerContent}>
-                  Name
-                  {sortConfig.key === 'name' && (
-                    <span className={styles.sortIcon}>
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </span>
+              <th className={`${styles.headerCell} ${styles.staticHeader}`} onClick={() => handleSort('name')}>
+                Name {sortConfig.key === 'name' && <span className={styles.sortIcon}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>}
               </th>
-              <th 
-                className={`${styles.headerCell} ${styles.staticHeader}`}
-                onClick={() => handleSort('email')}
-              >
-                <span className={styles.headerContent}>
-                  Email
-                  {sortConfig.key === 'email' && (
-                    <span className={styles.sortIcon}>
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </span>
+              <th className={`${styles.headerCell} ${styles.staticHeader}`} onClick={() => handleSort('email')}>
+                Email {sortConfig.key === 'email' && <span className={styles.sortIcon}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>}
               </th>
-              {tableData.assignments.map((assignment) => (
-                <th
-                  key={assignment.assignment_id}
-                  className={`${styles.headerCell} ${styles.dynamicHeader}`}
-                  onClick={() => handleSort(assignment.assignment_id.toString())}
-                  title={`Due: ${formatDate(assignment.assignment_date)}`}
-                >
-                  <span className={styles.headerContent}>
-                    {assignment.assignment_name}
-                    {sortConfig.key === assignment.assignment_id.toString() && (
-                      <span className={styles.sortIcon}>
-                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                      </span>
-                    )}
-                  </span>
+              {tableData.assignments.map(a => (
+                <th key={a.assignment_id} className={`${styles.headerCell} ${styles.dynamicHeader}`} onClick={() => handleSort(a.assignment_id.toString())} title={`Due: ${a.assignment_date || 'No due date'}`}>
+                  {a.assignment_name} {sortConfig.key === a.assignment_id.toString() && <span className={styles.sortIcon}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {sortedStudents.map((student) => (
-              <tr key={student.student_id} className={styles.row}>
-                <td className={`${styles.cell} ${styles.staticCell}`}>
-                  {student.name}
-                </td>
-                <td className={`${styles.cell} ${styles.staticCell}`}>
-                  {student.email}
-                </td>
-                {tableData.assignments.map((assignment) => {
+            {sortedStudents.map(student => (
+              <tr
+                key={student.student_id}
+                className={styles.row}
+                onClick={() => setSelectedStudentId(student.student_id)}
+                style={{ cursor: 'pointer' }} // indicates clickable row
+              >
+                <td className={`${styles.cell} ${styles.staticCell}`}>{student.name}</td>
+                <td className={`${styles.cell} ${styles.staticCell}`}>{student.email}</td>
+                {tableData.assignments.map(assignment => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
                   const gradeInfo = getGradeDisplay(grade);
                   return (
-                    <td 
-                      key={assignment.assignment_id} 
-                      className={`${styles.cell} ${styles.gradeCell} ${getGradeClass(grade)}`}
-                      title={gradeInfo.letterGrade ? `${gradeInfo.percentage}% (${gradeInfo.letterGrade})` : 'Not submitted'}
-                    >
-                      {grade ? (
-                        <div className={styles.gradeContainer}>
-                          <span className={styles.gradeScore}>{gradeInfo.display}</span>
-                          {gradeInfo.letterGrade && (
-                            <small className={styles.letterGrade}>{gradeInfo.letterGrade}</small>
-                          )}
-                        </div>
-                      ) : (
-                        <span className={styles.noGrade}>—</span>
-                      )}
+                    <td key={assignment.assignment_id} className={`${styles.cell} ${styles.gradeCell} ${getGradeClass(grade)}`} title={gradeInfo.letterGrade ? `${gradeInfo.percentage}% (${gradeInfo.letterGrade})` : 'Not submitted'}>
+                      {grade ? <div className={styles.gradeContainer}><span className={styles.gradeScore}>{gradeInfo.display}</span>{gradeInfo.letterGrade && <small className={styles.letterGrade}>{gradeInfo.letterGrade}</small>}</div> : <span className={styles.noGrade}>—</span>}
                     </td>
                   );
                 })}
@@ -249,6 +187,15 @@ const TeacherDashboardTable = ({ data = [], loading = false }) => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
+      {selectedStudentId && (
+        <StudentModal
+          studentId={selectedStudentId}
+          teacherId={teacherId}
+          onClose={() => setSelectedStudentId(null)}
+        />
+      )}
     </div>
   );
 };
