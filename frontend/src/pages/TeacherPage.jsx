@@ -9,6 +9,9 @@ import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
+// Import your tour component
+import AppTour from "../components/AppTour";
+
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -72,27 +75,43 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
+      {/* Add the tour component */}
+      <AppTour />
+
+      {/* Navbar */}
       <Navbar brand="Grade Insight">
-        <SearchBar onSearch={handleSearch} />
+        {/* Add data-tour attribute to SearchBar */}
+        <div data-tour="search">
+          <SearchBar onSearch={handleSearch} />
+        </div>
 
-        <UploadButton
-          onUploadSuccess={(data) => {
-            if (data.ok) {
-              setUploadSummary(data);
-              setUploadError(null);
-              // Refresh data after successful upload
-              refreshData();
-            } else {
-              setUploadError(data.error);
-              setUploadSummary(null);
-            }
-          }}
-          refreshStudents={refreshData}
-        />
+        {/* Add data-tour attribute to UploadButton */}
+        <div data-tour="upload">
+          <UploadButton 
+            className={styles.uploadButton}
+            onUploadSuccess={(data) => {
+              if (data.ok) {
+                setUploadSummary(data);
+                setUploadError(null);
+                refreshData();
+              } else {
+                setUploadError(data.error);
+                setUploadSummary(null);
+              }
+            }} 
+            refreshStudents={refreshData}
+          />
+        </div>
 
-        <GenericButton onClick={handleDownloadTemplate}>
-          Download Template
-        </GenericButton>
+        {/* Add data-tour attribute to Download Template button */}
+        <div data-tour="download">
+          <GenericButton 
+            className={styles.downloadTemplate}
+            onClick={handleDownloadTemplate}
+          >
+            Download Template
+          </GenericButton>
+        </div>
       </Navbar>
 
       {/* Upload feedback */}
@@ -104,15 +123,19 @@ const TeacherPage = () => {
           <p>Students processed: {uploadSummary.studentsCount}</p>
         </div>
       )}
-
+      
       {uploadError && (
         <div className={styles.uploadError}>
           <p>❌ Upload failed: {uploadError}</p>
         </div>
       )}
 
-      <div className={styles.pageWrapper}>
-        <TeacherDashboardTable data={filteredData} loading={loading} />
+      {/* Dashboard */}
+      <div className={`${styles.pageWrapper} teacher-dashboard`}>
+        <TeacherDashboardTable 
+          data={filteredData} 
+          loading={loading}
+        />
       </div>
     </div>
   );
