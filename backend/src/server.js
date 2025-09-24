@@ -55,9 +55,6 @@ app.use(session({
   cookie: { maxAge: 4*60*60*1000, httpOnly: true, secure: true }
 }));
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, '../../frontend/')));
-
 // Auth routes
 app.use('/api/auth', authRoutes);
 
@@ -72,6 +69,9 @@ app.use('/api/parent', require('./routes/parent'));
 
 // Upload routes
 app.use('/api/uploads', uploadRoutes);
+
+// Serve frontend
+app.use(express.static(path.join(__dirname, '../../frontend/')));
 
 
 // Health check
