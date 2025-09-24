@@ -1,19 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import styles from './TeacherDashboardTable.module.css';
-import StudentModal from './StudentModal';
 
-const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId }) => {
+const TeacherDashboardTable = ({ data = [], loading = false }) => {
+  // --- Sorting state ---
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const [selectedStudentId, setSelectedStudentId] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // --- Transform raw data into table-friendly structure ---
   const tableData = useMemo(() => {
     if (!data || data.length === 0) return { students: [], assignments: [] };
 
     const studentsMap = new Map();
     const assignmentsMap = new Map();
 
-    data.forEach(row => {
+    data.forEach((row) => {
       const studentKey = `${row.student_id}`;
       const assignmentKey = `${row.assignment_id}`;
 
@@ -22,7 +21,7 @@ const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId })
           student_id: row.student_id,
           name: `${row.first_name} ${row.last_name}`,
           email: row.email,
-          grades: new Map()
+          grades: new Map(),
         });
       }
 
@@ -31,13 +30,13 @@ const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId })
           assignment_id: row.assignment_id,
           assignment_name: row.assignment_name,
           assignment_date: row.assignment_date,
-          max_points: row.max_points
+          max_points: row.max_points,
         });
       }
 
       studentsMap.get(studentKey).grades.set(assignmentKey, {
         score: row.score,
-        max_points: row.max_points
+        max_points: row.max_points,
       });
     });
 
@@ -52,6 +51,7 @@ const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId })
     return { students, assignments };
   }, [data]);
 
+  // --- Sorted students based on sortConfig ---
   const sortedStudents = useMemo(() => {
     if (!sortConfig.key) return tableData.students;
 
@@ -72,16 +72,15 @@ const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId })
       const aGrade = a.grades.get(assignmentId);
       const bGrade = b.grades.get(assignmentId);
 
-      const aScore = aGrade?.score ?? 0;
-      const bScore = bGrade?.score ?? 0;
+      if (!aGrade && !bGrade) return 0;
+      if (!aGrade) return sortConfig.direction === 'asc' ? 1 : -1;
+      if (!bGrade) return sortConfig.direction === 'asc' ? -1 : 1;
+
+      const aScore = aGrade.score || 0;
+      const bScore = bGrade.score || 0;
       return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
     });
   }, [tableData.students, sortConfig]);
-
-  const handleStudentClick = (studentId) => {
-    setSelectedStudentId(studentId);
-    setIsModalOpen(true);
-  };
 
   if (loading) return <div className={styles.loading}>Loading grades...</div>;
   if (!data || data.length === 0) return <div className={styles.emptyState}>No grade data available</div>;
@@ -94,19 +93,17 @@ const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId })
             <tr>
               <th onClick={() => setSortConfig({ key: 'name', direction: 'asc' })}>Name</th>
               <th onClick={() => setSortConfig({ key: 'email', direction: 'asc' })}>Email</th>
-              {tableData.assignments.map(a => (
+              {tableData.assignments.map((a) => (
                 <th key={a.assignment_id}>{a.assignment_name}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {sortedStudents.map(student => (
+            {sortedStudents.map((student) => (
               <tr key={student.student_id}>
-                <td onClick={() => handleStudentClick(student.student_id)} style={{ cursor: 'pointer', color: '#1a73e8' }}>
-                  {student.name}
-                </td>
+                <td>{student.name}</td>
                 <td>{student.email}</td>
-                {tableData.assignments.map(assignment => {
+                {tableData.assignments.map((assignment) => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
                   const display = grade ? `${grade.score}/${grade.max_points}` : '—';
                   return <td key={assignment.assignment_id}>{display}</td>;
@@ -116,14 +113,6 @@ const TeacherDashboardTable = ({ data = [], loading = false, currentTeacherId })
           </tbody>
         </table>
       </div>
-
-      {isModalOpen && selectedStudentId && (
-        <StudentModal
-          studentId={selectedStudentId}
-          teacherId={currentTeacherId}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </div>
   );
 };
