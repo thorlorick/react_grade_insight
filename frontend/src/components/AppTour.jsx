@@ -6,57 +6,40 @@ export default function AppTour() {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
-    const startTour = () => {
-      if (!localStorage.getItem("seenTour")) {
-        // Wait for elements to be available
-        const checkElements = () => {
-          const elements = ['.teacher-dashboard', '.uploadButton', '.downloadTemplate'];
-          const allExist = elements.every(selector => {
-            const element = document.querySelector(selector);
-            console.log(`Checking ${selector}:`, element ? 'Found' : 'Not found');
-            return element !== null;
-          });
-          
-          if (allExist) {
-            console.log('All elements found, starting tour');
-            setRun(true);
-          } else {
-            setTimeout(checkElements, 100);
-          }
-        };
-        
-        setTimeout(checkElements, 500);
-      }
-    };
+    // Check if user has seen the tour before
+    const hasSeenTour = localStorage.getItem("hasSeenTour");
     
-    startTour();
+    if (!hasSeenTour) {
+      // Start the tour after a small delay to ensure elements are loaded
+      setTimeout(() => {
+        setRun(true);
+      }, 1000);
+    }
   }, []);
 
-  const handleCallback = ({ status, type, index }) => {
-    console.log("Joyride callback:", { status, type, index });
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
     
-    if (["finished", "skipped"].includes(status)) {
-      localStorage.setItem("seenTour", "true");
+    // Tour is finished or skipped
+    if (status === 'finished' || status === 'skipped') {
+      localStorage.setItem("hasSeenTour", "true");
       setRun(false);
     }
   };
 
   const steps = [
     {
-      target: ".teacher-dashboard",
-      content: "This is your dashboard where you can see all students and assignments.",
-      placement: "center"
+      target: '[data-tour="search"]',
+      content: "Use this search bar to find specific students or assignments quickly.",
     },
     {
-      target: ".uploadButton",
-      content: "Use this button to upload student grades.",
-      placement: "bottom"
+      target: '[data-tour="upload"]',
+      content: "Click here to upload your student grades from a CSV file.",
     },
     {
-      target: ".downloadTemplate", 
-      content: "Click here to download a CSV template for uploading.",
-      placement: "bottom"
-    },
+      target: '[data-tour="download"]',
+      content: "Download a CSV template to see the correct format for uploading grades.",
+    }
   ];
 
   return (
@@ -65,13 +48,11 @@ export default function AppTour() {
       run={run}
       continuous={true}
       showSkipButton={true}
-      showProgress={true}
-      callback={handleCallback}
+      callback={handleJoyrideCallback}
       styles={{
         options: {
-          primaryColor: "#181ED9",
-          zIndex: 10000,
-        },
+          primaryColor: '#181ED9',
+        }
       }}
     />
   );
