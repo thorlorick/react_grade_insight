@@ -9,6 +9,9 @@ import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
+// Import Joyride tour
+import AppTour from "../AppTour";
+
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -72,15 +75,19 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
+      {/* Mount the tour at the top */}
+      <AppTour />
+
+      {/* Navbar */}
       <Navbar brand="Grade Insight">
         <SearchBar onSearch={handleSearch} />
 
         <UploadButton 
+          className={styles.uploadButton} // add class for Joyride
           onUploadSuccess={(data) => {
             if (data.ok) {
               setUploadSummary(data);
               setUploadError(null);
-              // Refresh data after successful upload
               refreshData();
             } else {
               setUploadError(data.error);
@@ -90,7 +97,10 @@ const TeacherPage = () => {
           refreshStudents={refreshData}
         />
 
-        <GenericButton onClick={handleDownloadTemplate}>
+        <GenericButton 
+          className={styles.downloadTemplate} // add class for Joyride
+          onClick={handleDownloadTemplate}
+        >
           Download Template
         </GenericButton>
       </Navbar>
@@ -111,7 +121,8 @@ const TeacherPage = () => {
         </div>
       )}
 
-      <div className={styles.pageWrapper}>
+      {/* Dashboard */}
+      <div className={`${styles.pageWrapper} teacher-dashboard`} >
         <TeacherDashboardTable 
           data={filteredData} 
           loading={loading}
