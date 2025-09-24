@@ -9,6 +9,9 @@ import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
+// Import the tour component
+import AppTour from "../components/AppTour";
+
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -72,6 +75,9 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
+      {/* Add the tour component */}
+      <AppTour />
+
       {/* Navbar */}
       <Navbar brand="Grade Insight">
         <SearchBar onSearch={handleSearch} />
