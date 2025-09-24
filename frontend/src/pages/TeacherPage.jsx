@@ -10,7 +10,7 @@ import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
 // Import Joyride tour
-import AppTour from "../AppTour";
+import AppTour from "../components/AppTour";
 
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
