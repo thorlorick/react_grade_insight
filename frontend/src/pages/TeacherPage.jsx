@@ -9,9 +9,6 @@ import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
-// Import your tour component
-import AppTour from "../components/AppTour";
-
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -75,19 +72,12 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
-      {/* Add the tour component */}
-      <AppTour />
-
       {/* Navbar */}
       <Navbar brand="Grade Insight">
-        <SearchBar 
-          onSearch={handleSearch} 
-          data-tour="search"
-        />
+        <SearchBar onSearch={handleSearch} />
 
         <UploadButton 
           className={styles.uploadButton}
-          data-tour="upload"
           onUploadSuccess={(data) => {
             if (data.ok) {
               setUploadSummary(data);
@@ -103,7 +93,6 @@ const TeacherPage = () => {
 
         <GenericButton 
           className={styles.downloadTemplate}
-          data-tour="download"
           onClick={handleDownloadTemplate}
         >
           Download Template
