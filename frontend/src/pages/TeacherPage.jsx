@@ -9,9 +9,6 @@ import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
-// Import Joyride tour
-import AppTour from "../components/AppTour";
-
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -75,32 +72,25 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
-      {/* Mount the tour at the top */}
-      <AppTour />
-
-      {/* Navbar */}
       <Navbar brand="Grade Insight">
         <SearchBar onSearch={handleSearch} />
 
-        <UploadButton 
-          className={styles.uploadButton} // add class for Joyride
+        <UploadButton
           onUploadSuccess={(data) => {
             if (data.ok) {
               setUploadSummary(data);
               setUploadError(null);
+              // Refresh data after successful upload
               refreshData();
             } else {
               setUploadError(data.error);
               setUploadSummary(null);
             }
-          }} 
+          }}
           refreshStudents={refreshData}
         />
 
-        <GenericButton 
-          className={styles.downloadTemplate} // add class for Joyride
-          onClick={handleDownloadTemplate}
-        >
+        <GenericButton onClick={handleDownloadTemplate}>
           Download Template
         </GenericButton>
       </Navbar>
@@ -114,19 +104,15 @@ const TeacherPage = () => {
           <p>Students processed: {uploadSummary.studentsCount}</p>
         </div>
       )}
-      
+
       {uploadError && (
         <div className={styles.uploadError}>
           <p>❌ Upload failed: {uploadError}</p>
         </div>
       )}
 
-      {/* Dashboard */}
-      <div className={`${styles.pageWrapper} teacher-dashboard`} >
-        <TeacherDashboardTable 
-          data={filteredData} 
-          loading={loading}
-        />
+      <div className={styles.pageWrapper}>
+        <TeacherDashboardTable data={filteredData} loading={loading} />
       </div>
     </div>
   );
