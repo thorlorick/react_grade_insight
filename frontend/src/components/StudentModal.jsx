@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from './StudentModal.module.css';
 
 const StudentModal = ({ studentId, onClose }) => {
   const [studentData, setStudentData] = useState(null);
@@ -52,7 +53,12 @@ const StudentModal = ({ studentId, onClose }) => {
         const savedNote = await res.json();
         setStudentData(prev => ({
           ...prev,
-          notes: [...(prev.notes || []), { ...savedNote, note: newNote, id: savedNote.id || Date.now(), created_at: new Date().toISOString() }]
+          notes: [...(prev.notes || []), { 
+            ...savedNote, 
+            note: newNote, 
+            id: savedNote.id || Date.now(), 
+            created_at: new Date().toISOString() 
+          }]
         }));
         setNewNote('');
       } else {
@@ -63,51 +69,122 @@ const StudentModal = ({ studentId, onClose }) => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!studentData) return <div>Student data not found.</div>;
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      handleAddNote();
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
+        <div className={styles.modal}>
+          <div className={styles.loading}>Loading student data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!studentData) {
+    return (
+      <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
+        <div className={styles.modal}>
+          <div className={styles.error}>Student data not found.</div>
+        </div>
+      </div>
+    );
+  }
 
   const { student, assignments, notes } = studentData;
 
   return (
     <div
-      style={{
-        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center',
-        zIndex: 1000
-      }}
+      className={styles.overlay}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div style={{
-        backgroundColor: '#fff', padding: 20, borderRadius: 8,
-        width: '400px', maxHeight: '80%', overflowY: 'auto', position: 'relative'
-      }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: 10, right: 10 }}>✕</button>
+      <div className={styles.modal}>
+        <div className={styles.header}>
+          <button 
+            onClick={onClose} 
+            className={styles.closeButton}
+            aria-label="Close modal"
+          >
+            ✕
+          </button>
+          <h2 className={styles.studentName}>
+            {student?.first_name} {student?.last_name}
+          </h2>
+          <p className={styles.studentEmail}>{student?.email}</p>
+        </div>
 
-        <h2>{student?.first_name} {student?.last_name}</h2>
-        <p>{student?.email}</p>
+        <div className={styles.content}>
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Assignments</h3>
+            {assignments.length > 0 ? (
+              <ul className={styles.assignmentsList}>
+                {assignments.map(a => {
+                  const hasGrade = a.grade !== null && a.grade !== undefined;
+                  const grade = hasGrade ? `${a.grade}/${a.max_points}` : '—';
+                  
+                  return (
+                    <li key={a.assignment_id} className={styles.assignmentItem}>
+                      <span className={styles.assignmentName}>
+                        {a.assignment_name}
+                      </span>
+                      <span 
+                        className={`${styles.assignmentGrade} ${!hasGrade ? styles.noGrade : ''}`}
+                      >
+                        {grade}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <div className={styles.emptyState}>
+                No assignments found for this student.
+              </div>
+            )}
+          </div>
 
-        <h3>Assignments</h3>
-        <ul>
-          {assignments.map(a => {
-            const grade = a.grade !== null && a.grade !== undefined ? `${a.grade}/${a.max_points}` : '—';
-            return <li key={a.assignment_id}>{a.assignment_name}: {grade}</li>;
-          })}
-        </ul>
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Teacher Notes</h3>
+            {notes.length > 0 ? (
+              <ul className={styles.notesList}>
+                {notes.map(n => (
+                  <li key={n.id} className={styles.noteItem}>
+                    <p className={styles.noteText}>{n.note}</p>
+                    <small className={styles.noteDate}>
+                      {new Date(n.created_at).toLocaleString()}
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className={styles.emptyState}>
+                No notes yet. Add one below!
+              </div>
+            )}
+          </div>
 
-        <h3>Teacher Notes</h3>
-        <ul>
-          {notes.map(n => (
-            <li key={n.id}>{n.note} <small>({new Date(n.created_at).toLocaleString()})</small></li>
-          ))}
-        </ul>
-
-        <textarea
-          value={newNote}
-          onChange={(e) => setNewNote(e.target.value)}
-          placeholder="Add a note..."
-          style={{ width: '100%', minHeight: 60, marginTop: 10 }}
-        />
-        <button onClick={handleAddNote} style={{ marginTop: 5 }}>Add Note</button>
+          <div className={styles.addNoteSection}>
+            <textarea
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Add a note about this student... (Ctrl+Enter to save)"
+              className={styles.textarea}
+              maxLength={2000}
+            />
+            <button 
+              onClick={handleAddNote} 
+              className={styles.addButton}
+              disabled={!newNote.trim()}
+            >
+              Add Note
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
