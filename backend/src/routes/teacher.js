@@ -27,18 +27,44 @@ router.get('/student/:studentId/details', async (req, res) => {
   console.log('Fetching student data for ID:', studentId);
 
   try {
-    const [rows] = await pool.query(
+    // Get student info
+    const [studentRows] = await pool.query(
       `SELECT id, first_name, last_name, email
        FROM students
        WHERE id = ?`,
       [studentId]
     );
 
-    if (rows.length === 0) {
+    if (studentRows.length === 0) {
       return res.status(404).json({ error: 'Student not found' });
     }
 
-    res.json(rows[0]);
+    // Get student's assignments and grades
+    const [assignmentRows] = await pool.query(
+      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.due_date,
+              a.max_points, g.grade
+       FROM assignments a
+       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?
+       ORDER BY a.due_date`,
+      [studentId]
+    );
+
+    // Get student's notes
+    const [noteRows] = await pool.query(
+      `SELECT id, note, created_at
+       FROM teacher_notes
+       WHERE student_id = ?
+       ORDER BY created_at DESC`,
+      [studentId]
+    );
+
+    // Return the data in the format your frontend expects
+    res.json({
+      student: studentRows[0],
+      assignments: assignmentRows || [],
+      notes: noteRows || []
+    });
+
   } catch (err) {
     console.error('Error fetching student data:', err);
     res.status(500).json({ error: 'Failed to fetch student data' });
@@ -78,14 +104,19 @@ router.post('/notes/:studentId', async (req, res) => {
       return res.status(400).json({ error: 'Note too long (max 2000 characters)' });
     }
 
-    await pool.execute(
-      `INSERT INTO teacher_notes (student_id, note)
-       VALUES (?, ?)
-       ON DUPLICATE KEY UPDATE note = VALUES(note), updated_at = CURRENT_TIMESTAMP`,
+    const [result] = await pool.execute(
+      `INSERT INTO teacher_notes (student_id, note, created_at)
+       VALUES (?, ?, NOW())`,
       [studentId, note || '']
     );
 
-    res.json({ success: true, message: 'Note saved successfully' });
+    // Return the created note data
+    res.json({ 
+      id: result.insertId,
+      note: note || '',
+      created_at: new Date().toISOString(),
+      success: true 
+    });
   } catch (err) {
     console.error('Error saving teacher note:', err);
     res.status(500).json({ error: 'Failed to save note' });
