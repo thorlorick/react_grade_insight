@@ -1,10 +1,9 @@
 // backend/src/routes/teacher.js
 const express = require('express');
 const { pool } = require('../db');
-
 const router = express.Router();
 
-// Auth middleware
+// --- Middleware to check teacher session ---
 const checkTeacherAuth = (req, res, next) => {
   if (!req.session.teacher_id) {
     return res.status(401).json({ error: 'Teacher authentication required' });
@@ -27,7 +26,7 @@ router.get('/data', checkTeacherAuth, async (req, res) => {
         a.name AS assignment_name,
         a.due_date AS assignment_date,
         a.max_points,
-        g.grade
+        g.grade AS score
       FROM students s
       JOIN grades g ON s.id = g.student_id
       JOIN assignments a ON g.assignment_id = a.id
@@ -43,14 +42,10 @@ router.get('/data', checkTeacherAuth, async (req, res) => {
   }
 });
 
-// === GET /api/teacher/student/:id/details ===
-router.get('/student/:id/details', (req, res, next) => {
-  console.log('Session contents:', req.session); // <-- check teacher_id here
-  next();
-}, checkTeacherAuth, async (req, res) => {
+// === GET /api/teacher/notes/:studentId ===
+router.get('/notes/:studentId', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.id; // <-- must match :id in route
-
+  const studentId = req.params.studentId;
 
   try {
     const [rows] = await pool.execute(
@@ -61,23 +56,20 @@ router.get('/student/:id/details', (req, res, next) => {
     );
 
     if (rows.length === 0) {
-      return res.json({ note: '', last_updated: null });
+      return res.json({ note: '', lastUpdated: null });
     }
 
-    res.json({
-      note: rows[0].note || '',
-      last_updated: rows[0].updated_at
-    });
+    res.json({ note: rows[0].note || '', lastUpdated: rows[0].updated_at });
   } catch (err) {
     console.error('Error fetching teacher note:', err);
     res.status(500).json({ error: 'Failed to fetch note' });
   }
 });
 
-// === POST /api/teacher/notes/:student_id ===
-router.post('/notes/:student_id', checkTeacherAuth, async (req, res) => {
+// === POST /api/teacher/notes/:studentId ===
+router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.student_id;
+  const studentId = req.params.studentId;
   const { note } = req.body;
 
   try {
@@ -89,8 +81,8 @@ router.post('/notes/:student_id', checkTeacherAuth, async (req, res) => {
       `INSERT INTO teacher_notes (teacher_id, student_id, note) 
        VALUES (?, ?, ?)
        ON DUPLICATE KEY UPDATE 
-       note = VALUES(note), 
-       updated_at = CURRENT_TIMESTAMP`,
+         note = VALUES(note),
+         updated_at = CURRENT_TIMESTAMP`,
       [teacherId, studentId, note || '']
     );
 
@@ -101,10 +93,10 @@ router.post('/notes/:student_id', checkTeacherAuth, async (req, res) => {
   }
 });
 
-// === DELETE /api/teacher/notes/:student_id ===
-router.delete('/notes/:student_id', checkTeacherAuth, async (req, res) => {
+// === DELETE /api/teacher/notes/:studentId ===
+router.delete('/notes/:studentId', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.student_id;
+  const studentId = req.params.studentId;
 
   try {
     await pool.execute(
@@ -166,7 +158,4 @@ router.get('/student/:id/details', checkTeacherAuth, async (req, res) => {
   }
 });
 
-
 module.exports = router;
-
-
