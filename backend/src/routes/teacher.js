@@ -2,13 +2,19 @@
 const express = require('express');
 const { pool } = require('../db');
 
-
 const router = express.Router();
 
+// Auth middleware
+const checkTeacherAuth = (req, res, next) => {
+  if (!req.session.teacher_id) {
+    return res.status(401).json({ error: 'Teacher authentication required' });
+  }
+  next();
+};
+
 // === GET /api/teacher/data ===
-router.get('/data', async (req, res) => {
+router.get('/data', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const [rows] = await pool.execute(
@@ -21,7 +27,7 @@ router.get('/data', async (req, res) => {
         a.name AS assignment_name,
         a.due_date AS assignment_date,
         a.max_points,
-        g.grade AS score
+        g.grade
       FROM students s
       JOIN grades g ON s.id = g.student_id
       JOIN assignments a ON g.assignment_id = a.id
@@ -37,11 +43,10 @@ router.get('/data', async (req, res) => {
   }
 });
 
-
-// === GET /api/teacher/notes/:studentId ===
-router.get('/notes/:studentId', async (req, res) => {
+// === GET /api/teacher/notes/:student_id ===
+router.get('/notes/:student_id', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.studentId;
+  const studentId = req.params.student_id;
 
   try {
     const [rows] = await pool.execute(
@@ -52,33 +57,30 @@ router.get('/notes/:studentId', async (req, res) => {
     );
 
     if (rows.length === 0) {
-      return res.json({ note: '', lastUpdated: null });
+      return res.json({ note: '', last_updated: null });
     }
 
     res.json({
       note: rows[0].note || '',
-      lastUpdated: rows[0].updated_at
+      last_updated: rows[0].updated_at
     });
-
   } catch (err) {
     console.error('Error fetching teacher note:', err);
     res.status(500).json({ error: 'Failed to fetch note' });
   }
 });
 
-// === POST /api/teacher/notes/:studentId ===
-router.post('/notes/:studentId', async (req, res) => {
+// === POST /api/teacher/notes/:student_id ===
+router.post('/notes/:student_id', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.studentId;
+  const studentId = req.params.student_id;
   const { note } = req.body;
 
   try {
-    // Validate input
     if (note && note.length > 2000) {
       return res.status(400).json({ error: 'Note too long (max 2000 characters)' });
     }
 
-    // Insert or update note using ON DUPLICATE KEY UPDATE
     await pool.execute(
       `INSERT INTO teacher_notes (teacher_id, student_id, note) 
        VALUES (?, ?, ?)
@@ -88,21 +90,17 @@ router.post('/notes/:studentId', async (req, res) => {
       [teacherId, studentId, note || '']
     );
 
-    res.json({ 
-      success: true, 
-      message: 'Note saved successfully' 
-    });
-
+    res.json({ success: true, message: 'Note saved successfully' });
   } catch (err) {
     console.error('Error saving teacher note:', err);
     res.status(500).json({ error: 'Failed to save note' });
   }
 });
 
-// === DELETE /api/teacher/notes/:studentId ===
-router.delete('/notes/:studentId', async (req, res) => {
+// === DELETE /api/teacher/notes/:student_id ===
+router.delete('/notes/:student_id', checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.studentId;
+  const studentId = req.params.student_id;
 
   try {
     await pool.execute(
@@ -111,11 +109,7 @@ router.delete('/notes/:studentId', async (req, res) => {
       [teacherId, studentId]
     );
 
-    res.json({ 
-      success: true, 
-      message: 'Note deleted successfully' 
-    });
-
+    res.json({ success: true, message: 'Note deleted successfully' });
   } catch (err) {
     console.error('Error deleting teacher note:', err);
     res.status(500).json({ error: 'Failed to delete note' });
@@ -123,4 +117,3 @@ router.delete('/notes/:studentId', async (req, res) => {
 });
 
 module.exports = router;
-
