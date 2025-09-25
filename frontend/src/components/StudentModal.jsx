@@ -126,13 +126,28 @@ const StudentModal = ({ studentId, onClose }) => {
                   const hasGrade = a.grade !== null && a.grade !== undefined;
                   const grade = hasGrade ? `${a.grade}/${a.max_points}` : '—';
                   
+                  // Helper function to determine grade classification
+                  const getGradeClass = () => {
+                    if (!hasGrade) return styles.noGrade;
+                    
+                    const percentage = a.grade / a.max_points;
+                    
+                    // Grade classifications
+                    if (percentage >= 0.9) return styles.excellentGrade;  // 90%+ - A
+                    if (percentage >= 0.8) return styles.highGrade;       // 80-89% - B  
+                    if (percentage >= 0.7) return styles.goodGrade;       // 70-79% - C
+                    if (percentage >= 0.6) return styles.midGrade;        // 60-69% - D
+                    return styles.lowGrade;                               // Below 60% - F
+                  };
+                  
                   return (
                     <li key={a.assignment_id} className={styles.assignmentItem}>
                       <span className={styles.assignmentName}>
                         {a.assignment_name}
                       </span>
                       <span 
-                        className={`${styles.assignmentGrade} ${!hasGrade ? styles.noGrade : ''}`}
+                        className={`${styles.assignmentGrade} ${getGradeClass()}`}
+                        title={hasGrade ? `${Math.round((a.grade / a.max_points) * 100)}%` : 'Not graded'}
                       >
                         {grade}
                       </span>
