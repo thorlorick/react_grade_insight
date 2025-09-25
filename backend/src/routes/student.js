@@ -95,51 +95,8 @@ router.get('/summary', checkStudentAuth, async (req, res) => {
   }
 });
 
-// === GET /api/student/:id/details ===
-router.get('/:id/details', async (req, res) => {
-  const studentId = req.params.id;
 
-  try {
-    // Fetch student
-    const [studentRows] = await pool.query(
-      `SELECT id, first_name, last_name, email 
-       FROM students 
-       WHERE id = ?`,
-      [studentId]
-    );
-
-    if (studentRows.length === 0) {
-      return res.status(404).json({ error: 'Student not found' });
-    }
-    const student = studentRows[0];
-
-    // Fetch assignments for this student
-    const [assignmentRows] = await pool.query(
-      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.max_points, g.grade
-       FROM assignments a
-       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?`,
-      [studentId]
-    );
-
-    // Fetch teacher notes for this student
-    const [noteRows] = await pool.query(
-      `SELECT id, teacher_id, note, created_at 
-       FROM notes 
-       WHERE student_id = ? 
-       ORDER BY created_at ASC`,
-      [studentId]
-    );
-
-    res.json({
-      student,
-      assignments: assignmentRows,
-      notes: noteRows
-    });
-  } catch (err) {
-    console.error('Error fetching student details:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
 
 module.exports = router;
+
 
