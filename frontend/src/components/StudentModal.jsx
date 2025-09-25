@@ -7,6 +7,7 @@ const StudentModal = ({ studentId, onClose }) => {
 
   useEffect(() => {
     const fetchStudentData = async () => {
+      setLoading(true);
       try {
         const res = await fetch(`https://gradeinsight.com:8083/api/teacher/student/${studentId}/details`, {
           credentials: 'include'
@@ -19,7 +20,12 @@ const StudentModal = ({ studentId, onClose }) => {
         }
 
         const data = await res.json();
-        setStudentData(data);
+        // Ensure structure
+        setStudentData({
+          student: data.student || {},
+          assignments: data.assignments || [],
+          notes: data.notes || []
+        });
       } catch (err) {
         console.error('Failed to fetch student data', err);
         setStudentData(null);
@@ -28,7 +34,7 @@ const StudentModal = ({ studentId, onClose }) => {
       }
     };
 
-    fetchStudentData();
+    if (studentId) fetchStudentData();
   }, [studentId]);
 
   const handleAddNote = async () => {
@@ -44,10 +50,10 @@ const StudentModal = ({ studentId, onClose }) => {
 
       if (res.ok) {
         const savedNote = await res.json();
-        setStudentData({
-          ...studentData,
-          notes: [...studentData.notes, { ...savedNote, note: newNote }]
-        });
+        setStudentData(prev => ({
+          ...prev,
+          notes: [...(prev.notes || []), { ...savedNote, note: newNote, id: savedNote.id || Date.now(), created_at: new Date().toISOString() }]
+        }));
         setNewNote('');
       } else {
         console.error('Failed to save note', res.status);
@@ -77,8 +83,8 @@ const StudentModal = ({ studentId, onClose }) => {
       }}>
         <button onClick={onClose} style={{ position: 'absolute', top: 10, right: 10 }}>✕</button>
 
-        <h2>{student.first_name} {student.last_name}</h2>
-        <p>{student.email}</p>
+        <h2>{student?.first_name} {student?.last_name}</h2>
+        <p>{student?.email}</p>
 
         <h3>Assignments</h3>
         <ul>
