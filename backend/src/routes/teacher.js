@@ -3,7 +3,7 @@ const express = require('express');
 const { pool } = require('../db');
 const router = express.Router();
 
-// --- Middleware to check teacher session ---
+// --- Auth middleware ---
 const checkTeacherAuth = (req, res, next) => {
   if (!req.session.teacher_id) {
     return res.status(401).json({ error: 'Teacher authentication required' });
@@ -49,8 +49,8 @@ router.get('/notes/:studentId', checkTeacherAuth, async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      `SELECT note, updated_at 
-       FROM teacher_notes 
+      `SELECT note, updated_at
+       FROM teacher_notes
        WHERE teacher_id = ? AND student_id = ?`,
       [teacherId, studentId]
     );
@@ -78,11 +78,9 @@ router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
     }
 
     await pool.execute(
-      `INSERT INTO teacher_notes (teacher_id, student_id, note) 
+      `INSERT INTO teacher_notes (teacher_id, student_id, note)
        VALUES (?, ?, ?)
-       ON DUPLICATE KEY UPDATE 
-         note = VALUES(note),
-         updated_at = CURRENT_TIMESTAMP`,
+       ON DUPLICATE KEY UPDATE note = VALUES(note), updated_at = CURRENT_TIMESTAMP`,
       [teacherId, studentId, note || '']
     );
 
@@ -100,8 +98,7 @@ router.delete('/notes/:studentId', checkTeacherAuth, async (req, res) => {
 
   try {
     await pool.execute(
-      `DELETE FROM teacher_notes 
-       WHERE teacher_id = ? AND student_id = ?`,
+      `DELETE FROM teacher_notes WHERE teacher_id = ? AND student_id = ?`,
       [teacherId, studentId]
     );
 
@@ -112,15 +109,16 @@ router.delete('/notes/:studentId', checkTeacherAuth, async (req, res) => {
   }
 });
 
-// === GET /api/teacher/student/:id/details ===
-router.get('/student/:id/details', checkTeacherAuth, async (req, res) => {
-  const studentId = req.params.id;
+// === GET /api/teacher/student/:studentId/details ===
+router.get('/student/:studentId/details', checkTeacherAuth, async (req, res) => {
+  const teacherId = req.session.teacher_id;
+  const studentId = req.params.studentId;
 
   try {
     // Fetch student info
-    const [studentRows] = await pool.query(
-      `SELECT id, first_name, last_name, email 
-       FROM students 
+    const [studentRows] = await pool.execute(
+      `SELECT id, first_name, last_name, email
+       FROM students
        WHERE id = ?`,
       [studentId]
     );
@@ -130,21 +128,21 @@ router.get('/student/:id/details', checkTeacherAuth, async (req, res) => {
     }
     const student = studentRows[0];
 
-    // Fetch assignments for this student
-    const [assignmentRows] = await pool.query(
-      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.max_points, g.grade
+    // Fetch assignments and grades for this student
+    const [assignmentRows] = await pool.execute(
+      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.max_points, g.grade AS score
        FROM assignments a
        LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?`,
       [studentId]
     );
 
     // Fetch teacher notes for this student
-    const [noteRows] = await pool.query(
-      `SELECT id, teacher_id, note, created_at 
-       FROM notes 
-       WHERE student_id = ? 
+    const [noteRows] = await pool.execute(
+      `SELECT id, teacher_id, note, created_at
+       FROM teacher_notes
+       WHERE student_id = ? AND teacher_id = ?
        ORDER BY created_at ASC`,
-      [studentId]
+      [studentId, teacherId]
     );
 
     res.json({
