@@ -1,40 +1,19 @@
-// backend/src/routes/teacher.js
 const express = require('express');
 const { pool } = require('../db');
 const router = express.Router();
 
-// --- Auth middleware ---
-const checkTeacherAuth = (req, res, next) => {
-  if (!req.session.teacher_id) {
-    return res.status(401).json({ error: 'Teacher authentication required' });
-  }
-  next();
-};
-
 // === GET /api/teacher/data ===
-router.get('/data', checkTeacherAuth, async (req, res) => {
-  const teacherId = req.session.teacher_id;
-
+router.get('/data', async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      `SELECT 
-        s.id AS student_id,
-        s.first_name,
-        s.last_name,
-        s.email,
-        a.id AS assignment_id,
-        a.name AS assignment_name,
-        a.due_date AS assignment_date,
-        a.max_points,
-        g.grade AS score
-      FROM students s
-      JOIN grades g ON s.id = g.student_id
-      JOIN assignments a ON g.assignment_id = a.id
-      WHERE g.teacher_id = ?
-      ORDER BY s.last_name, a.due_date`,
-      [teacherId]
+      `SELECT s.id AS student_id, s.first_name, s.last_name, s.email,
+              a.id AS assignment_id, a.name AS assignment_name, a.due_date AS assignment_date,
+              a.max_points, g.grade AS score
+       FROM students s
+       JOIN grades g ON s.id = g.student_id
+       JOIN assignments a ON g.assignment_id = a.id
+       ORDER BY s.last_name, a.due_date`
     );
-
     res.json(rows);
   } catch (err) {
     console.error('Error fetching teacher data:', err);
@@ -42,17 +21,40 @@ router.get('/data', checkTeacherAuth, async (req, res) => {
   }
 });
 
+// === GET /api/teacher/student/:studentId/details ===
+router.get('/student/:studentId/details', async (req, res) => {
+  const studentId = req.params.studentId;
+  console.log('Fetching student data for ID:', studentId);
+
+  try {
+    const [rows] = await pool.query(
+      `SELECT id, first_name, last_name, email
+       FROM students
+       WHERE id = ?`,
+      [studentId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Error fetching student data:', err);
+    res.status(500).json({ error: 'Failed to fetch student data' });
+  }
+});
+
 // === GET /api/teacher/notes/:studentId ===
-router.get('/notes/:studentId', checkTeacherAuth, async (req, res) => {
-  const teacherId = req.session.teacher_id;
+router.get('/notes/:studentId', async (req, res) => {
   const studentId = req.params.studentId;
 
   try {
     const [rows] = await pool.execute(
       `SELECT note, updated_at
        FROM teacher_notes
-       WHERE teacher_id = ? AND student_id = ?`,
-      [teacherId, studentId]
+       WHERE student_id = ?`,
+      [studentId]
     );
 
     if (rows.length === 0) {
@@ -67,8 +69,7 @@ router.get('/notes/:studentId', checkTeacherAuth, async (req, res) => {
 });
 
 // === POST /api/teacher/notes/:studentId ===
-router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
-  const teacherId = req.session.teacher_id;
+router.post('/notes/:studentId', async (req, res) => {
   const studentId = req.params.studentId;
   const { note } = req.body;
 
@@ -78,10 +79,10 @@ router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
     }
 
     await pool.execute(
-      `INSERT INTO teacher_notes (teacher_id, student_id, note)
-       VALUES (?, ?, ?)
+      `INSERT INTO teacher_notes (student_id, note)
+       VALUES (?, ?)
        ON DUPLICATE KEY UPDATE note = VALUES(note), updated_at = CURRENT_TIMESTAMP`,
-      [teacherId, studentId, note || '']
+      [studentId, note || '']
     );
 
     res.json({ success: true, message: 'Note saved successfully' });
@@ -92,67 +93,20 @@ router.post('/notes/:studentId', checkTeacherAuth, async (req, res) => {
 });
 
 // === DELETE /api/teacher/notes/:studentId ===
-router.delete('/notes/:studentId', checkTeacherAuth, async (req, res) => {
-  const teacherId = req.session.teacher_id;
+router.delete('/notes/:studentId', async (req, res) => {
   const studentId = req.params.studentId;
 
   try {
     await pool.execute(
-      `DELETE FROM teacher_notes WHERE teacher_id = ? AND student_id = ?`,
-      [teacherId, studentId]
+      `DELETE FROM teacher_notes
+       WHERE student_id = ?`,
+      [studentId]
     );
 
     res.json({ success: true, message: 'Note deleted successfully' });
   } catch (err) {
     console.error('Error deleting teacher note:', err);
     res.status(500).json({ error: 'Failed to delete note' });
-  }
-});
-
-// === GET /api/teacher/student/:studentId/details ===
-router.get('/student/:studentId/details', checkTeacherAuth, async (req, res) => {
-  const teacherId = req.session.teacher_id;
-  const studentId = req.params.studentId;
-
-  try {
-    // Fetch student info
-    const [studentRows] = await pool.execute(
-      `SELECT id, first_name, last_name, email
-       FROM students
-       WHERE id = ?`,
-      [studentId]
-    );
-
-    if (studentRows.length === 0) {
-      return res.status(404).json({ error: 'Student not found' });
-    }
-    const student = studentRows[0];
-
-    // Fetch assignments and grades for this student
-    const [assignmentRows] = await pool.execute(
-      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.max_points, g.grade AS score
-       FROM assignments a
-       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?`,
-      [studentId]
-    );
-
-    // Fetch teacher notes for this student
-    const [noteRows] = await pool.execute(
-      `SELECT id, teacher_id, note, created_at
-       FROM teacher_notes
-       WHERE student_id = ? AND teacher_id = ?
-       ORDER BY created_at ASC`,
-      [studentId, teacherId]
-    );
-
-    res.json({
-      student,
-      assignments: assignmentRows,
-      notes: noteRows
-    });
-  } catch (err) {
-    console.error('Error fetching student details for teacher:', err);
-    res.status(500).json({ error: 'Server error' });
   }
 });
 
