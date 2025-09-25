@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const StudentModal = ({ studentId, teacherId, onClose }) => {
+const StudentModal = ({ studentId, onClose }) => {
   const [studentData, setStudentData] = useState(null);
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(true);
@@ -9,7 +9,7 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
     const fetchStudentData = async () => {
       try {
         const res = await fetch(`https://gradeinsight.com:8083/api/teacher/student/${studentId}/details`, {
-          credentials: 'include' // important for session cookies
+          credentials: 'include'
         });
 
         if (!res.ok) {
@@ -35,18 +35,18 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
     if (!newNote.trim()) return;
 
     try {
-      const res = await fetch(`https://gradeinsight.com:8083/api/student/${studentId}/notes`, {
+      const res = await fetch(`https://gradeinsight.com:8083/api/teacher/notes/${studentId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // important for session cookies
-        body: JSON.stringify({ teacher_id: teacherId, note: newNote })
+        credentials: 'include',
+        body: JSON.stringify({ note: newNote })
       });
 
       if (res.ok) {
         const savedNote = await res.json();
         setStudentData({
           ...studentData,
-          notes: [...studentData.notes, savedNote]
+          notes: [...studentData.notes, { ...savedNote, note: newNote }]
         });
         setNewNote('');
       } else {
@@ -77,13 +77,13 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
       }}>
         <button onClick={onClose} style={{ position: 'absolute', top: 10, right: 10 }}>✕</button>
 
-        <h2>{student.name}</h2>
+        <h2>{student.first_name} {student.last_name}</h2>
         <p>{student.email}</p>
 
         <h3>Assignments</h3>
         <ul>
           {assignments.map(a => {
-            const grade = a.score !== null && a.score !== undefined ? `${a.score}/${a.max_points}` : '—';
+            const grade = a.grade !== null && a.grade !== undefined ? `${a.grade}/${a.max_points}` : '—';
             return <li key={a.assignment_id}>{a.assignment_name}: {grade}</li>;
           })}
         </ul>
