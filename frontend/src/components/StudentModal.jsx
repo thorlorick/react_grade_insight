@@ -8,7 +8,7 @@ const StudentModal = ({ studentId, teacherId, onClose }) => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const res = await fetch(`https://gradeinsight.com:8083/api/student/${studentId}/details`, {
+        const res = await fetch(`https://gradeinsight.com:8083/api/teacher/student/${studentId}/details`, {
           credentials: 'include' // important for session cookies
         });
 
