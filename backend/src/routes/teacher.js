@@ -43,10 +43,14 @@ router.get('/data', checkTeacherAuth, async (req, res) => {
   }
 });
 
-// === GET /api/teacher/notes/:student_id ===
-router.get('/notes/:student_id', checkTeacherAuth, async (req, res) => {
+// === GET /api/teacher/student/:id/details ===
+router.get('/student/:id/details', (req, res, next) => {
+  console.log('Session contents:', req.session); // <-- check teacher_id here
+  next();
+}, checkTeacherAuth, async (req, res) => {
   const teacherId = req.session.teacher_id;
-  const studentId = req.params.student_id;
+  const studentId = req.params.id; // <-- must match :id in route
+
 
   try {
     const [rows] = await pool.execute(
@@ -164,4 +168,5 @@ router.get('/student/:id/details', checkTeacherAuth, async (req, res) => {
 
 
 module.exports = router;
+
 
