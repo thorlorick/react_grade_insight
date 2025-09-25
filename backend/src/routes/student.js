@@ -1,9 +1,10 @@
+// backend/src/routes/student.js
 const express = require('express');
 const { pool } = require('../db');
 
 const router = express.Router();
 
-// Simple auth check middleware
+// Auth middleware
 const checkStudentAuth = (req, res, next) => {
   if (!req.session.student_id) {
     return res.status(401).json({ error: 'Student authentication required' });
@@ -48,15 +49,13 @@ router.get('/profile', checkStudentAuth, async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      `SELECT student_id, first_name, last_name, email, grade_level, student_number
+      `SELECT id, first_name, last_name, email, grade_level, student_number
        FROM students
-       WHERE student_id = ?`,
+       WHERE id = ?`,
       [studentId]
     );
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'Student not found' });
-    }
+    if (rows.length === 0) return res.status(404).json({ error: 'Student not found' });
 
     res.json(rows[0]);
   } catch (err) {
@@ -96,27 +95,25 @@ router.get('/summary', checkStudentAuth, async (req, res) => {
   }
 });
 
-// === GET /api/student/:student_id/details ===
-router.get('/:student_id/details', async (req, res) => {
-  const studentId = req.params.student_id;
+// === GET /api/student/:id/details ===
+router.get('/:id/details', async (req, res) => {
+  const studentId = req.params.id;
 
   try {
-    // Fetch student details
+    // Fetch student
     const [studentRows] = await pool.query(
-      'SELECT student_id, first_name, last_name, email, grade_level, student_number FROM students WHERE student_id = ?',
+      'SELECT id, first_name, last_name, email, grade_level, student_number FROM students WHERE id = ?',
       [studentId]
     );
 
-    if (studentRows.length === 0) {
-      return res.status(404).json({ error: 'Student not found' });
-    }
+    if (studentRows.length === 0) return res.status(404).json({ error: 'Student not found' });
     const student = studentRows[0];
 
     // Fetch assignments
     const [assignmentRows] = await pool.query(
-      `SELECT a.assignment_id, a.assignment_name, a.max_points, g.score
+      `SELECT a.id AS assignment_id, a.name AS assignment_name, a.max_points, g.grade
        FROM assignments a
-       LEFT JOIN grades g ON a.assignment_id = g.assignment_id AND g.student_id = ?`,
+       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?`,
       [studentId]
     );
 
