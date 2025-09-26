@@ -72,32 +72,17 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
-      {/* Navbar */}
-      <Navbar brand="Grade Insight">
-        <SearchBar onSearch={handleSearch} />
-
-        <UploadButton 
-          className={styles.uploadButton}
-          onUploadSuccess={(data) => {
-            if (data.ok) {
-              setUploadSummary(data);
-              setUploadError(null);
-              refreshData();
-            } else {
-              setUploadError(data.error);
-              setUploadSummary(null);
-            }
-          }} 
-          refreshStudents={refreshData}
-        />
-
-        <GenericButton 
-          className={styles.downloadTemplate}
-          onClick={handleDownloadTemplate}
-        >
-          Download Template
-        </GenericButton>
-      </Navbar>
+    {/* Navbar */}
+    <Navbar
+      brand="Grade Insight"
+      links={[
+        { label: 'Upload', onClick: refreshData },
+        { label: 'Download Template', onClick: handleDownloadTemplate }
+      ]}
+    >
+      <SearchBar onSearch={handleSearch} />
+    </Navbar>
+  </div>
 
       {/* Upload feedback */}
       {uploadSummary && (
