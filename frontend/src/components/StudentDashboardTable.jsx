@@ -46,7 +46,6 @@ const StudentDashboardTable = ({ data, loading }) => {
             <tr>
               <th className={`${styles.headerCell} ${styles.staticHeader}`}>Assignment</th>
               <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>Grade</th>
-              <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -67,9 +66,6 @@ const StudentDashboardTable = ({ data, loading }) => {
                       ({row.percentage}%)
                     </div>
                   )}
-                </td>
-                <td className={`${styles.cell} ${styles.notesCell}`}>
-                  {row.notes || ""}
                 </td>
               </tr>
             ))}
