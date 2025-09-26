@@ -1,16 +1,16 @@
-// src/pages/StudentPage.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import GenericButton from "../components/GenericButton";
 import StudentDashboardTable from "../components/StudentDashboardTable";
 import styles from './StudentPage.module.css';
-import { getStudentData } from "../api/studentApi";
+import { getStudentData, logoutStudent } from "../api/studentApi";
 
 const StudentPage = () => {
   const [studentData, setStudentData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   useEffect(() => {
     fetchData();
@@ -73,11 +73,39 @@ const StudentPage = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logoutStudent();
+      window.location.href = "/StudentLogin";
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
+
+    const sorted = [...filteredData].sort((a, b) => {
+      if (a[key] === null || a[key] === undefined) return 1;
+      if (b[key] === null || b[key] === undefined) return -1;
+
+      if (typeof a[key] === 'string') return a[key].localeCompare(b[key]);
+      return a[key] - b[key];
+    });
+
+    if (direction === 'desc') sorted.reverse();
+
+    setFilteredData(sorted);
+    setSortConfig({ key, direction });
+  };
+
   return (
     <div className={styles.body}>
       <Navbar brand="Grade Insight">
         <GenericButton onClick={handleDownloadGrades}>Download My Grades</GenericButton>
         <GenericButton onClick={fetchData}>Refresh</GenericButton>
+        <GenericButton onClick={handleLogout}>Logout</GenericButton>
       </Navbar>
 
       <div className={styles.pageWrapper}>
@@ -91,9 +119,10 @@ const StudentPage = () => {
         <StudentDashboardTable
           data={filteredData}
           loading={loading}
+          onSort={handleSort}
+          sortConfig={sortConfig}
         />
 
-        {/* Notes section below table */}
         <div className={styles.notesSection}>
           <h3>Teacher Notes</h3>
           {notes.length === 0 && <p>No notes yet.</p>}
