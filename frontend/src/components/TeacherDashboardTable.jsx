@@ -159,9 +159,9 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
       // If neither has a grade, they're equal
       if (!aHasGrade && !bHasGrade) return 0;
 
-      // Null/missing grades always go to the bottom regardless of sort direction
-      if (!aHasGrade) return 1;  // a goes after b
-      if (!bHasGrade) return -1; // b goes after a
+      // Null/missing grades always go to the TOP regardless of sort direction
+      if (!aHasGrade) return -1; // a goes before b
+      if (!bHasGrade) return 1;  // b goes before a
 
       // Both have valid grades (including zeros), sort by numeric value
       const aScore = getNumericScore(aGrade);
