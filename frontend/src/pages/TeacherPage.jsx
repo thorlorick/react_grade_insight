@@ -1,11 +1,7 @@
-// src/pages/TeacherPage.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import BackgroundContainer from "../components/BackgroundContainer";
 import SearchBar from "../components/SearchBar";
-import GenericButton from "../components/GenericButton";
 import TeacherDashboardTable from "../components/TeacherDashboardTable";
-import UploadButton from "../components/UploadButton";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 
@@ -16,7 +12,6 @@ const TeacherPage = () => {
   const [uploadSummary, setUploadSummary] = useState(null);
   const [uploadError, setUploadError] = useState(null);
 
-  // Fetch data when component mounts
   useEffect(() => {
     async function fetchData() {
       try {
@@ -33,13 +28,11 @@ const TeacherPage = () => {
     fetchData();
   }, []);
 
-  // Handle search input
   const handleSearch = (query) => {
     if (!query.trim()) {
       setFilteredData(teacherData);
       return;
     }
-
     const filtered = teacherData.filter(
       (row) =>
         row.first_name.toLowerCase().includes(query.toLowerCase()) ||
@@ -72,17 +65,16 @@ const TeacherPage = () => {
 
   return (
     <div className={styles.body}>
-    {/* Navbar */}
-    <Navbar
-      brand="Grade Insight"
-      links={[
-        { label: 'Upload', onClick: refreshData },
-        { label: 'Download Template', onClick: handleDownloadTemplate }
-      ]}
-    >
-      <SearchBar onSearch={handleSearch} />
-    </Navbar>
-  </div>
+      {/* Navbar */}
+      <Navbar
+        brand="Grade Insight"
+        links={[
+          { label: 'Upload', onClick: refreshData },
+          { label: 'Download Template', onClick: handleDownloadTemplate }
+        ]}
+      >
+        <SearchBar onSearch={handleSearch} />
+      </Navbar>
 
       {/* Upload feedback */}
       {uploadSummary && (
