@@ -111,6 +111,20 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
     };
   };
 
+  // Helper function to check if a grade exists and has a valid score
+  const hasValidGrade = (grade) => {
+    return grade && 
+           grade.score !== null && 
+           grade.score !== undefined && 
+           !isNaN(Number(grade.score));
+  };
+
+  // Helper function to get numeric score for sorting
+  const getNumericScore = (grade) => {
+    if (!hasValidGrade(grade)) return null;
+    return Number(grade.score);
+  };
+
  const handleSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
@@ -119,25 +133,43 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
 
   const sortedStudents = useMemo(() => {
     if (!sortConfig.key) return tableData.students;
+    
     return [...tableData.students].sort((a, b) => {
-      if (sortConfig.key === 'name') return sortConfig.direction === 'asc'
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name);
-      if (sortConfig.key === 'email') return sortConfig.direction === 'asc'
-        ? a.email.localeCompare(b.email)
-        : b.email.localeCompare(a.email);
+      // Handle name and email sorting
+      if (sortConfig.key === 'name') {
+        return sortConfig.direction === 'asc'
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+      }
+      
+      if (sortConfig.key === 'email') {
+        return sortConfig.direction === 'asc'
+          ? a.email.localeCompare(b.email)
+          : b.email.localeCompare(a.email);
+      }
 
+      // Handle assignment grade sorting
       const assignmentId = sortConfig.key;
       const aGrade = a.grades.get(assignmentId);
       const bGrade = b.grades.get(assignmentId);
 
-      if (!aGrade && !bGrade) return 0;
-      if (!aGrade) return sortConfig.direction === 'asc' ? 1 : -1;
-      if (!bGrade) return sortConfig.direction === 'asc' ? -1 : 1;
+      const aHasGrade = hasValidGrade(aGrade);
+      const bHasGrade = hasValidGrade(bGrade);
+
+      // If neither has a grade, they're equal
+      if (!aHasGrade && !bHasGrade) return 0;
+
+      // Null/missing grades always go to the bottom regardless of sort direction
+      if (!aHasGrade) return 1;  // a goes after b
+      if (!bHasGrade) return -1; // b goes after a
+
+      // Both have valid grades (including zeros), sort by numeric value
+      const aScore = getNumericScore(aGrade);
+      const bScore = getNumericScore(bGrade);
 
       return sortConfig.direction === 'asc'
-        ? (aGrade.score || 0) - (bGrade.score || 0)
-        : (bGrade.score || 0) - (aGrade.score || 0);
+        ? aScore - bScore
+        : bScore - aScore;
     });
   }, [tableData.students, sortConfig]);
 
