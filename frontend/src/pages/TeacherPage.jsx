@@ -81,7 +81,7 @@ const TeacherPage = () => {
     }
   };
 
-  // Handle upload button click (simplified to match original pattern)
+  // Handle upload button click (matching UploadButton component exactly)
   const handleUploadClick = () => {
     if (isUploading) return;
 
@@ -94,33 +94,33 @@ const TeacherPage = () => {
       const file = e.target.files[0];
       if (!file) return;
 
-      // Validate file type
-      if (!file.name.toLowerCase().endsWith('.csv')) {
-        setUploadError("Please upload a CSV file");
-        setUploadSummary(null);
-        document.body.removeChild(input);
-        return;
-      }
-
+      console.log('Selected CSV file:', file.name);
+      
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('csv', file); // Must match backend - using 'csv' not 'file'
 
       try {
         setIsUploading(true);
         setUploadError(null);
         setUploadSummary(null);
 
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData
+        const res = await fetch('https://gradeinsight.com:8083/api/uploads/template', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
         });
 
         const data = await res.json();
+        console.log('Upload response:', data);
         handleUploadSuccess(data);
+
+        // Optional: refresh student data automatically (matching UploadButton)
+        if (data.ok && refreshData) {
+          await refreshData();
+        }
       } catch (err) {
-        console.error("Upload error:", err);
-        setUploadError("Upload failed. Please try again.");
-        setUploadSummary(null);
+        console.error('Upload failed:', err);
+        handleUploadSuccess({ ok: false, error: err.message });
       } finally {
         setIsUploading(false);
       }
