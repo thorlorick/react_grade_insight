@@ -95,8 +95,33 @@ router.get('/summary', checkStudentAuth, async (req, res) => {
   }
 });
 
+// === GET /api/student/notes ===
+// Returns all teacher notes for the logged-in student
+router.get('/notes', checkStudentAuth, async (req, res) => {
+  const studentId = req.session.student_id;
 
+  try {
+    const [rows] = await pool.execute(
+      `SELECT tn.id, tn.note, tn.created_at, t.first_name AS teacher_first_name, t.last_name AS teacher_last_name
+       FROM teacher_notes tn
+       JOIN teachers t ON tn.teacher_id = t.id
+       WHERE tn.student_id = ?
+       ORDER BY tn.created_at DESC`,
+      [studentId]
+    );
+
+    const notes = rows.map(row => ({
+      id: row.id,
+      note: row.note,
+      created_at: row.created_at,
+      teacher: `${row.teacher_first_name} ${row.teacher_last_name}`
+    }));
+
+    res.json({ notes });
+  } catch (err) {
+    console.error('Error fetching student notes:', err);
+    res.status(500).json({ error: 'Failed to fetch student notes' });
+  }
+});
 
 module.exports = router;
-
-
