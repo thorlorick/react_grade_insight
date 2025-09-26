@@ -9,23 +9,34 @@ import { getStudentData } from "../api/studentApi";
 const StudentPage = () => {
   const [studentData, setStudentData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data when component mounts
   useEffect(() => {
     fetchData();
+    fetchNotes();
   }, []);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getStudentData(); // should include notes
+      const data = await getStudentData();
       setStudentData(data);
       setFilteredData(data);
-    } catch (error) {
-      console.error("Failed to fetch student data:", error);
+    } catch (err) {
+      console.error("Failed to fetch student data:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchNotes = async () => {
+    try {
+      const res = await fetch("/api/student/notes");
+      const data = await res.json();
+      setNotes(data.notes || []);
+    } catch (err) {
+      console.error("Failed to fetch notes:", err);
     }
   };
 
@@ -34,22 +45,19 @@ const StudentPage = () => {
       setFilteredData(studentData);
       return;
     }
-
-    const filtered = studentData.filter(
-      (row) =>
-        row.assignment_name.toLowerCase().includes(query.toLowerCase())
+    const filtered = studentData.filter(row =>
+      row.assignment_name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredData(filtered);
   };
 
   const handleDownloadGrades = () => {
-    const csvHeaders = ['Assignment', 'Grade', 'Notes'];
+    const csvHeaders = ['Assignment', 'Grade'];
     const csvRows = studentData.map(row => [
       row.assignment_name || '',
       row.grade !== null && row.grade !== undefined
         ? row.max_points ? `${row.grade}/${row.max_points}` : row.grade
-        : 'Not graded',
-      row.notes || ''
+        : 'Not graded'
     ]);
 
     const csvContent = [csvHeaders, ...csvRows]
@@ -68,13 +76,8 @@ const StudentPage = () => {
   return (
     <div className={styles.body}>
       <Navbar brand="Grade Insight">
-        <GenericButton onClick={handleDownloadGrades}>
-          Download My Grades
-        </GenericButton>
-
-        <GenericButton onClick={fetchData}>
-          Refresh
-        </GenericButton>
+        <GenericButton onClick={handleDownloadGrades}>Download My Grades</GenericButton>
+        <GenericButton onClick={fetchData}>Refresh</GenericButton>
       </Navbar>
 
       <div className={styles.pageWrapper}>
@@ -89,6 +92,18 @@ const StudentPage = () => {
           data={filteredData}
           loading={loading}
         />
+
+        {/* Notes section below table */}
+        <div className={styles.notesSection}>
+          <h3>Teacher Notes</h3>
+          {notes.length === 0 && <p>No notes yet.</p>}
+          {notes.map((note, idx) => (
+            <div key={idx} className={styles.noteItem}>
+              <p>{note.note}</p>
+              <small>{note.teacher} — {new Date(note.created_at).toLocaleDateString()}</small>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
