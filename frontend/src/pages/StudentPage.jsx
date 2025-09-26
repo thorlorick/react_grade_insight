@@ -1,7 +1,6 @@
 // src/pages/StudentPage.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import BackgroundContainer from "../components/BackgroundContainer";
 import GenericButton from "../components/GenericButton";
 import StudentDashboardTable from "../components/StudentDashboardTable";
 import styles from './StudentPage.module.css';
@@ -14,22 +13,22 @@ const StudentPage = () => {
 
   // Fetch data when component mounts
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const data = await getStudentData();
-        setStudentData(data);
-        setFilteredData(data);
-      } catch (error) {
-        console.error("Failed to fetch student data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchData();
   }, []);
 
-  // Handle search input - simplified for assignment names only
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getStudentData(); // should include notes
+      setStudentData(data);
+      setFilteredData(data);
+    } catch (error) {
+      console.error("Failed to fetch student data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSearch = (query) => {
     if (!query.trim()) {
       setFilteredData(studentData);
@@ -44,17 +43,19 @@ const StudentPage = () => {
   };
 
   const handleDownloadGrades = () => {
-    // Create simplified CSV content
-    const csvHeaders = ['Assignment', 'Grade'];
+    const csvHeaders = ['Assignment', 'Grade', 'Notes'];
     const csvRows = studentData.map(row => [
       row.assignment_name || '',
-      row.grade ? (row.max_points ? `${row.grade}/${row.max_points}` : row.grade) : 'Not graded'
+      row.grade !== null && row.grade !== undefined
+        ? row.max_points ? `${row.grade}/${row.max_points}` : row.grade
+        : 'Not graded',
+      row.notes || ''
     ]);
-    
+
     const csvContent = [csvHeaders, ...csvRows]
       .map(row => row.map(field => `"${field}"`).join(','))
       .join('\n');
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -64,18 +65,6 @@ const StudentPage = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  const refreshData = async () => {
-    try {
-      setLoading(true);
-      const data = await getStudentData();
-      setStudentData(data);
-    } catch (error) {
-      console.error("Failed to refresh student data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className={styles.body}>
       <Navbar brand="Grade Insight">
@@ -83,14 +72,21 @@ const StudentPage = () => {
           Download My Grades
         </GenericButton>
 
-        <GenericButton onClick={refreshData}>
+        <GenericButton onClick={fetchData}>
           Refresh
         </GenericButton>
       </Navbar>
 
       <div className={styles.pageWrapper}>
-        <StudentDashboardTable 
-          data={studentData} 
+        <input
+          type="text"
+          placeholder="Search assignments..."
+          onChange={(e) => handleSearch(e.target.value)}
+          className={styles.searchInput}
+        />
+
+        <StudentDashboardTable
+          data={filteredData}
           loading={loading}
         />
       </div>
