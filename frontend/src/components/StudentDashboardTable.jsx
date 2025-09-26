@@ -2,7 +2,7 @@
 import React from "react";
 import styles from './StudentDashboardTable.module.css';
 
-const StudentDashboardTable = ({ data, loading, studentName }) => {
+const StudentDashboardTable = ({ data, loading }) => {
   if (loading) {
     return (
       <div className={styles.container}>
@@ -22,24 +22,15 @@ const StudentDashboardTable = ({ data, loading, studentName }) => {
   }
 
   const formatGrade = (grade, maxPoints) => {
-    if (!grade && grade !== 0) return "Not graded";
+    if (grade === null || grade === undefined) return "Not graded";
     if (maxPoints) return `${grade}/${maxPoints}`;
-    if (typeof grade === 'string') return grade;
     return grade.toString();
   };
 
   const getGradeColorClass = (grade, maxPoints) => {
-    if (!grade && grade !== 0) return styles.missingGrade;
+    if (grade === null || grade === undefined) return styles.missingGrade;
 
-    let percentage;
-    if (maxPoints) {
-      percentage = (grade / maxPoints) * 100;
-    } else if (typeof grade === 'number' && grade <= 100) {
-      percentage = grade;
-    } else {
-      return '';
-    }
-
+    const percentage = maxPoints ? (grade / maxPoints) * 100 : grade;
     if (percentage >= 90) return styles.gradeA;
     if (percentage >= 80) return styles.gradeB;
     if (percentage >= 70) return styles.gradeC;
@@ -53,12 +44,9 @@ const StudentDashboardTable = ({ data, loading, studentName }) => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={`${styles.headerCell} ${styles.staticHeader}`}>
-                Assignment
-              </th>
-              <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>
-                Grade
-              </th>
+              <th className={`${styles.headerCell} ${styles.staticHeader}`}>Assignment</th>
+              <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>Grade</th>
+              <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -67,9 +55,7 @@ const StudentDashboardTable = ({ data, loading, studentName }) => {
                 <td className={`${styles.cell} ${styles.staticCell}`}>
                   <div>{row.assignment_name || "Unnamed Assignment"}</div>
                   {row.assignment_type && (
-                    <small style={{ opacity: 0.7 }}>
-                      {row.assignment_type}
-                    </small>
+                    <small style={{ opacity: 0.7 }}>{row.assignment_type}</small>
                   )}
                 </td>
                 <td className={`${styles.cell} ${styles.gradeCell}`}>
@@ -81,6 +67,9 @@ const StudentDashboardTable = ({ data, loading, studentName }) => {
                       ({row.percentage}%)
                     </div>
                   )}
+                </td>
+                <td className={`${styles.cell} ${styles.notesCell}`}>
+                  {row.notes || ""}
                 </td>
               </tr>
             ))}
