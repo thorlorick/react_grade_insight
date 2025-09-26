@@ -141,7 +141,7 @@ const TeacherPage = () => {
         brand="Grade Insight"
         links={[
           {
-            label: isUploading ? 'Uploading...' : 'Upload',
+            label: isUploading ? 'Uploading...' : 'Upload CSV',
             onClick: handleUploadClick,
             disabled: isUploading
           },
