@@ -8,11 +8,21 @@ const Navbar = ({ brand = "Grade Insight", links = [], children }) => {
       <Link to="/" className={styles.navLogo}>{brand}</Link>
 
       <div className={styles.navLinks}>
-        {links.map(({ to, label }) => (
-          <Link key={to} to={to} className={styles.navLink}>
-            {label}
-          </Link>
-        ))}
+        {links.map(({ to, label, onClick }, i) =>
+          to ? (
+            <Link key={i} to={to} className={styles.navLink}>
+              {label}
+            </Link>
+          ) : (
+            <button
+              key={i}
+              onClick={onClick}
+              className={`${styles.navButton}`}
+            >
+              {label}
+            </button>
+          )
+        )}
 
         {/* Render whatever is passed inside Navbar as children */}
         {children}
