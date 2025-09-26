@@ -1,8 +1,7 @@
-// src/components/StudentDashboardTable.jsx
 import React from "react";
 import styles from './StudentDashboardTable.module.css';
 
-const StudentDashboardTable = ({ data, loading }) => {
+const StudentDashboardTable = ({ data, loading, onSort, sortConfig }) => {
   if (loading) {
     return (
       <div className={styles.container}>
@@ -38,14 +37,35 @@ const StudentDashboardTable = ({ data, loading }) => {
     return styles.gradeF;
   };
 
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return '';
+    return sortConfig.direction === 'asc' ? ' ▲' : ' ▼';
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={`${styles.headerCell} ${styles.staticHeader}`}>Assignment</th>
-              <th className={`${styles.headerCell} ${styles.dynamicHeader}`}>Grade</th>
+              <th
+                className={`${styles.headerCell} ${styles.staticHeader}`}
+                onClick={() => onSort('assignment_name')}
+              >
+                Assignment{getSortIndicator('assignment_name')}
+              </th>
+              <th
+                className={`${styles.headerCell} ${styles.dynamicHeader}`}
+                onClick={() => onSort('grade')}
+              >
+                Grade{getSortIndicator('grade')}
+              </th>
+              <th
+                className={`${styles.headerCell} ${styles.dynamicHeader}`}
+                onClick={() => onSort('due_date')}
+              >
+                Due Date{getSortIndicator('due_date')}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -66,6 +86,9 @@ const StudentDashboardTable = ({ data, loading }) => {
                       ({row.percentage}%)
                     </div>
                   )}
+                </td>
+                <td className={`${styles.cell} ${styles.gradeCell}`}>
+                  {row.due_date ? new Date(row.due_date).toLocaleDateString() : '-'}
                 </td>
               </tr>
             ))}
