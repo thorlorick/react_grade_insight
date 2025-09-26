@@ -12,6 +12,7 @@ const TeacherPage = () => {
   const [loading, setLoading] = useState(true);
   const [uploadSummary, setUploadSummary] = useState(null);
   const [uploadError, setUploadError] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Fetch data when component mounts
   useEffect(() => {
@@ -54,6 +55,55 @@ const TeacherPage = () => {
     link.click();
   };
 
+  // Handle file upload
+  const handleFileUpload = async (file) => {
+    if (!file) return;
+
+    // Validate file type
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      setUploadError("Please upload a CSV file");
+      setUploadSummary(null);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setIsUploading(true);
+      setUploadError(null);
+      setUploadSummary(null);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      // Check if response is ok
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.ok) {
+        setUploadSummary(data);
+        setUploadError(null);
+        // Refresh data after successful upload
+        await refreshData();
+      } else {
+        setUploadError(data.error || "Upload failed");
+        setUploadSummary(null);
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      setUploadError(err.message || "Upload failed. Please try again.");
+      setUploadSummary(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   // Refresh teacher data
   const refreshData = async () => {
     try {
@@ -68,6 +118,27 @@ const TeacherPage = () => {
     }
   };
 
+  // Handle upload button click
+  const handleUploadClick = () => {
+    if (isUploading) return; // Prevent multiple uploads
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".csv";
+    input.style.display = "none";
+    
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      await handleFileUpload(file);
+      // Clean up
+      document.body.removeChild(input);
+    };
+    
+    // Add to DOM temporarily and click
+    document.body.appendChild(input);
+    input.click();
+  };
+
   return (
     <div className={styles.body}>
       {/* Navbar */}
@@ -75,44 +146,14 @@ const TeacherPage = () => {
         brand="Grade Insight"
         links={[
           {
-            label: 'Upload',
-            onClick: async () => {
-              // Open file picker
-              const input = document.createElement("input");
-              input.type = "file";
-              input.accept = ".csv";
-              input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const formData = new FormData();
-                formData.append("file", file);
-
-                try {
-                  const res = await fetch("/api/upload", {
-                    method: "POST",
-                    body: formData
-                  });
-                  const data = await res.json();
-
-                  if (data.ok) {
-                    setUploadSummary(data);
-                    setUploadError(null);
-                    refreshData();
-                  } else {
-                    setUploadError(data.error);
-                    setUploadSummary(null);
-                  }
-                } catch (err) {
-                  console.error(err);
-                  setUploadError("Upload failed");
-                  setUploadSummary(null);
-                }
-              };
-              input.click();
-            }
+            label: isUploading ? 'Uploading...' : 'Upload',
+            onClick: handleUploadClick,
+            disabled: isUploading
           },
-          { label: 'Download Template', onClick: handleDownloadTemplate }
+          { 
+            label: 'Download Template', 
+            onClick: handleDownloadTemplate 
+          }
         ]}
       >
         <SearchBar onSearch={handleSearch} />
@@ -125,12 +166,24 @@ const TeacherPage = () => {
           <p>File: {uploadSummary.file}</p>
           <p>Assignments processed: {uploadSummary.assignmentsCount}</p>
           <p>Students processed: {uploadSummary.studentsCount}</p>
+          <button 
+            onClick={() => setUploadSummary(null)}
+            className={styles.dismissButton}
+          >
+            ✕
+          </button>
         </div>
       )}
 
       {uploadError && (
         <div className={styles.uploadError}>
           <p>❌ Upload failed: {uploadError}</p>
+          <button 
+            onClick={() => setUploadError(null)}
+            className={styles.dismissButton}
+          >
+            ✕
+          </button>
         </div>
       )}
 
