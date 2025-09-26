@@ -55,52 +55,15 @@ const TeacherPage = () => {
     link.click();
   };
 
-  // Handle file upload
-  const handleFileUpload = async (file) => {
-    if (!file) return;
-
-    // Validate file type
-    if (!file.name.toLowerCase().endsWith('.csv')) {
-      setUploadError("Please upload a CSV file");
-      setUploadSummary(null);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      setIsUploading(true);
+  // Handle upload success (matching your original UploadButton pattern)
+  const handleUploadSuccess = (data) => {
+    if (data.ok) {
+      setUploadSummary(data);
       setUploadError(null);
+      refreshData();
+    } else {
+      setUploadError(data.error);
       setUploadSummary(null);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData
-      });
-
-      // Check if response is ok
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      if (data.ok) {
-        setUploadSummary(data);
-        setUploadError(null);
-        // Refresh data after successful upload
-        await refreshData();
-      } else {
-        setUploadError(data.error || "Upload failed");
-        setUploadSummary(null);
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      setUploadError(err.message || "Upload failed. Please try again.");
-      setUploadSummary(null);
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -118,9 +81,9 @@ const TeacherPage = () => {
     }
   };
 
-  // Handle upload button click
+  // Handle upload button click (simplified to match original pattern)
   const handleUploadClick = () => {
-    if (isUploading) return; // Prevent multiple uploads
+    if (isUploading) return;
 
     const input = document.createElement("input");
     input.type = "file";
@@ -129,7 +92,39 @@ const TeacherPage = () => {
     
     input.onchange = async (e) => {
       const file = e.target.files[0];
-      await handleFileUpload(file);
+      if (!file) return;
+
+      // Validate file type
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        setUploadError("Please upload a CSV file");
+        setUploadSummary(null);
+        document.body.removeChild(input);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        setIsUploading(true);
+        setUploadError(null);
+        setUploadSummary(null);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        handleUploadSuccess(data);
+      } catch (err) {
+        console.error("Upload error:", err);
+        setUploadError("Upload failed. Please try again.");
+        setUploadSummary(null);
+      } finally {
+        setIsUploading(false);
+      }
+      
       // Clean up
       document.body.removeChild(input);
     };
