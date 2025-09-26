@@ -1,3 +1,4 @@
+// src/pages/TeacherPage.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
@@ -12,6 +13,7 @@ const TeacherPage = () => {
   const [uploadSummary, setUploadSummary] = useState(null);
   const [uploadError, setUploadError] = useState(null);
 
+  // Fetch data when component mounts
   useEffect(() => {
     async function fetchData() {
       try {
@@ -28,6 +30,7 @@ const TeacherPage = () => {
     fetchData();
   }, []);
 
+  // Handle search input
   const handleSearch = (query) => {
     if (!query.trim()) {
       setFilteredData(teacherData);
@@ -43,6 +46,7 @@ const TeacherPage = () => {
     setFilteredData(filtered);
   };
 
+  // Handle template download
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
     link.href = "/template.csv";
@@ -50,6 +54,7 @@ const TeacherPage = () => {
     link.click();
   };
 
+  // Refresh teacher data
   const refreshData = async () => {
     try {
       setLoading(true);
@@ -69,7 +74,44 @@ const TeacherPage = () => {
       <Navbar
         brand="Grade Insight"
         links={[
-          { label: 'Upload', onClick: refreshData },
+          {
+            label: 'Upload',
+            onClick: async () => {
+              // Open file picker
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = ".csv";
+              input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                try {
+                  const res = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData
+                  });
+                  const data = await res.json();
+
+                  if (data.ok) {
+                    setUploadSummary(data);
+                    setUploadError(null);
+                    refreshData();
+                  } else {
+                    setUploadError(data.error);
+                    setUploadSummary(null);
+                  }
+                } catch (err) {
+                  console.error(err);
+                  setUploadError("Upload failed");
+                  setUploadSummary(null);
+                }
+              };
+              input.click();
+            }
+          },
           { label: 'Download Template', onClick: handleDownloadTemplate }
         ]}
       >
@@ -85,7 +127,7 @@ const TeacherPage = () => {
           <p>Students processed: {uploadSummary.studentsCount}</p>
         </div>
       )}
-      
+
       {uploadError && (
         <div className={styles.uploadError}>
           <p>❌ Upload failed: {uploadError}</p>
