@@ -1,137 +1,157 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import GenericButton from "../components/GenericButton";
-import StudentDashboardTable from "../components/StudentDashboardTable";
-import styles from './StudentPage.module.css';
-import { getStudentData, logoutStudent } from "../api/studentApi";
+import React, { useState, useEffect, useCallback } from 'react';
+import { LogOut } from 'lucide-react';
+import StudentDashboardTable from '../components/StudentDashboardTable';
 
-const StudentPage = () => {
-  const [studentData, setStudentData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [notes, setNotes] = useState([]);
+// Custom hook for student data
+const useStudentData = () => {
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchData();
-    fetchNotes();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await getStudentData();
-      setStudentData(data);
-      setFilteredData(data);
+      setError(null);
+      const response = await fetch('https://gradeinsight.com:8083/api/student/data', {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          window.location.href = '/StudentLogin';
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setData(result);
     } catch (err) {
-      console.error("Failed to fetch student data:", err);
+      setError(err.message);
+      console.error('Error fetching student data:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchNotes = async () => {
-    try {
-      const res = await fetch("/api/student/notes");
-      const data = await res.json();
-      setNotes(data.notes || []);
-    } catch (err) {
-      console.error("Failed to fetch notes:", err);
-    }
-  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  const handleSearch = (query) => {
-    if (!query.trim()) {
-      setFilteredData(studentData);
-      return;
-    }
-    const filtered = studentData.filter(row =>
-      row.assignment_name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredData(filtered);
-  };
+  return { data, loading, error };
+};
 
-  const handleDownloadGrades = () => {
-    const csvHeaders = ['Assignment', 'Grade'];
-    const csvRows = studentData.map(row => [
-      row.assignment_name || '',
-      row.grade !== null && row.grade !== undefined
-        ? row.max_points ? `${row.grade}/${row.max_points}` : row.grade
-        : 'Not graded'
-    ]);
+// Custom hook for teacher notes
+const useStudentNotes = () => {
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const csvContent = [csvHeaders, ...csvRows]
-      .map(row => row.map(field => `"${field}"`).join(','))
-      .join('\n');
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const response = await fetch('https://gradeinsight.com:8083/api/student/notes', {
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setNotes(data.notes || []);
+        }
+      } catch (err) {
+        console.error('Error fetching notes:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "my_grades.csv";
-    link.click();
-    window.URL.revokeObjectURL(url);
+    fetchNotes();
+  }, []);
+
+  return { notes, loading };
+};
+
+const StudentPage = () => {
+  const { data: assignments, loading: assignmentsLoading, error } = useStudentData();
+  const { notes, loading: notesLoading } = useStudentNotes();
+  
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  const handleSort = (key) => {
+    setSortConfig(prev => ({
+      key,
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
   };
 
   const handleLogout = async () => {
     try {
-      await logoutStudent();
-      window.location.href = "/StudentLogin";
+      await fetch('https://gradeinsight.com:8083/api/auth/studentLogout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      window.location.href = '/StudentLogin';
     } catch (err) {
-      console.error("Logout failed:", err);
+      console.error('Logout failed:', err);
     }
   };
 
-  const handleSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
-
-    const sorted = [...filteredData].sort((a, b) => {
-      if (a[key] === null || a[key] === undefined) return 1;
-      if (b[key] === null || b[key] === undefined) return -1;
-
-      if (typeof a[key] === 'string') return a[key].localeCompare(b[key]);
-      return a[key] - b[key];
-    });
-
-    if (direction === 'desc') sorted.reverse();
-
-    setFilteredData(sorted);
-    setSortConfig({ key, direction });
-  };
-
   return (
-    <div className={styles.body}>
-      <Navbar brand="Grade Insight">
-        <GenericButton onClick={handleDownloadGrades}>Download My Grades</GenericButton>
-        <GenericButton onClick={fetchData}>Refresh</GenericButton>
-        <GenericButton onClick={handleLogout}>Logout</GenericButton>
-      </Navbar>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 font-['Inter']">
+      {/* Header */}
+      <header className="bg-black/30 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h1 className="text-xl font-bold text-white">Grade Insight</h1>
+            
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg backdrop-blur-sm border border-red-500/30 text-red-300 text-sm transition-all"
+            >
+              <LogOut size={16} />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </header>
 
-      <div className={styles.pageWrapper}>
-        <input
-          type="text"
-          placeholder="Search assignments..."
-          onChange={(e) => handleSearch(e.target.value)}
-          className={styles.searchInput}
-        />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Assignments Table */}
+        <div className="mb-8">
+          <StudentDashboardTable
+            data={assignments}
+            loading={assignmentsLoading}
+            error={error}
+            onSort={handleSort}
+            sortConfig={sortConfig}
+          />
+        </div>
 
-        <StudentDashboardTable
-          data={filteredData}
-          loading={loading}
-          onSort={handleSort}
-          sortConfig={sortConfig}
-        />
-
-        <div className={styles.notesSection}>
-          <h3>Teacher Notes</h3>
-          {notes.length === 0 && <p>No notes yet.</p>}
-          {notes.map((note, idx) => (
-            <div key={idx} className={styles.noteItem}>
-              <p>{note.note}</p>
-              <small>{note.teacher} — {new Date(note.created_at).toLocaleDateString()}</small>
+        {/* Teacher Notes Section */}
+        <div className="bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Teacher Notes</h3>
+          
+          {notesLoading ? (
+            <div className="text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-sky-400"></div>
+              <p className="mt-2 text-sky-300 text-sm">Loading notes...</p>
             </div>
-          ))}
+          ) : notes.length === 0 ? (
+            <p className="text-gray-400">No notes yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {notes.map((note, index) => (
+                <div key={index} className="bg-white/5 rounded-lg p-4 border-l-4 border-sky-400/50">
+                  <p className="text-gray-300 mb-2">{note.note}</p>
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span className="font-medium">{note.teacher}</span>
+                    <span>{new Date(note.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
