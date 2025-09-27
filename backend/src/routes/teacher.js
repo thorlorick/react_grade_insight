@@ -133,14 +133,10 @@ router.post('/notes/:studentId', async (req, res) => {
       return res.status(400).json({ error: 'Note too long (max 2000 characters)' });
     }
 
-    const [result] = await pool.execute(
-      `INSERT INTO teacher_notes (teacher_id, student_id, note)
-       VALUES (?, ?, ?)
-       ON DUPLICATE KEY UPDATE 
-       note = VALUES(note), 
-       updated_at = CURRENT_TIMESTAMP`,
-      [teacherId, studentId, note || '']
-    );
+   const [result] = await pool.execute(
+  `INSERT INTO teacher_notes (teacher_id, student_id, note) VALUES (?, ?, ?)`,
+  [teacherId, studentId, note || '']
+);
 
     // Get the inserted/updated note to return
     const [noteResult] = await pool.execute(
