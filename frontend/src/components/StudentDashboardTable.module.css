@@ -166,6 +166,37 @@
   color: #7dd3fc;
 }
 
+.gradeA {
+  color: #10b981; /* Green for A grades */
+  font-weight: 600;
+}
+
+.gradeB {
+  color: #3b82f6; /* Blue for B grades */
+  font-weight: 600;
+}
+
+.gradeC {
+  color: #f59e0b; /* Yellow/amber for C grades */
+  font-weight: 600;
+}
+
+.gradeD {
+  color: #f97316; /* Orange for D grades */
+  font-weight: 600;
+}
+
+.gradeF {
+  color: #ef4444; /* Red for F grades */
+  font-weight: 600;
+}
+
+.missingGrade {
+  color: #ef4444; /* Red for not graded */
+  font-style: italic;
+  opacity: 0.8;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
