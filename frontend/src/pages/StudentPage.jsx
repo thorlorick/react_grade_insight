@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { LogOut } from 'lucide-react';
 import StudentDashboardTable from '../components/StudentDashboardTable';
 
 // Custom hook for student data
@@ -107,10 +106,9 @@ const StudentPage = () => {
             
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg backdrop-blur-sm border border-red-500/30 text-red-300 text-sm transition-all"
+              className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg backdrop-blur-sm border border-red-500/30 text-red-300 text-sm transition-all font-medium"
             >
-              <LogOut size={16} />
-              <span>Logout</span>
+              Logout
             </button>
           </div>
         </div>
