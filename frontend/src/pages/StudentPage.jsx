@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import StudentDashboardTable from '../components/StudentDashboardTable';
+import styles from './StudentPage.module.css';
 
 // Custom hook for student data
 const useStudentData = () => {
@@ -97,26 +98,22 @@ const StudentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 font-['Inter']">
+    <div className={styles.body}>
       {/* Header */}
-      <header className="bg-black/30 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h1 className="text-xl font-bold text-white">Grade Insight</h1>
-            
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg backdrop-blur-sm border border-red-500/30 text-red-300 text-sm transition-all font-medium"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+      <div className={styles.navbar}>
+        <h1 className={styles.navLogo}>Grade Insight</h1>
+        
+        <button
+          onClick={handleLogout}
+          className={styles.logoutButton}
+        >
+          Logout
+        </button>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className={styles.pageWrapper}>
         {/* Assignments Table */}
-        <div className="mb-8">
+        <div className={styles.tableSection}>
           <StudentDashboardTable
             data={assignments}
             loading={assignmentsLoading}
@@ -127,25 +124,19 @@ const StudentPage = () => {
         </div>
 
         {/* Teacher Notes Section */}
-        <div className="bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Teacher Notes</h3>
+        <div className={styles.notesSection}>
+          <h3>Teacher Notes</h3>
           
           {notesLoading ? (
-            <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-sky-400"></div>
-              <p className="mt-2 text-sky-300 text-sm">Loading notes...</p>
-            </div>
+            <div className={styles.loading}>Loading notes...</div>
           ) : notes.length === 0 ? (
-            <p className="text-gray-400">No notes yet.</p>
+            <p>No notes yet.</p>
           ) : (
-            <div className="space-y-4">
+            <div>
               {notes.map((note, index) => (
-                <div key={index} className="bg-white/5 rounded-lg p-4 border-l-4 border-sky-400/50">
-                  <p className="text-gray-300 mb-2">{note.note}</p>
-                  <div className="flex justify-between items-center text-xs text-gray-400">
-                    <span className="font-medium">{note.teacher}</span>
-                    <span>{new Date(note.created_at).toLocaleDateString()}</span>
-                  </div>
+                <div key={index} className={styles.noteItem}>
+                  <p>{note.note}</p>
+                  <small>{note.teacher} — {new Date(note.created_at).toLocaleDateString()}</small>
                 </div>
               ))}
             </div>
