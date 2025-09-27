@@ -81,13 +81,13 @@ const StudentDashboardTable = ({ data, loading, error, onSort, sortConfig }) => 
                 Assignment{getSortIndicator('assignment_name')}
               </th>
               <th
-                className={`${styles.headerCell} ${styles.dynamicHeader}`}
+                className={`${styles.headerCell} ${styles.staticHeader}`}
                 onClick={() => onSort('grade')}
               >
                 Grade{getSortIndicator('grade')}
               </th>
               <th
-                className={`${styles.headerCell} ${styles.dynamicHeader}`}
+                className={`${styles.headerCell} ${styles.staticHeader}`}
                 onClick={() => onSort('due_date')}
               >
                 Due Date{getSortIndicator('due_date')}
@@ -100,7 +100,7 @@ const StudentDashboardTable = ({ data, loading, error, onSort, sortConfig }) => 
                 <td className={`${styles.cell} ${styles.staticCell}`}>
                   <div>{row.assignment_name || "Unnamed Assignment"}</div>
                 </td>
-                <td className={`${styles.cell} ${styles.gradeCell}`}>
+                <td className={`${styles.cell} ${styles.staticCell}`}>
                   <span className={getGradeColorClass(row.grade, row.max_points)}>
                     {formatGrade(row.grade, row.max_points)}
                   </span>
@@ -110,7 +110,7 @@ const StudentDashboardTable = ({ data, loading, error, onSort, sortConfig }) => 
                     </div>
                   )}
                 </td>
-                <td className={`${styles.cell} ${styles.gradeCell}`}>
+                <td className={`${styles.cell} ${styles.staticCell}`}>
                   {row.due_date ? new Date(row.due_date).toLocaleDateString() : '-'}
                 </td>
               </tr>
