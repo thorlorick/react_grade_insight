@@ -328,6 +328,64 @@
 .tableSection {
   margin-bottom: 2rem;
 }
+
+.notesSection {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(15, 15, 15, 0.8) 0%, rgba(26, 26, 26, 0.8) 50%, rgba(10, 10, 10, 0.8) 100%);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.notesSection h3 {
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.notesSection p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.noteItem {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid rgba(125, 211, 252, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.noteItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.noteItem p {
+  margin: 0 0 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.noteItem small {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(125, 211, 252, 0.8);
+  font-size: 0.875rem;
+}
 /* Media Queries */
 @media (max-width: 768px) {
   .body {
