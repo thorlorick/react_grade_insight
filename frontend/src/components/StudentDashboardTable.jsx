@@ -29,7 +29,7 @@ const StudentDashboardTable = ({ data, loading, error, onSort, sortConfig }) => 
   }
 
   const formatGrade = (grade, maxPoints) => {
-    if (grade === null || grade === undefined) return "Not graded";
+    if (grade === null || grade === undefined) return "Not Turned In";
     if (maxPoints) return `${grade}/${maxPoints}`;
     return grade.toString();
   };
