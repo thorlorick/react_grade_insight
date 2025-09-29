@@ -151,14 +151,13 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
       const aScore = getNumericScore(aGrade);
       const bScore = getNumericScore(bGrade);
 
-      // Missing grades should always go to the bottom
-      if (aScore === null && bScore === null) return 0;
-      if (aScore === null) return 1;
-      if (bScore === null) return -1;
+      // Treat null as -Infinity (always lowest, always sinks to bottom)
+      const aVal = aScore === null ? -Infinity : aScore;
+      const bVal = bScore === null ? -Infinity : bScore;
 
       return sortConfig.direction === 'asc'
-        ? aScore - bScore
-        : bScore - aScore;
+        ? aVal - bVal
+        : bVal - aVal;
     });
   }, [tableData.students, sortConfig]);
 
