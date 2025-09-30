@@ -1,5 +1,6 @@
 // src/pages/TeacherPage.jsx
 import React, { useState, useEffect } from "react";
+import Joyride, { STATUS } from "react-joyride";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
 import TeacherDashboardTable from "../components/TeacherDashboardTable";
@@ -13,6 +14,64 @@ const TeacherPage = () => {
   const [uploadSummary, setUploadSummary] = useState(null);
   const [uploadError, setUploadError] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  
+  // Joyride tour state
+  const [runTour, setRunTour] = useState(false);
+
+  // Check if user has seen the tour before
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem('hasSeenTeacherTour');
+    if (!hasSeenTour) {
+      // Small delay so elements are rendered before tour starts
+      setTimeout(() => setRunTour(true), 500);
+    }
+  }, []);
+
+  // Tour steps
+  const tourSteps = [
+    {
+      target: 'body',
+      content: 'Welcome to your Teacher Dashboard! Let\'s take a quick tour of the main features.',
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: '.upload-csv-button',
+      content: 'Click here to upload a CSV file with student grades. This is how you add or update grade data.',
+      placement: 'bottom',
+    },
+    {
+      target: '.download-template-button',
+      content: 'Need a template? Download a properly formatted CSV template here to ensure your uploads work correctly.',
+      placement: 'bottom',
+    },
+    {
+      target: '.search-bar',
+      content: 'Use the search bar to quickly find students by name, email, or assignment.',
+      placement: 'bottom',
+    },
+    {
+      target: '.teacher-dashboard',
+      content: 'This is your grade table. Click any column header to sort by that column (name, email, or assignment grades).',
+      placement: 'top',
+    },
+    {
+      target: '.teacher-dashboard',
+      content: 'Click on any student row to see detailed information and performance insights for that student.',
+      placement: 'top',
+    },
+  ];
+
+  // Handle tour completion
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
+
+    if (finishedStatuses.includes(status)) {
+      setRunTour(false);
+      localStorage.setItem('hasSeenTeacherTour', 'true');
+    }
+  };
 
   // Fetch data when component mounts
   useEffect(() => {
@@ -55,7 +114,7 @@ const TeacherPage = () => {
     link.click();
   };
 
-  // Handle upload success (matching your original UploadButton pattern)
+  // Handle upload success
   const handleUploadSuccess = (data) => {
     if (data.ok) {
       setUploadSummary(data);
@@ -81,7 +140,7 @@ const TeacherPage = () => {
     }
   };
 
-  // Handle upload button click (matching UploadButton component exactly)
+  // Handle upload button click
   const handleUploadClick = () => {
     if (isUploading) return;
 
@@ -97,7 +156,7 @@ const TeacherPage = () => {
       console.log('Selected CSV file:', file.name);
       
       const formData = new FormData();
-      formData.append('csv', file); // Must match backend - using 'csv' not 'file'
+      formData.append('csv', file);
 
       try {
         setIsUploading(true);
@@ -114,7 +173,6 @@ const TeacherPage = () => {
         console.log('Upload response:', data);
         handleUploadSuccess(data);
 
-        // Optional: refresh student data automatically (matching UploadButton)
         if (data.ok && refreshData) {
           await refreshData();
         }
@@ -125,17 +183,54 @@ const TeacherPage = () => {
         setIsUploading(false);
       }
       
-      // Clean up
       document.body.removeChild(input);
     };
     
-    // Add to DOM temporarily and click
     document.body.appendChild(input);
     input.click();
   };
 
   return (
     <div className={styles.body}>
+      {/* Joyride Tour */}
+      <Joyride
+        steps={tourSteps}
+        run={runTour}
+        continuous
+        showProgress
+        showSkipButton
+        callback={handleJoyrideCallback}
+        styles={{
+          options: {
+            primaryColor: '#22c55e',
+            textColor: '#d1fae5',
+            backgroundColor: 'rgba(15, 15, 15, 0.95)',
+            overlayColor: 'rgba(0, 0, 0, 0.7)',
+            arrowColor: 'rgba(15, 15, 15, 0.95)',
+            zIndex: 10000,
+          },
+          tooltip: {
+            borderRadius: '12px',
+            padding: '20px',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+          },
+          buttonNext: {
+            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontSize: '14px',
+          },
+          buttonBack: {
+            color: '#6ee7b7',
+            marginRight: '10px',
+          },
+          buttonSkip: {
+            color: '#86efac',
+          },
+        }}
+      />
+
       {/* Navbar */}
       <Navbar
         brand="Grade Insight"
@@ -143,15 +238,19 @@ const TeacherPage = () => {
           {
             label: isUploading ? 'Uploading...' : 'Upload CSV',
             onClick: handleUploadClick,
-            disabled: isUploading
+            disabled: isUploading,
+            className: 'upload-csv-button'
           },
           { 
             label: 'Download Template', 
-            onClick: handleDownloadTemplate 
+            onClick: handleDownloadTemplate,
+            className: 'download-template-button'
           }
         ]}
       >
-        <SearchBar onSearch={handleSearch} />
+        <div className="search-bar">
+          <SearchBar onSearch={handleSearch} />
+        </div>
       </Navbar>
 
       {/* Upload feedback */}
