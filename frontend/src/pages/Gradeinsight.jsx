@@ -12,9 +12,7 @@ const GradeInsight = () => {
   brand="Grade Insight"
   links={[
     { to: '/TeacherLogin', label: 'Teachers' },
-    { to: '/StudentLogin', label: 'Students' },
-    { to: '/ParentLogin', label: 'Parents' },
-    { to: '/contact', label: 'Contact Us' }
+    { to: '/StudentLogin', label: 'Students' }
   ]}
 />
       <BackgroundContainer image="/images/insightBG.jpg">
