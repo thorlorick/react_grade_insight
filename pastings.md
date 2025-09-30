@@ -510,4 +510,7 @@ Right now the Teacher Dashboard is very messy. There seems to be an issue with r
 
 # NAMING CONVENTIONS
 
+# So far so good
+The site is coming along. I still need to protect the signup page, but then I should be ready. There's no parent page yet, but that will come soon enough.
+
 
