@@ -200,33 +200,63 @@ const TeacherPage = () => {
         showProgress
         showSkipButton
         callback={handleJoyrideCallback}
+        floaterProps={{
+          disableAnimation: false,
+          styles: {
+            floater: {
+              filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5))',
+            }
+          }
+        }}
         styles={{
           options: {
             primaryColor: '#22c55e',
-            textColor: '#d1fae5',
-            backgroundColor: 'rgba(15, 15, 15, 0.95)',
-            overlayColor: 'rgba(0, 0, 0, 0.7)',
-            arrowColor: 'rgba(15, 15, 15, 0.95)',
+            textColor: '#1f2937',
+            backgroundColor: '#ffffff',
+            overlayColor: 'rgba(0, 0, 0, 0.85)',
+            arrowColor: '#ffffff',
             zIndex: 10000,
           },
+          overlay: {
+            backdropFilter: 'blur(8px)',
+          },
           tooltip: {
-            borderRadius: '12px',
-            padding: '20px',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '16px',
+            padding: '24px',
+            backgroundColor: '#ffffff',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.1)',
+          },
+          tooltipContent: {
+            padding: '8px 0',
+            color: '#374151',
+            fontSize: '15px',
+            lineHeight: '1.6',
+          },
+          tooltipTitle: {
+            color: '#111827',
+            fontSize: '18px',
+            fontWeight: '600',
+            marginBottom: '8px',
           },
           buttonNext: {
-            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+            backgroundColor: '#22c55e',
             borderRadius: '8px',
-            padding: '10px 20px',
+            padding: '10px 24px',
             fontSize: '14px',
+            fontWeight: '500',
+            color: '#ffffff',
           },
           buttonBack: {
-            color: '#6ee7b7',
-            marginRight: '10px',
+            color: '#6b7280',
+            marginRight: '12px',
+            fontSize: '14px',
           },
           buttonSkip: {
-            color: '#86efac',
+            color: '#9ca3af',
+            fontSize: '14px',
+          },
+          buttonClose: {
+            color: '#6b7280',
           },
         }}
       />
