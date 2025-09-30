@@ -22,43 +22,36 @@ const TeacherPage = () => {
   useEffect(() => {
     const hasSeenTour = localStorage.getItem('hasSeenTeacherTour');
     if (!hasSeenTour) {
-      // Small delay so elements are rendered before tour starts
       setTimeout(() => setRunTour(true), 500);
     }
   }, []);
 
-  // Tour steps
+  // Tour steps (no placement needed, handled globally)
   const tourSteps = [
     {
       target: 'body',
       content: 'Welcome to your Teacher Dashboard! Let\'s take a quick tour of the main features.',
-      placement: 'center',
       disableBeacon: true,
     },
     {
       target: '.upload-csv-button',
       content: 'Click here to upload a CSV file with student grades. This is how you add or update grade data.',
-      placement: 'bottom',
     },
     {
       target: '.download-template-button',
       content: 'Need a template? Download a properly formatted CSV template here to ensure your uploads work correctly.',
-      placement: 'bottom',
     },
     {
       target: '.search-bar',
       content: 'Use the search bar to quickly find students by name, email, or assignment.',
-      placement: 'bottom',
     },
     {
       target: '.teacher-dashboard',
       content: 'This is your grade table. Click any column header to sort by that column (name, email, or assignment grades).',
-      placement: 'top',
     },
     {
       target: '.teacher-dashboard',
       content: 'Click on any student row to see detailed information and performance insights for that student.',
-      placement: 'top',
     },
   ];
 
@@ -218,7 +211,7 @@ const TeacherPage = () => {
             zIndex: 10000,
           },
           overlay: {
-            backdropFilter: 'blur(8px)',
+            backdropFilter: 'none', // no blur so elements stay sharp
           },
           tooltip: {
             borderRadius: '16px',
@@ -259,6 +252,7 @@ const TeacherPage = () => {
             color: '#6b7280',
           },
         }}
+        placement="top" // force all tooltips to appear at the top
       />
 
       {/* Navbar */}
