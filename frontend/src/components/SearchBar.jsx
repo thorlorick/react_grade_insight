@@ -8,7 +8,7 @@ const SearchBar = ({ onSearch }) => {
 
   return (
     <input
-      className={styles.input}
+      className={`${styles.input} search-input`}
       type="text"
       placeholder="Search students..."
       onChange={handleChange}
@@ -17,5 +17,3 @@ const SearchBar = ({ onSearch }) => {
 };
 
 export default SearchBar;
-
-
