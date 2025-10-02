@@ -34,16 +34,16 @@ const TeacherPage = () => {
       disableBeacon: true,
     },
     {
-      target: '.upload-csv-button',
-      content: 'Click here to upload a CSV file with student grades. This is how you add or update grade data.',
-    },
-    {
       target: '.download-template-button',
       content: 'Need a template? Download a properly formatted CSV template here to ensure your uploads work correctly.',
     },
+     {
+      target: '.upload-csv-button',
+      content: 'Click here to upload a properly formatted CSV file with student grades. This is how you add or update grade data.',
+    },
     {
       target: '.search-bar',
-      content: 'Use the search bar to quickly find students by name, email, or assignment.',
+      content: 'Use the search bar to quickly find students by name.',
     },
     {
       target: '.teacher-dashboard',
@@ -51,7 +51,7 @@ const TeacherPage = () => {
     },
     {
       target: '.teacher-dashboard',
-      content: 'Click on any student row to see detailed information and performance insights for that student.',
+      content: 'Click on any student row to see detailed information and to be able to leave notes for individual students.',
     },
   ];
 
