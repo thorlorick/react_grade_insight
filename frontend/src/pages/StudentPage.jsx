@@ -120,7 +120,7 @@ const StudentPage = () => {
       disableBeacon: true,
     },
     {
-      target: `.${styles.navbar}`,
+      target: `.${styles.table}`,
       content: 'Here is your assignments table. You can see grades and sort columns.',
       placement: 'bottom',
     },
