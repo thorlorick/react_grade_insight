@@ -115,22 +115,22 @@ const StudentPage = () => {
   const tourSteps = [
     {
       target: 'body',
-      content: 'Welcome to your Student Dashboard! Let\'s take a quick tour.',
+      content: 'Welcome to your Student Dashboard! Let's take a quick tour.',
       placement: 'center',
       disableBeacon: true,
     },
     {
-      target: `.${styles.table}`,
+      target: '#assignments-table',
       content: 'Here is your assignments table. You can see grades and sort columns.',
       placement: 'bottom',
     },
     {
-      target: `.${styles.notesSection}`,
+      target: '#teacher-notes',
       content: 'This section shows notes your teacher has left for you.',
       placement: 'top',
     },
     {
-      target: `.${styles.logoutButton}`,
+      target: '#logout-btn',
       content: 'When you are done, click here to log out safely.',
       placement: 'bottom',
     },
@@ -203,6 +203,7 @@ const StudentPage = () => {
         <button
           onClick={handleLogout}
           className={styles.logoutButton}
+          id="logout-btn"
         >
           Logout
         </button>
@@ -210,7 +211,7 @@ const StudentPage = () => {
 
       <div className={styles.pageWrapper}>
         {/* Assignments Table */}
-        <div className={styles.tableSection}>
+        <div className={styles.tableSection} id="assignments-table">
           <StudentDashboardTable
             data={assignments}
             loading={assignmentsLoading}
@@ -221,7 +222,7 @@ const StudentPage = () => {
         </div>
 
         {/* Teacher Notes Section */}
-        <div className={styles.notesSection}>
+        <div className={styles.notesSection} id="teacher-notes">
           <h3>Teacher Notes</h3>
           
           {notesLoading ? (
