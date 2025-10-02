@@ -127,3 +127,15 @@ CREATE TABLE `uploads` (
   KEY `teacher_id` (`teacher_id`),
   CONSTRAINT `uploads_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE access_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    used BOOLEAN DEFAULT FALSE,
+    used_at TIMESTAMP NULL,
+    notes TEXT NULL,
+    INDEX idx_code (code)
+);
+
