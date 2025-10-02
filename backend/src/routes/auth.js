@@ -430,4 +430,59 @@ router.post('/teacherSignup', async (req, res) => {
   }
 });
 
+// === Verify Access Code ===
+router.post('/verifyAccessCode', async (req, res) => {
+  const { code } = req.body;
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+
+  try {
+    if (!code || !code.trim()) {
+      return res.status(400).json({ 
+        valid: false,
+        message: 'Access code is required' 
+      });
+    }
+
+    // Check if code exists and hasn't been used
+    const [rows] = await pool.execute(
+      'SELECT id, email, used FROM access_codes WHERE code = ?',
+      [code.trim()]
+    );
+
+    if (rows.length === 0) {
+      // Code doesn't exist
+      await logLoginAttempt('unknown', ipAddress, 'invalid_access_code', 'teacher');
+      return res.json({ 
+        valid: false,
+        message: 'Invalid access code' 
+      });
+    }
+
+    const accessCode = rows[0];
+
+    if (accessCode.used) {
+      // Code already used
+      await logLoginAttempt('unknown', ipAddress, 'used_access_code', 'teacher');
+      return res.json({ 
+        valid: false,
+        message: 'This access code has already been used' 
+      });
+    }
+
+    // Code is valid and unused
+    await logLoginAttempt('unknown', ipAddress, 'valid_access_code', 'teacher');
+    res.json({ 
+      valid: true,
+      message: 'Access code verified' 
+    });
+
+  } catch (error) {
+    console.error('Verify access code error:', error);
+    res.status(500).json({ 
+      valid: false,
+      message: 'Server error' 
+    });
+  }
+});
+
 module.exports = router;
