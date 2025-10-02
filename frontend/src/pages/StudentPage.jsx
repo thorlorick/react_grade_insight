@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Joyride, { STATUS } from 'react-joyride';
 import StudentDashboardTable from '../components/StudentDashboardTable';
 import styles from './StudentPage.module.css';
 
@@ -77,6 +78,44 @@ const StudentPage = () => {
   
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
+  // Joyride state
+  const [runTour, setRunTour] = useState(false);
+
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem('hasSeenStudentTour');
+    if (!hasSeenTour) {
+      setTimeout(() => setRunTour(true), 500);
+    }
+  }, []);
+
+  const tourSteps = [
+    {
+      target: 'body',
+      content: 'Welcome to your Student Dashboard! Let’s take a quick tour.',
+      disableBeacon: true,
+    },
+    {
+      target: `.${styles.tableSection}`,
+      content: 'Here is your assignments table. You can see grades and sort columns.',
+    },
+    {
+      target: `.${styles.notesSection}`,
+      content: 'This section shows notes your teacher has left for you.',
+    },
+    {
+      target: `.${styles.logoutButton}`,
+      content: 'When you’re done, click here to log out safely.',
+    },
+  ];
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      setRunTour(false);
+      localStorage.setItem('hasSeenStudentTour', 'true');
+    }
+  };
+
   const handleSort = (key) => {
     setSortConfig(prev => ({
       key,
@@ -99,6 +138,30 @@ const StudentPage = () => {
 
   return (
     <div className={styles.body}>
+      {/* Joyride Tour */}
+      <Joyride
+        steps={tourSteps}
+        run={runTour}
+        continuous
+        showProgress
+        showSkipButton
+        callback={handleJoyrideCallback}
+        styles={{
+          options: {
+            primaryColor: '#3b82f6', // blue for student
+            textColor: '#1f2937',
+            backgroundColor: '#ffffff',
+            overlayColor: 'rgba(0, 0, 0, 0.85)',
+            zIndex: 10000,
+          },
+          tooltip: {
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+          },
+        }}
+      />
+
       {/* Header */}
       <div className={styles.navbar}>
         <h1 className={styles.navLogo}>Grade Insight</h1>
