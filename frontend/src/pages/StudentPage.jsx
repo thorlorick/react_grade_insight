@@ -115,7 +115,7 @@ const StudentPage = () => {
   const tourSteps = [
     {
       target: 'body',
-      content: 'Welcome to your Student Dashboard! Let's take a quick tour.',
+      content: 'Welcome to your Student Dashboard! Let\'s take a quick tour.',
       placement: 'center',
       disableBeacon: true,
     },
