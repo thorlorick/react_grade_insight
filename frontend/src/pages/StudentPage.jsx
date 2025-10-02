@@ -95,7 +95,7 @@ const StudentPage = () => {
       disableBeacon: true,
     },
     {
-      target: `.${styles.pageWrapper}`,
+      target: `body`,
       content: 'Here is your assignments table. You can see grades and sort columns.',
     },
     {
