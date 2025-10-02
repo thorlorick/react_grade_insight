@@ -78,33 +78,61 @@ const StudentPage = () => {
   
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // Joyride state
+  // Joyride state - Start with state instead of localStorage check
   const [runTour, setRunTour] = useState(false);
+  const [hasSeenTour, setHasSeenTour] = useState(false);
 
+  // Check localStorage and start tour after components and data are loaded
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem('hasSeenStudentTour');
-    if (!hasSeenTour) {
-      setTimeout(() => setRunTour(true), 500);
+    // Check if localStorage is available and user hasn't seen tour
+    try {
+      const tourSeen = localStorage.getItem('hasSeenStudentTour');
+      if (tourSeen) {
+        setHasSeenTour(true);
+      } else {
+        // Wait for data to load AND components to render before starting tour
+        if (!assignmentsLoading && !notesLoading && assignments.length > 0) {
+          const timer = setTimeout(() => {
+            setRunTour(true);
+          }, 500);
+          
+          return () => clearTimeout(timer);
+        }
+      }
+    } catch (e) {
+      console.warn('localStorage not available:', e);
+      // If localStorage fails, just run the tour once after data loads
+      if (!assignmentsLoading && !notesLoading && assignments.length > 0) {
+        const timer = setTimeout(() => {
+          setRunTour(true);
+        }, 500);
+        
+        return () => clearTimeout(timer);
+      }
     }
-  }, []);
+  }, [assignmentsLoading, notesLoading, assignments.length]);
 
   const tourSteps = [
     {
       target: 'body',
-      content: 'Welcome to your Student Dashboard! Let’s take a quick tour.',
+      content: 'Welcome to your Student Dashboard! Let's take a quick tour.',
+      placement: 'center',
       disableBeacon: true,
     },
     {
-      target: `body`,
+      target: `.${styles.tableSection}`,
       content: 'Here is your assignments table. You can see grades and sort columns.',
+      placement: 'bottom',
     },
     {
       target: `.${styles.notesSection}`,
       content: 'This section shows notes your teacher has left for you.',
+      placement: 'top',
     },
     {
       target: `.${styles.logoutButton}`,
-      content: 'When you’re done, click here to log out safely.',
+      content: 'When you're done, click here to log out safely.',
+      placement: 'bottom',
     },
   ];
 
@@ -112,7 +140,11 @@ const StudentPage = () => {
     const { status } = data;
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       setRunTour(false);
-      localStorage.setItem('hasSeenStudentTour', 'true');
+      try {
+        localStorage.setItem('hasSeenStudentTour', 'true');
+      } catch (e) {
+        console.warn('Could not save tour status:', e);
+      }
     }
   };
 
@@ -145,10 +177,12 @@ const StudentPage = () => {
         continuous
         showProgress
         showSkipButton
+        scrollToFirstStep
+        disableScrolling={false}
         callback={handleJoyrideCallback}
         styles={{
           options: {
-            primaryColor: '#3b82f6', // blue for student
+            primaryColor: '#3b82f6',
             textColor: '#1f2937',
             backgroundColor: '#ffffff',
             overlayColor: 'rgba(0, 0, 0, 0.85)',
