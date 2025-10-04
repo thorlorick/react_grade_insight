@@ -40,7 +40,6 @@ const AdminPanel = () => {
       });
 
       if (response.ok || response.status === 400) {
-        // If we get any response (even 400), the auth worked
         localStorage.setItem('adminPassword', password);
         setIsAuthenticated(true);
       } else if (response.status === 401) {
@@ -81,8 +80,6 @@ const AdminPanel = () => {
       if (response.ok) {
         setMessage({ type: 'success', text: 'Access code created successfully!' });
         setGeneratedCode(data);
-        setEmail('');
-        setNotes('');
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to create code' });
       }
@@ -112,6 +109,13 @@ Grade Insight Team`;
 
     navigator.clipboard.writeText(emailText);
     setMessage({ type: 'success', text: 'Email text copied to clipboard!' });
+  };
+
+  const resetForm = () => {
+    setGeneratedCode(null);
+    setEmail('');
+    setNotes('');
+    setMessage({ type: '', text: '' });
   };
 
   // Login view
@@ -201,53 +205,55 @@ Grade Insight Team`;
             </div>
           )}
 
-          <div className={styles.formGroup}>
-            <input
-              type="email"
-              id="email"
-              className={styles.formInput}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Customer Email"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
+          {!generatedCode ? (
+            <>
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  className={styles.formInput}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Customer Email"
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <textarea
-              id="notes"
-              className={styles.formInput}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Notes (optional, e.g., Paid $50 via PayPal)"
-              disabled={isSubmitting}
-              style={{ minHeight: '80px', resize: 'vertical' }}
-            />
-          </div>
+              <div className={styles.formGroup}>
+                <textarea
+                  id="notes"
+                  className={styles.formInput}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Notes (optional, e.g., Paid $50 via PayPal)"
+                  disabled={isSubmitting}
+                  style={{ minHeight: '80px', resize: 'vertical' }}
+                />
+              </div>
 
-          <button 
-            className={styles.loginButton}
-            type="submit"
-            onClick={createCode}
-            disabled={isSubmitting}
-            style={{
-              opacity: isSubmitting ? 0.7 : 1,
-              cursor: isSubmitting ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isSubmitting ? 'Generating...' : 'Generate Code'}
-          </button>
-
-          {generatedCode && (
+              <button 
+                className={styles.loginButton}
+                type="submit"
+                onClick={createCode}
+                disabled={isSubmitting}
+                style={{
+                  opacity: isSubmitting ? 0.7 : 1,
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isSubmitting ? 'Generating...' : 'Generate Code'}
+              </button>
+            </>
+          ) : (
             <div className={styles.codeResult}>
-              <h3 style={{ color: '#6ee7b7', marginBottom: '16px' }}>Access Code Created!</h3>
-              <div style={{ marginBottom: '12px' }}>
-                <strong style={{ color: '#a7f3d0' }}>Code:</strong>
+              <h3 style={{ color: '#6ee7b7', marginBottom: '16px', textAlign: 'center' }}>Access Code Created!</h3>
+              <div style={{ marginBottom: '16px' }}>
+                <strong style={{ color: '#a7f3d0', display: 'block', marginBottom: '8px' }}>Code:</strong>
                 <div className={styles.codeDisplay}>{generatedCode.code}</div>
               </div>
-              <div style={{ marginBottom: '12px' }}>
-                <strong style={{ color: '#a7f3d0' }}>Email:</strong>
+              <div style={{ marginBottom: '16px' }}>
+                <strong style={{ color: '#a7f3d0', display: 'block', marginBottom: '8px' }}>Email:</strong>
                 <div className={styles.codeDisplay}>{generatedCode.email}</div>
               </div>
               <button 
@@ -255,6 +261,13 @@ Grade Insight Team`;
                 onClick={copyEmailText}
               >
                 Copy Email Template
+              </button>
+              <button 
+                className={styles.loginButton}
+                onClick={resetForm}
+                style={{ marginTop: '12px' }}
+              >
+                Generate Another Code
               </button>
             </div>
           )}
