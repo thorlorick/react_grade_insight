@@ -97,7 +97,7 @@ Thank you for your purchase! Here is your access code for Grade Insight:
 Access Code: ${generatedCode.code}
 
 To create your account, please visit:
-${generatedCode.signupUrl}
+https:gradeinsight.com/signupPageforTeachers
 
 Enter the access code above when prompted to complete your signup.
 
