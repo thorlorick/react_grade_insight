@@ -186,7 +186,7 @@ Grade Insight Team`;
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer>
+        
           {error && (
             <div 
               style={{ 
@@ -269,7 +269,7 @@ Grade Insight Team`;
               </button>
             </div>
           )}
-        </LoginContainer>
+        
       </BackgroundContainer>
     </div>
   );
