@@ -73,6 +73,8 @@ app.use('/api/uploads', uploadRoutes);
 // Serve frontend
 app.use(express.static(path.join(__dirname, '../../frontend/')));
 
+// Admin routes (add with your other routes)
+app.use('/api/admin', require('./routes/admin'));
 
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
