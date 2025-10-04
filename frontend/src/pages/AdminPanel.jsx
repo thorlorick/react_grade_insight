@@ -186,7 +186,7 @@ Grade Insight Team`;
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer title="Generate Access Code">
+        <LoginContainer>
           {error && (
             <div 
               style={{ 
