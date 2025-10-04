@@ -513,4 +513,6 @@ Right now the Teacher Dashboard is very messy. There seems to be an issue with r
 # So far so good
 The site is coming along. I still need to protect the signup page, but then I should be ready. There's no parent page yet, but that will come soon enough.
 
+# ALMOST THERE
+Other than the parent portal (still not sure about that one) things are coming together. I've got teacher page and student page ready to go and I'm just working on securing the signup page....soon!!
 
