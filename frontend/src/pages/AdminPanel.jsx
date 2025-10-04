@@ -13,9 +13,9 @@ const AdminPanel = () => {
   
   const [email, setEmail] = useState('');
   const [notes, setNotes] = useState('');
-  const [message, setMessage] = useState({ type: '', text: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedCode, setGeneratedCode] = useState(null);
+  const [error, setError] = useState('');
 
   const adminPassword = localStorage.getItem('adminPassword');
 
@@ -62,7 +62,7 @@ const AdminPanel = () => {
   const createCode = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ type: '', text: '' });
+    setError('');
     setGeneratedCode(null);
 
     try {
@@ -78,13 +78,12 @@ const AdminPanel = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Access code created successfully!' });
         setGeneratedCode(data);
       } else {
-        setMessage({ type: 'error', text: data.message || 'Failed to create code' });
+        setError(data.message || 'Failed to create code');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Network error. Please try again.' });
+      setError('Network error. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -108,14 +107,13 @@ Best regards,
 Grade Insight Team`;
 
     navigator.clipboard.writeText(emailText);
-    setMessage({ type: 'success', text: 'Email text copied to clipboard!' });
   };
 
   const resetForm = () => {
     setGeneratedCode(null);
     setEmail('');
     setNotes('');
-    setMessage({ type: '', text: '' });
+    setError('');
   };
 
   // Login view
@@ -189,19 +187,19 @@ Grade Insight Team`;
       />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Generate Access Code">
-          {message.text && (
+          {error && (
             <div 
               style={{ 
-                color: message.type === 'success' ? '#2e7d32' : '#d32f2f', 
-                backgroundColor: message.type === 'success' ? '#e8f5e9' : '#ffebee', 
+                color: '#d32f2f', 
+                backgroundColor: '#ffebee', 
                 padding: '12px', 
                 borderRadius: '4px', 
                 marginBottom: '16px',
-                border: message.type === 'success' ? '1px solid #a5d6a7' : '1px solid #ffcdd2',
+                border: '1px solid #ffcdd2',
                 fontSize: '14px'
               }}
             >
-              {message.text}
+              {error}
             </div>
           )}
 
