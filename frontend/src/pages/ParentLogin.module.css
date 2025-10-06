@@ -158,8 +158,22 @@
   letter-spacing: -0.01em;
 }
 
+.formContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .formGroup {
   margin-bottom: 24px;
+}
+
+.formLabel {
+  display: block;
+  color: #6ee7b7;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
 }
 
 .formInput {
@@ -213,24 +227,8 @@
     0 1px 0 rgba(255, 255, 255, 0.3) inset;
 }
 
-.fieldError {
-  color: #d32f2f;
-  font-size: 12px;
-  display: block;
-  margin-top: 4px;
-  text-align: left;
-}
+/* Add media queries exactly like your Login.module.css */
 
-.errorMessage {
-  color: #d32f2f;
-  background-color: #ffebee;
-  padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  border: 1px solid #ffcdd2;
-  font-size: 14px;
-  text-align: center;
-}
 
 /* Media Queries */
 @media (max-width: 768px) {
