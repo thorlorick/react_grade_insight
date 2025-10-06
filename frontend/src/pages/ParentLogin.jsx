@@ -7,70 +7,108 @@ import loginStyles from './ParentLogin.module.css';
 
 const ParentLogin = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Enter a valid email';
-    if (!formData.password) newErrors.password = 'Password is required';
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!validateForm()) return;
+    
     setIsLoading(true);
     setErrors({});
 
     try {
       // Step 1: check first-time login
-      const checkRes = await fetch('/api/parent/checkLogin', {
+      const checkResponse = await fetch('/api/parent/checkLogin', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
+        body: JSON.stringify({ email: formData.email })
       });
-      const checkData = await checkRes.json();
 
-      if (!checkRes.ok) {
+      const checkData = await checkResponse.json();
+
+      if (!checkResponse.ok) {
+        // Email doesn't exist or other error
         setErrors({ form: checkData.message || 'Email not found' });
         return;
       }
 
-      // If first login, redirect to set password
+      // If parent must change password, redirect to ParentSetPassword page
       if (checkData.mustChangePassword) {
         navigate('/ParentSetPassword', {
-          state: { parentId: checkData.parentId, email: formData.email }
+          state: { 
+            parentId: checkData.parentId,
+            email: formData.email,
+            message: 'Please set your password for first-time login'
+          }
         });
         return;
       }
 
-      // Step 2: normal login
-      const loginRes = await fetch('/api/parent/login', {
+      // If password doesn't need to be changed, proceed with normal login
+      const loginResponse = await fetch('/api/parent/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
+        body: JSON.stringify(formData)
       });
-      const loginData = await loginRes.json();
 
-      if (loginRes.ok) {
+      const loginData = await loginResponse.json();
+
+      if (loginResponse.ok) {
+        // Login successful - redirect to dashboard
+        console.log('Login successful:', loginData);
         navigate('/ParentPage');
       } else {
-        setErrors({ form: loginData.message || 'Invalid credentials' });
+        // Login failed
+        setErrors({ form: loginData.message || 'Invalid login credentials' });
       }
-    } catch (err) {
-      console.error('Login error:', err);
+
+    } catch (error) {
+      console.error('Login error:', error);
       setErrors({ form: 'Network error. Please try again.' });
     } finally {
       setIsLoading(false);
@@ -90,44 +128,79 @@ const ParentLogin = () => {
       />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Parent Login">
-          {errors.form && <div className={loginStyles.errorMessage}>{errors.form}</div>}
+          {/* Form Error Display */}
+          {errors.form && (
+            <div 
+              className={loginStyles.errorMessage}
+              style={{ 
+                color: '#d32f2f', 
+                backgroundColor: '#ffebee', 
+                padding: '12px', 
+                borderRadius: '4px', 
+                marginBottom: '16px',
+                border: '1px solid #ffcdd2',
+                fontSize: '14px'
+              }}
+            >
+              {errors.form}
+            </div>
+          )}
 
           <div className={loginStyles.formGroup}>
             <input
               id="email"
               name="email"
+              className={`${loginStyles.formInput} ${errors.email ? loginStyles.inputError : ''}`}
               type="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className={errors.email ? loginStyles.inputError : ''}
               disabled={isLoading}
             />
-            {errors.email && <span className={loginStyles.fieldError}>{errors.email}</span>}
+            {errors.email && (
+              <span 
+                className={loginStyles.fieldError}
+                style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
+              >
+                {errors.email}
+              </span>
+            )}
           </div>
 
           <div className={loginStyles.formGroup}>
             <input
               id="password"
               name="password"
+              className={`${loginStyles.formInput} ${errors.password ? loginStyles.inputError : ''}`}
               type="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className={errors.password ? loginStyles.inputError : ''}
               disabled={isLoading}
             />
-            {errors.password && <span className={loginStyles.fieldError}>{errors.password}</span>}
+            {errors.password && (
+              <span 
+                className={loginStyles.fieldError}
+                style={{ color: '#d32f2f', fontSize: '12px', display: 'block', marginTop: '4px' }}
+              >
+                {errors.password}
+              </span>
+            )}
           </div>
 
-          <button
+          <button 
+            className={loginStyles.loginButton} 
             type="submit"
             onClick={handleSubmit}
             disabled={isLoading}
-            className={loginStyles.loginButton}
+            style={{
+              opacity: isLoading ? 0.7 : 1,
+              cursor: isLoading ? 'not-allowed' : 'pointer'
+            }}
           >
             {isLoading ? 'Checking...' : 'Log In'}
           </button>
+
         </LoginContainer>
       </BackgroundContainer>
     </div>
