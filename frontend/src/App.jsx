@@ -9,6 +9,7 @@ import './App.css';
 import Gradeinsight from './pages/Gradeinsight';
 import TeacherLogin from './pages/TeacherLogin';
 import StudentLogin from './pages/StudentLogin';
+import ParentLogin from './pages/ParentLogin';
 import TeacherPage from './pages/TeacherPage'; 
 import StudentPage from './pages/StudentPage';
 import SetPassword from './pages/SetPassword';
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/home" element={<Gradeinsight />} />
         <Route path="/teacherLogin" element={<TeacherLogin />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
+        <Route path="/ParentLogin" element={<ParentLogin />} />
         <Route path="/teacher" element={
           <ProtectedTeacherRoute>
             <TeacherPage />
