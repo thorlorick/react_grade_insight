@@ -299,7 +299,7 @@ const ParentSignup = () => {
           </div>
 
           {/* Children Emails Section */}
-          <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+          <div style={{ marginTop: '2px', marginBottom: '10px' }}>
             <div style={{ 
               color: '#6ee7b7', 
               fontSize: '14px', 
