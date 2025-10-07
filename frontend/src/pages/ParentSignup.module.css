@@ -185,28 +185,7 @@
 }
 
 .formGroup {
-    opacity: 0;
-  transition: opacity 0.6s ease-in-out;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  width: 420px; /* Wider than ParentLogin (was 280px) */
-  min-height: 500px; /* Taller to accommodate more fields */
-  max-height: 90vh; /* Prevent overflow on smaller screens */
-  overflow-y: auto; /* Allow scrolling if content is too tall */
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 40px 30px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 1px 0 rgba(255, 255, 255, 0.2) inset,
-    0 -1px 0 rgba(0, 0, 0, 0.1) inset;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Changed from center to accommodate scrolling */
+  margin-bottom: 20px; /* Slightly reduced to fit more content */
 }
 
 .formLabel {
