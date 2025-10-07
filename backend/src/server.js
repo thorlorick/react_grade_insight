@@ -20,6 +20,7 @@ const authRoutes = require('./routes/auth');
 const teacherRoutes = require('./routes/teacher');
 const uploadRoutes = require('./routes/uploads');
 const studentRoutes = require('./routes/student');
+const parentRoutes = require('./routes/parent');
 
 const app = express();
 

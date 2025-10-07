@@ -16,6 +16,7 @@ import SetPassword from './pages/SetPassword';
 import ParentPage from './pages/ParentPage';
 import SignUp from './pages/TeacherSignUp';
 import AdminPanel from './pages/AdminPanel';
+import ParentSignup from './pages/ParentSignup';
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
         <Route path="/parent" element={<ParentPage />} />
         <Route path="/signupPageForTeachers" element={<SignUp />} />
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/ParentSignup" element={<ParentSignup />} />
       
       
         {/* Catch-all for 404 */}
