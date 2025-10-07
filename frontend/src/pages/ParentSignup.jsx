@@ -189,7 +189,7 @@ const ParentSignup = () => {
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer title="Parent Account Setup">
+        <LoginContainer>
           
           {/* Info Message */}
           <div 
