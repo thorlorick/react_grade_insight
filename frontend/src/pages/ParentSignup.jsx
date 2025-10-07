@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import BackgroundContainer from '../components/BackgroundContainer';
 import LoginContainer from '../components/LoginContainer';
-import loginStyles from './ParentLogin.module.css';
+import loginStyles from './ParentSignup.module.css';
 
 const ParentSignup = () => {
   const navigate = useNavigate();

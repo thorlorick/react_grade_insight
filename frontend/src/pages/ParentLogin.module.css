@@ -200,6 +200,29 @@
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
+.inputError {
+  border-color: rgba(252, 165, 165, 0.5);
+  background: rgba(252, 165, 165, 0.05);
+}
+
+.fieldError {
+  color: #fca5a5;
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
+
+.errorMessage {
+  color: #fca5a5;
+  background-color: rgba(252, 165, 165, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(252, 165, 165, 0.3);
+  font-size: 14px;
+  text-align: center;
+}
+
 .loginButton {
   width: 100%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
@@ -227,16 +250,16 @@
     0 1px 0 rgba(255, 255, 255, 0.3) inset;
 }
 
-/* Add media queries exactly like your Login.module.css */
-
+.loginButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
 /* Media Queries */
 @media (max-width: 768px) {
   .body {
     padding: 20px;
   }
-
-}
 
   .navbar {
     left: 20px;
@@ -248,13 +271,28 @@
     padding-bottom: 16px;
   }
 
-  .navLogo { font-size: 1rem; }
-  .navLinks { gap: 20px; }
-  .navLink { font-size: 0.75rem; }
+  .navLogo { 
+    font-size: 1rem; 
+  }
+  
+  .navLinks { 
+    gap: 20px; 
+  }
+  
+  .navLink { 
+    font-size: 0.75rem; 
+  }
+
+  .content {
+    padding: 0 24px;
+    align-items: center;
+  }
 
   .loginForm {
     position: static;
     transform: none;
     width: 100%;
-    max-width: 
+    max-width: 400px;
+    min-height: auto;
   }
+}
