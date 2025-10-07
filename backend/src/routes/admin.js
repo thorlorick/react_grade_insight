@@ -65,4 +65,28 @@ router.get('/list-codes', checkAdminAuth, async (req, res) => {
   }
 });
 
+// 🔹 Reset a student's password by email
+router.post('/reset-student-password', checkAdminAuth, async (req, res) => {
+  const { email } = req.body;
+
+  if (!email)
+    return res.status(400).json({ message: 'Email is required' });
+
+  try {
+    const [result] = await pool.query(`
+      UPDATE students
+      SET password_hash = NULL, must_change_password = 1
+      WHERE email = ?;
+    `, [email]);
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: 'Student not found' });
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (err) {
+    console.error('Error resetting password:', err);
+    res.status(500).json({ message: 'Database error' });
+  }
+});
+
 module.exports = router;
