@@ -15,14 +15,11 @@ const SetPassword = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
-  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
 
   useEffect(() => {
-    // Get email from navigation state
     if (location.state?.email) {
       setEmail(location.state.email);
     } else {
-      // If no email in state, redirect back to login
       navigate('/StudentLogin');
     }
   }, [location.state, navigate]);
@@ -33,8 +30,7 @@ const SetPassword = () => {
       ...prev,
       [name]: value
     }));
-    
-    // Clear error when user starts typing
+
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -43,17 +39,13 @@ const SetPassword = () => {
     }
   };
 
-  const validatePassword = (password) => {
-    const requirements = {
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /\d/.test(password),
-      special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
-    };
-    
-    return requirements;
-  };
+  const validatePassword = (password) => ({
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /\d/.test(password),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+  });
 
   const validateForm = () => {
     const newErrors = {};
@@ -72,46 +64,39 @@ const SetPassword = () => {
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     setErrors({});
-    
+
     try {
       const response = await fetch('https://gradeinsight.com:8083/api/auth/setStudentPassword', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          email: email,
-          password: formData.password
-        })
+        body: JSON.stringify({ email, password: formData.password })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Password set successfully - redirect to login with success message
         navigate('/StudentLogin', { 
           state: { 
             message: 'Password created successfully! Please log in with your new password.',
-            email: email
+            email
           }
         });
       } else {
         setErrors({ form: data.message || 'Failed to set password' });
       }
-
     } catch (error) {
       console.error('Set password error:', error);
       setErrors({ form: 'Network error. Please try again.' });
@@ -121,6 +106,7 @@ const SetPassword = () => {
   };
 
   const requirements = validatePassword(formData.password);
+  const isPasswordValid = Object.values(requirements).every(req => req);
 
   return (
     <div className={setPasswordStyles.body}>
@@ -135,13 +121,11 @@ const SetPassword = () => {
       />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Set Your Password">
-          
-          {/* Info Message */}
+
           <div className={setPasswordStyles.infoMessage}>
             Welcome! Please create a secure password for <strong>{email}</strong>
           </div>
 
-          {/* Form Error Display */}
           {errors.form && (
             <div className={setPasswordStyles.errorMessage}>
               {errors.form}
@@ -187,28 +171,26 @@ const SetPassword = () => {
           </div>
 
           {/* Password Requirements Popup */}
-          <div className={setPasswordStyles.passwordInputWrapper}>
-            {showPasswordRequirements && (
-              <div className={setPasswordStyles.passwordRequirementsPopup}>
-                <div className={setPasswordStyles.requirementsTitle}>Password Requirements:</div>
-                <div className={`${setPasswordStyles.requirement} ${requirements.length ? setPasswordStyles.met : ''}`}>
-                  ✓ At least 8 characters
-                </div>
-                <div className={`${setPasswordStyles.requirement} ${requirements.uppercase ? setPasswordStyles.met : ''}`}>
-                  ✓ One uppercase letter
-                </div>
-                <div className={`${setPasswordStyles.requirement} ${requirements.lowercase ? setPasswordStyles.met : ''}`}>
-                  ✓ One lowercase letter
-                </div>
-                <div className={`${setPasswordStyles.requirement} ${requirements.number ? setPasswordStyles.met : ''}`}>
-                  ✓ One number
-                </div>
-                <div className={`${setPasswordStyles.requirement} ${requirements.special ? setPasswordStyles.met : ''}`}>
-                  ✓ One special character (!@#$%^&*)
-                </div>
+          {!isPasswordValid && (
+            <div className={setPasswordStyles.passwordRequirementsPopup}>
+              <div className={setPasswordStyles.requirementsTitle}>Password Requirements:</div>
+              <div className={`${setPasswordStyles.requirement} ${requirements.length ? setPasswordStyles.met : ''}`}>
+                ✓ At least 8 characters
               </div>
-            )}
-          </div>
+              <div className={`${setPasswordStyles.requirement} ${requirements.uppercase ? setPasswordStyles.met : ''}`}>
+                ✓ One uppercase letter
+              </div>
+              <div className={`${setPasswordStyles.requirement} ${requirements.lowercase ? setPasswordStyles.met : ''}`}>
+                ✓ One lowercase letter
+              </div>
+              <div className={`${setPasswordStyles.requirement} ${requirements.number ? setPasswordStyles.met : ''}`}>
+                ✓ One number
+              </div>
+              <div className={`${setPasswordStyles.requirement} ${requirements.special ? setPasswordStyles.met : ''}`}>
+                ✓ One special character (!@#$%^&* )
+              </div>
+            </div>
+          )}
 
           <button 
             className={setPasswordStyles.loginButton} 
