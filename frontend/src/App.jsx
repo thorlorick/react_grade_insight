@@ -41,7 +41,7 @@ const App = () => {
         } />
         <Route path="/StudentPage" element={<StudentPage />} />
         <Route path="/setPassword" element={<SetPassword />} />
-        <Route path="/parent" element={<ParentPage />} />
+        <Route path="/ParentPage" element={<ParentPage />} />
         <Route path="/signupPageForTeachers" element={<SignUp />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/ParentSignup" element={<ParentSignup />} />
