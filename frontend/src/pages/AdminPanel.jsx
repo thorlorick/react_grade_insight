@@ -17,6 +17,10 @@ const AdminPanel = () => {
   const [generatedCode, setGeneratedCode] = useState(null);
   const [error, setError] = useState('');
 
+  // New states for password reset feature
+  const [studentEmail, setStudentEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
+
   const adminPassword = localStorage.getItem('adminPassword');
 
   useEffect(() => {
@@ -114,6 +118,34 @@ Grade Insight Team`;
     setEmail('');
     setNotes('');
     setError('');
+  };
+
+  // 🔹 NEW: Reset password by email
+  const resetPassword = async (e) => {
+    e.preventDefault();
+    setResetMessage('');
+
+    try {
+      const response = await fetch('https://gradeinsight.com:8083/api/admin/reset-student-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminPassword}`
+        },
+        body: JSON.stringify({ email: studentEmail })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setResetMessage(`✅ ${data.message}`);
+        setStudentEmail('');
+      } else {
+        setResetMessage(`❌ ${data.message}`);
+      }
+    } catch {
+      setResetMessage('❌ Network error');
+    }
   };
 
   // Login view
@@ -269,6 +301,31 @@ Grade Insight Team`;
               </button>
             </div>
           )}
+
+          {/* 🔹 Password Reset Section (by email) */}
+          <div style={{ marginTop: '32px', borderTop: '1px solid #333', paddingTop: '24px' }}>
+            <h3 style={{ color: '#6ee7b7', marginBottom: '12px' }}>Reset Student Password</h3>
+            <input
+              type="email"
+              placeholder="Enter student email"
+              value={studentEmail}
+              onChange={(e) => setStudentEmail(e.target.value)}
+              className={styles.formInput}
+              style={{ marginBottom: '12px' }}
+            />
+            <button
+              className={styles.loginButton}
+              onClick={resetPassword}
+              disabled={!studentEmail}
+            >
+              Reset Password
+            </button>
+            {resetMessage && (
+              <div style={{ color: resetMessage.startsWith('✅') ? '#6ee7b7' : '#f87171', marginTop: '8px' }}>
+                {resetMessage}
+              </div>
+            )}
+          </div>
         </LoginContainer>
       </BackgroundContainer>
     </div>
