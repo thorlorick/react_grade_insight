@@ -65,39 +65,17 @@ const ParentPage = () => {
     setActiveChildId(childId);
   };
 
-  const refreshData = async () => {
-    if (activeChildId) {
-      await fetchChildData(activeChildId);
+  const handleLogout = async () => {
+    try {
+      await fetch('https://gradeinsight.com:8083/api/auth/studentLogout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      window.location.href = '/';
+    } catch (err) {
+      console.error('Logout failed:', err);
     }
-  };
-
-  const handleDownloadGrades = () => {
-    const activeChild = children.find(child => child.id === activeChildId);
-    const grades = gradesData[activeChildId] || [];
-    
-    if (!activeChild || grades.length === 0) return;
-
-    // Create CSV content
-    const csvHeaders = ['Assignment', 'Due Date', 'Max Points', 'Grade', 'Percentage'];
-    const csvRows = grades.map(row => [
-      row.assignment_name || '',
-      row.due_date || '',
-      row.max_points || '',
-      row.grade ? (row.max_points ? `${row.grade}/${row.max_points}` : row.grade) : 'Not graded',
-      row.percentage ? `${row.percentage}%` : ''
-    ]);
-    
-    const csvContent = [csvHeaders, ...csvRows]
-      .map(row => row.map(field => `"${field}"`).join(','))
-      .join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${activeChild.first_name}_${activeChild.last_name}_grades.csv`;
-    link.click();
-    window.URL.revokeObjectURL(url);
   };
 
   if (loading) {
@@ -114,7 +92,11 @@ const ParentPage = () => {
   if (children.length === 0) {
     return (
       <div className={styles.body}>
-        <Navbar brand="Grade Insight" />
+        <Navbar brand="Grade Insight">
+          <GenericButton onClick={handleLogout}>
+            Logout
+          </GenericButton>
+        </Navbar>
         <div className={styles.pageWrapper}>
           <div className={styles.emptyState}>
             No children found in your account. Please contact your school's administrator.
@@ -131,14 +113,8 @@ const ParentPage = () => {
   return (
     <div className={styles.body}>
       <Navbar brand="Grade Insight">
-        {activeChild && (
-          <GenericButton onClick={handleDownloadGrades}>
-            Download {activeChild.first_name}'s Grades
-          </GenericButton>
-        )}
-
-        <GenericButton onClick={refreshData}>
-          Refresh
+        <GenericButton onClick={handleLogout}>
+          Logout
         </GenericButton>
       </Navbar>
 
