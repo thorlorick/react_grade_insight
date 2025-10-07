@@ -225,7 +225,7 @@ const ParentSignup = () => {
           )}
 
           {/* Password Field */}
-          <div className={loginStyles.loginForm}>
+          <div className={loginStyles.formGroup}>
             <input
               id="password"
               name="password"
