@@ -54,10 +54,10 @@ const ParentLogin = () => {
     
     setIsLoading(true);
     setErrors({});
-
+    
     try {
-      // Step 1: check first-time login
-      const checkResponse = await fetch('/api/parent/checkLogin', {
+      // First, check if parent exists
+      const checkResponse = await fetch('https://gradeinsight.com:8083/api/auth/checkParentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,25 +69,24 @@ const ParentLogin = () => {
       const checkData = await checkResponse.json();
 
       if (!checkResponse.ok) {
-        // Email doesn't exist or other error
-        setErrors({ form: checkData.message || 'Email not found' });
+        // Parent doesn't exist - redirect to signup
+        if (checkResponse.status === 404) {
+          navigate('/ParentSignup', { 
+            state: { 
+              email: formData.email,
+              message: 'New parent account - please complete signup'
+            }
+          });
+          return;
+        }
+        
+        // Other error
+        setErrors({ form: checkData.message || 'An error occurred' });
         return;
       }
 
-      // If parent must change password, redirect to ParentSetPassword page
-      if (checkData.mustChangePassword) {
-        navigate('/ParentSetPassword', {
-          state: { 
-            parentId: checkData.parentId,
-            email: formData.email,
-            message: 'Please set your password for first-time login'
-          }
-        });
-        return;
-      }
-
-      // If password doesn't need to be changed, proceed with normal login
-      const loginResponse = await fetch('/api/parent/login', {
+      // Parent exists, proceed with normal login
+      const loginResponse = await fetch('https://gradeinsight.com:8083/api/auth/parentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
