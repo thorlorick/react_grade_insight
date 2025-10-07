@@ -6,6 +6,9 @@
   transform: translateY(-50%);
   width: 300px;
   min-height: 400px;
+  max-height: 90vh; /* prevents overflowing viewport */
+  overflow-y: auto; /* enables vertical scroll */
+  overflow-x: hidden;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -19,6 +22,22 @@
   flex-direction: column;
   justify-content: center;
   z-index: 10;
+  scrollbar-width: thin;
+  scrollbar-color: #555 #111;
+}
+
+/* Optional custom scrollbar for WebKit browsers */
+.loginForm::-webkit-scrollbar {
+  width: 6px;
+}
+
+.loginForm::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 4px;
+}
+
+.loginForm::-webkit-scrollbar-track {
+  background: #111;
 }
 
 .loginTitle {
@@ -44,6 +63,7 @@
     width: 100%;
     max-width: 320px;
     min-height: auto;
+    max-height: 90vh;
     padding: 30px 20px;
     margin: 0 auto;
   }
