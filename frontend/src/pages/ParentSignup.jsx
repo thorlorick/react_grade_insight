@@ -156,14 +156,11 @@ const ParentSignup = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Signup successful - redirect to login with success message
-        navigate('/ParentLogin', { 
-          state: { 
-            message: 'Account created successfully! Please log in.',
-            email: email
-          }
-        });
+        // Signup successful - user is automatically logged in, redirect to dashboard
+        console.log('Account created successfully:', data);
+        navigate('/ParentPage');
       } else {
+        // Show the error message from the server
         setErrors({ form: data.message || 'Failed to create account' });
       }
 
