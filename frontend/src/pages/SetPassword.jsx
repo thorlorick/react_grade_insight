@@ -220,13 +220,13 @@ const SetPassword = () => {
             )}
 
             <button 
-              className={setPasswordStyles.loginButton} 
+              className={`${setPasswordStyles.loginButton} ${
+                !isLoading && isPasswordValid && formData.password === formData.confirmPassword 
+                  ? setPasswordStyles.buttonReady 
+                  : setPasswordStyles.buttonDisabled
+              }`}
               type="submit"
               disabled={isLoading || !isPasswordValid || formData.password !== formData.confirmPassword}
-              style={{
-                opacity: (isLoading || !isPasswordValid || formData.password !== formData.confirmPassword) ? 0.7 : 1,
-                cursor: (isLoading || !isPasswordValid || formData.password !== formData.confirmPassword) ? 'not-allowed' : 'pointer'
-              }}
             >
               {isLoading ? 'Setting Password...' : 'Set Password'}
             </button>
