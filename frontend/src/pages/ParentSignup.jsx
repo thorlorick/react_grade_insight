@@ -245,7 +245,7 @@ const ParentSignup = () => {
             {/* Password Requirements */}
             {formData.password && (
               <div style={{ 
-                marginTop: '8px', 
+                marginTop: '3px', 
                 padding: '5px', 
                 backgroundColor: 'rgba(255, 255, 255, 0.05)', 
                 borderRadius: '6px',
@@ -304,7 +304,7 @@ const ParentSignup = () => {
               color: '#6ee7b7', 
               fontSize: '14px', 
               fontWeight: '500', 
-              marginBottom: '12px',
+              marginBottom: '5px',
               textAlign: 'center'
             }}>
               Add Your Children's Email Addresses
