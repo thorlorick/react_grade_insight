@@ -15,6 +15,8 @@ const SetPassword = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (location.state?.email) {
@@ -106,7 +108,7 @@ const SetPassword = () => {
   };
 
   const requirements = validatePassword(formData.password);
-  const isPasswordValid = Object.values(requirements).every(req => req);
+  const isPasswordValid = formData.password && Object.values(requirements).every(req => req);
 
   return (
     <div className={setPasswordStyles.body}>
@@ -132,78 +134,103 @@ const SetPassword = () => {
             </div>
           )}
 
-          <div className={setPasswordStyles.formGroup}>
-            <div className={setPasswordStyles.passwordInputWrapper}>
-              <input
-                id="password"
-                name="password"
-                className={`${setPasswordStyles.formInput} ${errors.password ? setPasswordStyles.inputError : ''}`}
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Create your password"
-                disabled={isLoading}
-              />
-              {errors.password && (
-                <span className={setPasswordStyles.fieldError}>
-                  {errors.password}
-                </span>
-              )}
+          <form onSubmit={handleSubmit}>
+            <div className={setPasswordStyles.formGroup}>
+              <div className={setPasswordStyles.passwordInputWrapper}>
+                <input
+                  id="password"
+                  name="password"
+                  className={`${setPasswordStyles.formInput} ${errors.password ? setPasswordStyles.inputError : ''}`}
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create your password"
+                  disabled={isLoading}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  className={setPasswordStyles.togglePassword}
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex="-1"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                </button>
+                {errors.password && (
+                  <span className={setPasswordStyles.fieldError}>
+                    {errors.password}
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className={setPasswordStyles.formGroup}>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              className={`${setPasswordStyles.formInput} ${errors.confirmPassword ? setPasswordStyles.inputError : ''}`}
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              disabled={isLoading}
-            />
-            {errors.confirmPassword && (
-              <span className={setPasswordStyles.fieldError}>
-                {errors.confirmPassword}
-              </span>
+            <div className={setPasswordStyles.formGroup}>
+              <div className={setPasswordStyles.passwordInputWrapper}>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className={`${setPasswordStyles.formInput} ${errors.confirmPassword ? setPasswordStyles.inputError : ''}`}
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your password"
+                  disabled={isLoading}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  className={setPasswordStyles.togglePassword}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  tabIndex="-1"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                </button>
+                {errors.confirmPassword && (
+                  <span className={setPasswordStyles.fieldError}>
+                    {errors.confirmPassword}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Password Requirements - Always visible when typing */}
+            {formData.password && (
+              <div className={`${setPasswordStyles.passwordRequirementsPopup} ${isPasswordValid ? setPasswordStyles.allRequirementsMet : ''}`}>
+                <div className={setPasswordStyles.requirementsTitle}>
+                  {isPasswordValid ? '✓ Password meets all requirements' : 'Password Requirements:'}
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.length ? setPasswordStyles.met : ''}`}>
+                  {requirements.length ? '✓' : '○'} At least 8 characters
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.uppercase ? setPasswordStyles.met : ''}`}>
+                  {requirements.uppercase ? '✓' : '○'} One uppercase letter
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.lowercase ? setPasswordStyles.met : ''}`}>
+                  {requirements.lowercase ? '✓' : '○'} One lowercase letter
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.number ? setPasswordStyles.met : ''}`}>
+                  {requirements.number ? '✓' : '○'} One number
+                </div>
+                <div className={`${setPasswordStyles.requirement} ${requirements.special ? setPasswordStyles.met : ''}`}>
+                  {requirements.special ? '✓' : '○'} One special character (!@#$%^&*)
+                </div>
+              </div>
             )}
-          </div>
 
-          {/* Password Requirements Popup */}
-          {!isPasswordValid && (
-            <div className={setPasswordStyles.passwordRequirementsPopup}>
-              <div className={setPasswordStyles.requirementsTitle}>Password Requirements:</div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.length ? setPasswordStyles.met : ''}`}>
-                ✓ At least 8 characters
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.uppercase ? setPasswordStyles.met : ''}`}>
-                ✓ One uppercase letter
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.lowercase ? setPasswordStyles.met : ''}`}>
-                ✓ One lowercase letter
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.number ? setPasswordStyles.met : ''}`}>
-                ✓ One number
-              </div>
-              <div className={`${setPasswordStyles.requirement} ${requirements.special ? setPasswordStyles.met : ''}`}>
-                ✓ One special character (!@#$%^&* )
-              </div>
-            </div>
-          )}
-
-          <button 
-            className={setPasswordStyles.loginButton} 
-            type="submit"
-            onClick={handleSubmit}
-            disabled={isLoading}
-            style={{
-              opacity: isLoading ? 0.7 : 1,
-              cursor: isLoading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isLoading ? 'Setting Password...' : 'Set Password'}
-          </button>
+            <button 
+              className={setPasswordStyles.loginButton} 
+              type="submit"
+              disabled={isLoading || !isPasswordValid || formData.password !== formData.confirmPassword}
+              style={{
+                opacity: (isLoading || !isPasswordValid || formData.password !== formData.confirmPassword) ? 0.7 : 1,
+                cursor: (isLoading || !isPasswordValid || formData.password !== formData.confirmPassword) ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {isLoading ? 'Setting Password...' : 'Set Password'}
+            </button>
+          </form>
 
         </LoginContainer>
       </BackgroundContainer>
