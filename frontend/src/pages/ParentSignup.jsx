@@ -246,7 +246,7 @@ const ParentSignup = () => {
             {formData.password && (
               <div style={{ 
                 marginTop: '8px', 
-                padding: '10px', 
+                padding: '5px', 
                 backgroundColor: 'rgba(255, 255, 255, 0.05)', 
                 borderRadius: '6px',
                 fontSize: '11px',
@@ -299,7 +299,7 @@ const ParentSignup = () => {
           </div>
 
           {/* Children Emails Section */}
-          <div style={{ marginTop: '14px', marginBottom: '10px' }}>
+          <div style={{ marginTop: '10px', marginBottom: '10px' }}>
             <div style={{ 
               color: '#6ee7b7', 
               fontSize: '14px', 
