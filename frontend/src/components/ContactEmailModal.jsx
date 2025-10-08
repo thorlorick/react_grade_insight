@@ -20,6 +20,7 @@ const ContactEmailModal = ({ onClose }) => {
       if (res.ok) {
         setSent(true);
         setEmail('');
+        onClose();
       } else {
         console.error('Failed to send email', res.status);
       }
@@ -71,5 +72,6 @@ const ContactEmailModal = ({ onClose }) => {
 };
 
 export default ContactEmailModal;
+
 
 
