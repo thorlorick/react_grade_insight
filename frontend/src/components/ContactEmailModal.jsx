@@ -41,17 +41,13 @@ const ContactEmailModal = ({ onClose }) => {
         </div>
 
         <div className={styles.content}>
-          <pre className={styles.fakeEmail}>
-To: contact@gradeinsight.com
-Subject: Inquiry from your website
-
-Hello,
-
-I’d like to learn more about your product.
-
-Kind regards,
-          </pre>
-
+         <div className={styles.fakeEmail}>
+  Hey Grade Insight Team,<br /><br />
+  I’m a teacher and I think your app would work really well in my classroom. 
+  I’d love to learn more about how it works and what I need to do to get started. 
+  Could you please send me some information?<br /><br />
+  Thanks so much,<br />
+</div>
           <input
             type="email"
             placeholder="your email"
@@ -75,3 +71,4 @@ Kind regards,
 };
 
 export default ContactEmailModal;
+
