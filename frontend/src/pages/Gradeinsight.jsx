@@ -41,7 +41,8 @@ const GradeInsight = () => {
             <article className={styles.featureCard}>
               <div className={styles.featureIcon}>🔐</div>
               <div className={styles.featureTitle}>Separate Logins</div>
-              <p className={styles.featureDesc}>Teachers, students, and parents each have their own secure login form.</p>
+              <p className={styles.featureDesc} style={{paddingLeft:16, marginTop:8}}>
+                Teachers, students, and parents each have their own simple and secure login form.</p>
             </article>
 
             <article className={styles.featureCard}>
