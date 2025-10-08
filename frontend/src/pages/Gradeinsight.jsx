@@ -102,10 +102,11 @@ const GradeInsight = () => {
                 <div className={styles.testimonialAvatar}>RM</div>
                 <div>
                   <div className={styles.testimonialName}>Ravi Mehta</div>
-                  <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>College Instructor</div>
+                  <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>Parent</div>
                 </div>
               </div>
-              <p className={styles.testimonialText}>"The analytics highlight class-wide misconceptions, helping me target lessons more effectively."</p>
+              <p className={styles.testimonialText}>"I can finally see my child’s progress in one place — no more juggling spreadsheets 
+                and emails or hounding my teacher or kid for information...With Grade Insight, it's all right there in one convenient place."</p>
             </blockquote>
 
             <blockquote className={styles.testimonialCard}>
@@ -116,7 +117,8 @@ const GradeInsight = () => {
                   <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>District Admin</div>
                 </div>
               </div>
-              <p className={styles.testimonialText}>"We deployed GradeInsight district-wide and saw consistent improvements in turnaround time and reporting."</p>
+              <p className={styles.testimonialText}>"We deployed Grade Insight district-wide and saw consistent 
+                improvements in parent and student engagement. Knowing instantly how a student is doing or what they are missing is invaluable."</p>
             </blockquote>
           </div>
         </section>
