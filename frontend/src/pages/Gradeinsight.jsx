@@ -79,8 +79,8 @@ const GradeInsight = () => {
         <section id="testimonials" className={`${styles.section} ${styles.testimonialSection}`} aria-labelledby="testimonials-heading">
           <div className={styles.sectionHeader}>
             <div>
-              <h3 id="testimonials-heading" className={styles.sectionTitle}>Trusted by educators</h3>
-              <p className={styles.sectionSubtitle}>Hear from teachers using GradeInsight in the classroom.</p>
+              <h3 id="testimonials-heading" className={styles.sectionTitle}>Trusted by Educators</h3>
+              <p className={styles.sectionSubtitle}>Hear from teachers using Grade Insight in the classroom.</p>
             </div>
           </div>
 
@@ -89,11 +89,12 @@ const GradeInsight = () => {
               <div style={{display:'flex',gap:12,alignItems:'center'}}>
                 <div className={styles.testimonialAvatar}>JS</div>
                 <div>
-                  <div className={styles.testimonialName}>Joan Smith</div>
+                  <div className={styles.testimonialName}>Jack Hansert</div>
                   <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>High School Math</div>
                 </div>
               </div>
-              <p className={styles.testimonialText}>"GradeInsight cut my grading time in half and helped me give more personalized feedback to students."</p>
+              <p className={styles.testimonialText}>"Grade Insight helped me give more personalized feedback to students and 
+                uploading grades is now effortless. I can import CSVs from Google Classroom in seconds."</p>
             </blockquote>
 
             <blockquote className={styles.testimonialCard}>
