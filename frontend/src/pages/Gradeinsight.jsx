@@ -135,7 +135,7 @@ const GradeInsight = () => {
           <div className={styles.uploadsGrid}>
             <div className={styles.uploadCard}>
               <div className={styles.uploadTitle}>CSV & Google Classroom</div>
-              <p className={styles.uploadDesc}>Download our standard CSV template or upload directly from Google Classroom for instant ingestion.</p>
+              <p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.</p>
             </div>
 
             <div className={styles.uploadCard}>
