@@ -124,13 +124,13 @@ const GradeInsight = () => {
         </section>
 
         {/* Uploads Section */}
-        <section id="uploads" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="uploads-heading">
-          <div className={styles.sectionHeader}>
-            <div>
-              <h3 id="uploads-heading" className={styles.sectionTitle}>Upload grades your way</h3>
-              <p className={styles.sectionSubtitle}>Flexible import options and reliable parsing for seamless updates.</p>
-            </div>
-          </div>
+     <section id="uploads" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="uploads-heading">
+  <div className={styles.sectionHeader}>
+    <div>
+      <h3 id="uploads-heading" className={styles.sectionTitle}>Upload grades the right way</h3>
+      <p className={styles.sectionSubtitle}>Only our template ensures correct parsing — accurate, reliable, and error-free.</p>
+    </div>
+  </div>
 
           <div className={styles.uploadsGrid}>
             <div className={styles.uploadCard}>
