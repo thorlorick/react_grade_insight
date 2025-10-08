@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import BackgroundContainer from '../components/BackgroundContainer';
-import LoginContainer from '../components/LoginContainer';
 import ContactEmailModal from '../components/ContactEmailModal';
 import styles from './Gradeinsight.module.css';
 
@@ -13,7 +12,7 @@ const GradeInsight = () => {
     { to: '/TeacherLogin', label: 'Teachers' },
     { to: '/StudentLogin', label: 'Students' },
     { to: '/ParentLogin', label: 'Parents' },
-    { label: 'Contact', onClick: () => setShowContactModal(true) } // Use onClick instead of "to"
+    { label: 'Contact', onClick: () => setShowContactModal(true) }
   ];
 
   return (
@@ -31,24 +30,27 @@ const GradeInsight = () => {
         {/* Features Section */}
         <section id="features" className={styles.section} aria-labelledby="features-heading">
           <div className={styles.sectionHeader}>
-            <div>
-              <h3 id="features-heading" className={styles.sectionTitle}>Designed for simplicity and speed</h3>
-              <p className={styles.sectionSubtitle}>How it works — built around teachers, students, and parents.</p>
-            </div>
+            <h3 id="features-heading" className={styles.sectionTitle}>
+              Designed for simplicity and speed
+            </h3>
+            <p className={styles.sectionSubtitle}>
+              How it works — built around teachers, students, and parents.
+            </p>
           </div>
 
           <div className={styles.featuresGrid}>
             <article className={styles.featureCard}>
               <div className={styles.featureIcon}>🔐</div>
               <div className={styles.featureTitle}>Separate Logins</div>
-              <p className={styles.featureDesc} style={{paddingLeft:16, marginTop:8}}>
-                Teachers, students, and parents each have their own simple and secure login form.</p>
+              <p className={styles.featureDesc} style={{ paddingLeft: 16, marginTop: 8 }}>
+                Teachers, students, and parents each have their own simple and secure login form.
+              </p>
             </article>
 
             <article className={styles.featureCard}>
               <div className={styles.featureIcon}>📊</div>
               <div className={styles.featureTitle}>Teacher Dashboard</div>
-              <ul className={styles.featureDesc} style={{paddingLeft:16, marginTop:8}}>
+              <ul className={styles.featureDesc} style={{ paddingLeft: 16, marginTop: 8 }}>
                 <li>Manage all students in one convenient table.</li>
                 <li>Upload CSVs directly from your computer.</li>
                 <li>Click a student row for detailed info and private notes.</li>
@@ -58,7 +60,7 @@ const GradeInsight = () => {
             <article className={styles.featureCard}>
               <div className={styles.featureIcon}>🧑‍🎓</div>
               <div className={styles.featureTitle}>Student Dashboard</div>
-              <ul className={styles.featureDesc} style={{paddingLeft:16, marginTop:8}}>
+              <ul className={styles.featureDesc} style={{ paddingLeft: 16, marginTop: 8 }}>
                 <li>View assignments and grades in an easy-to-read table.</li>
                 <li>See student-only comments from teachers.</li>
               </ul>
@@ -67,7 +69,7 @@ const GradeInsight = () => {
             <article className={styles.featureCard}>
               <div className={styles.featureIcon}>👪</div>
               <div className={styles.featureTitle}>Parent Dashboard</div>
-              <ul className={styles.featureDesc} style={{paddingLeft:16, marginTop:8}}>
+              <ul className={styles.featureDesc} style={{ paddingLeft: 16, marginTop: 8 }}>
                 <li>Linked to each child separately.</li>
                 <li>View assignments, grades, and student comments.</li>
               </ul>
@@ -78,106 +80,94 @@ const GradeInsight = () => {
         {/* Testimonials Section */}
         <section id="testimonials" className={`${styles.section} ${styles.testimonialSection}`} aria-labelledby="testimonials-heading">
           <div className={styles.sectionHeader}>
-            <div>
-              <h3 id="testimonials-heading" className={styles.sectionTitle}>Trusted by Educators</h3>
-              <p className={styles.sectionSubtitle}>Hear from teachers using Grade Insight in the classroom.</p>
-            </div>
+            <h3 id="testimonials-heading" className={styles.sectionTitle}>Trusted by Educators</h3>
+            <p className={styles.sectionSubtitle}>Hear from teachers using Grade Insight in the classroom.</p>
           </div>
 
           <div className={styles.testimonialsGrid}>
             <blockquote className={styles.testimonialCard}>
-              <div style={{display:'flex',gap:12,alignItems:'center'}}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div className={styles.testimonialAvatar}>JS</div>
                 <div>
                   <div className={styles.testimonialName}>Jack Hansert</div>
-                  <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>High School Math</div>
+                  <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12 }}>High School Math</div>
                 </div>
               </div>
-              <p className={styles.testimonialText}>"Grade Insight helped me give more personalized feedback to students and 
-                uploading grades is now effortless. I can import CSVs from Google Classroom in seconds."</p>
+              <p className={styles.testimonialText}>
+                "Grade Insight helped me give more personalized feedback to students and uploading grades is now effortless.
+                I can import CSVs from Google Classroom in seconds."
+              </p>
             </blockquote>
 
             <blockquote className={styles.testimonialCard}>
-              <div style={{display:'flex',gap:12,alignItems:'center'}}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div className={styles.testimonialAvatar}>RM</div>
                 <div>
                   <div className={styles.testimonialName}>Ravi Mehta</div>
-                  <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>Parent</div>
+                  <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12 }}>Parent</div>
                 </div>
               </div>
-              <p className={styles.testimonialText}>"I can finally see my child’s progress in one place — no more juggling spreadsheets 
-                and emails or hounding my teacher or kid for information...With Grade Insight, it's all right there in one convenient place."</p>
+              <p className={styles.testimonialText}>
+                "I can finally see my child’s progress in one place — no more juggling spreadsheets and emails.
+                With Grade Insight, it's all right there in one convenient place."
+              </p>
             </blockquote>
 
             <blockquote className={styles.testimonialCard}>
-              <div style={{display:'flex',gap:12,alignItems:'center'}}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div className={styles.testimonialAvatar}>AL</div>
                 <div>
                   <div className={styles.testimonialName}>Alicia Lopez</div>
-                  <div style={{color:'rgba(255,255,255,0.65)',fontSize:12}}>District Admin</div>
+                  <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12 }}>District Admin</div>
                 </div>
               </div>
-              <p className={styles.testimonialText}>"We deployed Grade Insight district-wide and saw consistent 
-                improvements in parent and student engagement. Knowing instantly how a student is doing or what they are missing is invaluable."</p>
+              <p className={styles.testimonialText}>
+                "We deployed Grade Insight district-wide and saw consistent improvements in parent and student engagement.
+                Knowing instantly how a student is doing or what they are missing is invaluable."
+              </p>
             </blockquote>
           </div>
         </section>
 
         {/* Uploads Section */}
-     <section id="uploads" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="uploads-heading">
-  <div className={styles.sectionHeader}>
-    <div>
-      <h3 id="uploads-heading" className={styles.sectionTitle}>Upload grades the right way</h3>
-      <p className={styles.sectionSubtitle}>Only our template ensures correct parsing — accurate, reliable, and error-free.</p>
-    </div>
-  </div>
+        <section id="uploads" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="uploads-heading">
+          <div className={styles.sectionHeader}>
+            <h3 id="uploads-heading" className={styles.sectionTitle}>Upload Grades the Right Way</h3>
+            <p className={styles.sectionSubtitle}>
+              Only our template ensures correct parsing — accurate, reliable, and error-free.
+            </p>
+          </div>
 
           <div className={styles.uploadsGrid}>
             <div className={styles.uploadCard}>
               <div className={styles.uploadTitle}>CSV & Google Classroom</div>
-              <p className={styles.uploadDesc}> Use our standard CSV template Or Google Classroom. 
-                You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
+              <p className={styles.uploadDesc}>
+                Use our standard CSV template or download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
               </p>
             </div>
 
             <div className={styles.uploadCard}>
-            <div className={styles.uploadTitle}>Patent Pending Parsing System</div>
-<p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. 
-                You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
-              Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields</p>
+              <div className={styles.uploadTitle}>Patent-Pending Parsing System</div>
+              <p className={styles.uploadDesc}>
+                Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields.
+                Optional per-student comments can be included for both students and parents.
+              </p>
+            </div>
 
-
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>Student Details & Notes</div>
+              <p className={styles.uploadDesc}>
+                Click any student row to open a detailed modal where you can view their grades, add private notes, and see an overview of their progress — all in one place.
+              </p>
             </div>
           </div>
-        </section>
-
-         {/* Modal Section */}
-     <section id="uploads" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="uploads-heading">
-  <div className={styles.sectionHeader}>
-    <div>
-      <h3 id="uploads-heading" className={styles.sectionTitle}>View Personalized Student Information</h3>
-      <p className={styles.sectionSubtitle}>Only our template ensures correct parsing — accurate, reliable, and error-free.</p>
-    </div>
-  </div>
-
-          <div className={styles.uploadsGrid}>
-            <div className={styles.uploadCard}>
-              <div className={styles.uploadTitle}>Personalized Information</div>
-                 <div className={styles.uploadTitle}>Student Details & Notes</div>
-<p className={styles.uploadDesc}>
-  Click any student row to open a detailed modal where you can view their grades, add private notes, and see 
-  an overview of their progress — all in one place.
-</p>
-            </div>
         </section>
 
         {/* Security Section */}
         <section id="security" className={`${styles.section} ${styles.securitySection}`} aria-labelledby="security-heading">
           <div className={styles.sectionHeader}>
-            <div>
-              <h3 id="security-heading" className={styles.sectionTitle}>Safe by design</h3>
-              <p className={styles.sectionSubtitle}>Built to prevent mistakes and protect student data.</p>
-            </div>
+            <h3 id="security-heading" className={styles.sectionTitle}>Safe by Design</h3>
+            <p className={styles.sectionSubtitle}>Built to prevent mistakes and protect student data.</p>
           </div>
 
           <div className={styles.securityList}>
@@ -193,9 +183,7 @@ const GradeInsight = () => {
         <section id="contact" aria-hidden="true" style={{ height: 1 }} />
       </main>
 
-      {showContactModal && (
-        <ContactEmailModal onClose={() => setShowContactModal(false)} />
-      )}
+      {showContactModal && <ContactEmailModal onClose={() => setShowContactModal(false)} />}
     </div>
   );
 };
