@@ -135,13 +135,18 @@ const GradeInsight = () => {
           <div className={styles.uploadsGrid}>
             <div className={styles.uploadCard}>
               <div className={styles.uploadTitle}>CSV & Google Classroom</div>
-              <p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.</p>
+              <p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. 
+                You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
+              Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields</p>
             </div>
 
             <div className={styles.uploadCard}>
-              <div className={styles.uploadTitle}>Accurate parsing</div>
-              <p className={styles.uploadDesc}>Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields.</p>
-              <p className={styles.uploadDesc} style={{marginTop:12}}>Optional per-student comments can be included for both students and parents.</p>
+            <div className={styles.uploadTitle}>Student Details & Notes</div>
+<p className={styles.uploadDesc}>
+  Click any student row to open a detailed modal where you can view their grades, add private notes, and see 
+  an overview of their progress — all in one place.
+</p>
+
             </div>
           </div>
         </section>
