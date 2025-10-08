@@ -145,7 +145,7 @@ const GradeInsight = () => {
 <p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. 
                 You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
               Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields</p>
-</p>
+
 
             </div>
           </div>
