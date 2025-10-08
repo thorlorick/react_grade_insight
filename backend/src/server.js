@@ -21,6 +21,8 @@ const teacherRoutes = require('./routes/teacher');
 const uploadRoutes = require('./routes/uploads');
 const studentRoutes = require('./routes/student');
 const parentRoutes = require('./routes/parent');
+const contactRoutes = require('./routes/contact');
+
 
 const app = express();
 
@@ -76,6 +78,9 @@ app.use(express.static(path.join(__dirname, '../../frontend/')));
 
 // Admin routes (add with your other routes)
 app.use('/api/admin', require('./routes/admin'));
+
+// Contact route
+app.use(contactRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
