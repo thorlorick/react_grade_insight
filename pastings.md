@@ -516,3 +516,6 @@ The site is coming along. I still need to protect the signup page, but then I sh
 # ALMOST THERE
 Other than the parent portal (still not sure about that one) things are coming together. I've got teacher page and student page ready to go and I'm just working on securing the signup page....soon!!
 
+# CLOSE
+the app is almost done. I've got teacher, students, parents and contact all wired and ready to go. I need add more info to the landing page so that people know what it is that the app does....I also need to update the README so that it's more inline with what the app does.
+
