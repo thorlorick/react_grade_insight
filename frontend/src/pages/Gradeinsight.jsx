@@ -153,15 +153,27 @@ const GradeInsight = () => {
                 Optional per-student comments can be included for both students and parents.
               </p>
             </div>
-
-            <div className={styles.uploadCard}>
-              <div className={styles.uploadTitle}>Student Details & Notes</div>
-              <p className={styles.uploadDesc}>
-                Click any student row to open a detailed modal where you can view their grades, add private notes, and see an overview of their progress — all in one place.
-              </p>
-            </div>
-          </div>
         </section>
+
+        {/* Student Details Section */}
+<section id="student-details" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="student-details-heading">
+  <div className={styles.sectionHeader}>
+    <h3 id="student-details-heading" className={styles.sectionTitle}>Student Details & Notes</h3>
+    <p className={styles.sectionSubtitle}>
+      Click any student row to open a detailed modal where you can view their grades, add private notes, and see an overview of their progress — all in one place.
+    </p>
+  </div>
+
+  <div className={styles.uploadsGrid}>
+    <div className={styles.uploadCard}>
+      <div className={styles.uploadTitle}>Personalized Information</div>
+      <p className={styles.uploadDesc}>
+        Keep track of student progress and add private teacher notes in a single, easy-to-access modal.
+      </p>
+    </div>
+  </div>
+</section>
+
 
         {/* Security Section */}
         <section id="security" className={`${styles.section} ${styles.securitySection}`} aria-labelledby="security-heading">
