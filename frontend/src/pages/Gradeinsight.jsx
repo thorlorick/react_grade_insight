@@ -135,20 +135,40 @@ const GradeInsight = () => {
           <div className={styles.uploadsGrid}>
             <div className={styles.uploadCard}>
               <div className={styles.uploadTitle}>CSV & Google Classroom</div>
-              <p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. 
+              <p className={styles.uploadDesc}> Use our standard CSV template Or Google Classroom. 
                 You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
-              Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields</p>
+              </p>
             </div>
 
             <div className={styles.uploadCard}>
-            <div className={styles.uploadTitle}>Student Details & Notes</div>
-<p className={styles.uploadDesc}>
-  Click any student row to open a detailed modal where you can view their grades, add private notes, and see 
-  an overview of their progress — all in one place.
+            <div className={styles.uploadTitle}>Patent Pending Parsing System</div>
+<p className={styles.uploadDesc}> Use our standard CSV template to ensure accurate parsing. 
+                You can also download CSVs directly from Google Classroom and upload them as-is — no cleaning or formatting required.
+              Our patent-pending parsing system ensures consistency and accuracy when mapping grades and fields</p>
 </p>
 
             </div>
           </div>
+        </section>
+
+         {/* Modal Section */}
+     <section id="uploads" className={`${styles.section} ${styles.uploadsSection}`} aria-labelledby="uploads-heading">
+  <div className={styles.sectionHeader}>
+    <div>
+      <h3 id="uploads-heading" className={styles.sectionTitle}>View Personalized Student Information</h3>
+      <p className={styles.sectionSubtitle}>Only our template ensures correct parsing — accurate, reliable, and error-free.</p>
+    </div>
+  </div>
+
+          <div className={styles.uploadsGrid}>
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>Personalized Information</div>
+                 <div className={styles.uploadTitle}>Student Details & Notes</div>
+<p className={styles.uploadDesc}>
+  Click any student row to open a detailed modal where you can view their grades, add private notes, and see 
+  an overview of their progress — all in one place.
+</p>
+            </div>
         </section>
 
         {/* Security Section */}
