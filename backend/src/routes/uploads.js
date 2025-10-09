@@ -54,31 +54,39 @@ router.post('/template', upload.single('csv'), async (req, res) => {
     );
     const uploadId = uploadResult.insertId;
 
-   // 2. Upsert assignments
-const assignmentIdMap = {}; // name => assignment_id
-for (const a of assignments) {
-  const dueDate = a.date || null; // convert empty/undefined to null
+    // 2. Upsert assignments (match by teacher_id + name only)
+    const assignmentIdMap = {}; // name => assignment_id
+    for (const a of assignments) {
+      const dueDate = a.date || null; // convert empty/undefined to null
 
-  const [existing] = await conn.query(
-    'SELECT id FROM assignments WHERE teacher_id=? AND name=? AND (due_date=? OR (due_date IS NULL AND ? IS NULL))',
-    [teacherId, a.name, dueDate, dueDate]
-  );
+      // Check if assignment exists by name only (not by date)
+      const [existing] = await conn.query(
+        'SELECT id, due_date FROM assignments WHERE teacher_id=? AND name=?',
+        [teacherId, a.name]
+      );
 
-  if (existing.length > 0) {
-    assignmentIdMap[a.name] = existing[0].id;
-    await conn.query(
-      'UPDATE assignments SET max_points=?, upload_id=?, due_date=? WHERE id=?',
-      [a.max_points, uploadId, dueDate, existing[0].id]
-    );
-  } else {
-    const [inserted] = await conn.query(
-      'INSERT INTO assignments (teacher_id, upload_id, name, due_date, max_points) VALUES (?, ?, ?, ?, ?)',
-      [teacherId, uploadId, a.name, dueDate, a.max_points]
-    );
-    assignmentIdMap[a.name] = inserted.insertId;
-  }
-}
-
+      if (existing.length > 0) {
+        // Assignment exists - update it
+        const existingId = existing[0].id;
+        const existingDate = existing[0].due_date;
+        
+        // Keep non-null date: prefer new date if it exists, otherwise keep old
+        const finalDate = dueDate !== null ? dueDate : existingDate;
+        
+        assignmentIdMap[a.name] = existingId;
+        await conn.query(
+          'UPDATE assignments SET max_points=?, upload_id=?, due_date=? WHERE id=?',
+          [a.max_points, uploadId, finalDate, existingId]
+        );
+      } else {
+        // Assignment doesn't exist - insert it
+        const [inserted] = await conn.query(
+          'INSERT INTO assignments (teacher_id, upload_id, name, due_date, max_points) VALUES (?, ?, ?, ?, ?)',
+          [teacherId, uploadId, a.name, dueDate, a.max_points]
+        );
+        assignmentIdMap[a.name] = inserted.insertId;
+      }
+    }
 
     // 3. Upsert students and grades
     for (const s of students) {
