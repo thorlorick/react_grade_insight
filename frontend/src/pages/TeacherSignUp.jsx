@@ -171,8 +171,7 @@ const TeacherSignup = () => {
         links={[
           { to: '/TeacherLogin', label: 'Teachers' },
           { to: '/StudentLogin', label: 'Students' },
-          { to: '/ParentLogin', label: 'Parents' },
-          { to: '/contact', label: 'Contact Us' }
+          { to: '/ParentLogin', label: 'Parents' }
         ]}
       />
       <BackgroundContainer image="/images/insightBG.jpg">
@@ -374,3 +373,4 @@ const TeacherSignup = () => {
 };
 
 export default TeacherSignup;
+
