@@ -89,4 +89,20 @@ router.post('/reset-student-password', checkAdminAuth, async (req, res) => {
   }
 });
 
+router.get('/contact-emails', async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_PASSWORD}`) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  try {
+    const [rows] = await pool.query('SELECT * FROM contact_emails ORDER BY created_at DESC LIMIT 100');
+    res.json({ success: true, rows });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 module.exports = router;
+
