@@ -10,16 +10,21 @@ const AdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
-  
+
   const [email, setEmail] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedCode, setGeneratedCode] = useState(null);
   const [error, setError] = useState('');
 
-  // New states for password reset feature
+  // Password reset states
   const [studentEmail, setStudentEmail] = useState('');
   const [resetMessage, setResetMessage] = useState('');
+
+  // Contact email states
+  const [contacts, setContacts] = useState([]);
+  const [loadingContacts, setLoadingContacts] = useState(false);
+  const [showContacts, setShowContacts] = useState(false);
 
   const adminPassword = localStorage.getItem('adminPassword');
 
@@ -51,7 +56,7 @@ const AdminPanel = () => {
       } else {
         setLoginError('Connection error');
       }
-    } catch (error) {
+    } catch {
       setLoginError('Connection error');
     }
   };
@@ -86,7 +91,7 @@ const AdminPanel = () => {
       } else {
         setError(data.message || 'Failed to create code');
       }
-    } catch (error) {
+    } catch {
       setError('Network error. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -120,7 +125,7 @@ Grade Insight Team`;
     setError('');
   };
 
-  // 🔹 NEW: Reset password by email
+  // Reset student password
   const resetPassword = async (e) => {
     e.preventDefault();
     setResetMessage('');
@@ -148,6 +153,25 @@ Grade Insight Team`;
     }
   };
 
+  // Fetch contact emails
+  const fetchContacts = async () => {
+    setLoadingContacts(true);
+    try {
+      const res = await fetch('https://gradeinsight.com:8083/api/admin/contact-emails', {
+        headers: { 'Authorization': `Bearer ${adminPassword}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setContacts(data.rows);
+        setShowContacts(true);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingContacts(false);
+    }
+  };
+
   // Login view
   if (!isAuthenticated) {
     return (
@@ -164,17 +188,15 @@ Grade Insight Team`;
         <BackgroundContainer image="/images/insightBG.jpg">
           <LoginContainer title="Admin Login">
             {loginError && (
-              <div 
-                style={{ 
-                  color: '#d32f2f', 
-                  backgroundColor: '#ffebee', 
-                  padding: '12px', 
-                  borderRadius: '4px', 
-                  marginBottom: '16px',
-                  border: '1px solid #ffcdd2',
-                  fontSize: '14px'
-                }}
-              >
+              <div style={{
+                color: '#d32f2f',
+                backgroundColor: '#ffebee',
+                padding: '12px',
+                borderRadius: '4px',
+                marginBottom: '16px',
+                border: '1px solid #ffcdd2',
+                fontSize: '14px'
+              }}>
                 {loginError}
               </div>
             )}
@@ -191,7 +213,7 @@ Grade Insight Team`;
               />
             </div>
 
-            <button 
+            <button
               className={styles.loginButton}
               type="submit"
               onClick={handleLogin}
@@ -204,7 +226,7 @@ Grade Insight Team`;
     );
   }
 
-  // Main admin panel view
+  // Main admin view
   return (
     <div className={styles.body}>
       <Navbar
@@ -220,17 +242,15 @@ Grade Insight Team`;
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer>
           {error && (
-            <div 
-              style={{ 
-                color: '#d32f2f', 
-                backgroundColor: '#ffebee', 
-                padding: '12px', 
-                borderRadius: '4px', 
-                marginBottom: '16px',
-                border: '1px solid #ffcdd2',
-                fontSize: '14px'
-              }}
-            >
+            <div style={{
+              color: '#d32f2f',
+              backgroundColor: '#ffebee',
+              padding: '12px',
+              borderRadius: '4px',
+              marginBottom: '16px',
+              border: '1px solid #ffcdd2',
+              fontSize: '14px'
+            }}>
               {error}
             </div>
           )}
@@ -262,7 +282,7 @@ Grade Insight Team`;
                 />
               </div>
 
-              <button 
+              <button
                 className={styles.loginButton}
                 type="submit"
                 onClick={createCode}
@@ -286,13 +306,10 @@ Grade Insight Team`;
                 <strong style={{ color: '#a7f3d0', display: 'block', marginBottom: '8px' }}>Email:</strong>
                 <div className={styles.codeDisplay}>{generatedCode.email}</div>
               </div>
-              <button 
-                className={styles.copyBtn}
-                onClick={copyEmailText}
-              >
+              <button className={styles.copyBtn} onClick={copyEmailText}>
                 Copy Email Template
               </button>
-              <button 
+              <button
                 className={styles.loginButton}
                 onClick={resetForm}
                 style={{ marginTop: '12px' }}
@@ -302,7 +319,7 @@ Grade Insight Team`;
             </div>
           )}
 
-          {/* 🔹 Password Reset Section (by email) */}
+          {/* 🔹 Reset Student Password */}
           <div style={{ marginTop: '32px', borderTop: '1px solid #333', paddingTop: '24px' }}>
             <h3 style={{ color: '#6ee7b7', marginBottom: '12px' }}>Reset Student Password</h3>
             <input
@@ -323,6 +340,45 @@ Grade Insight Team`;
             {resetMessage && (
               <div style={{ color: resetMessage.startsWith('✅') ? '#6ee7b7' : '#f87171', marginTop: '8px' }}>
                 {resetMessage}
+              </div>
+            )}
+          </div>
+
+          {/* 🔹 View Contact Emails */}
+          <div style={{ marginTop: '32px', borderTop: '1px solid #333', paddingTop: '24px' }}>
+            <h3 style={{ color: '#6ee7b7', marginBottom: '12px' }}>View Contact Emails</h3>
+            <button
+              className={styles.loginButton}
+              onClick={fetchContacts}
+              disabled={loadingContacts}
+            >
+              {loadingContacts ? 'Loading...' : 'Show Emails'}
+            </button>
+
+            {showContacts && (
+              <div
+                style={{
+                  marginTop: '16px',
+                  backgroundColor: '#1f2937',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  maxHeight: '250px',
+                  overflowY: 'auto',
+                  fontSize: '14px',
+                }}
+              >
+                {contacts.length === 0 ? (
+                  <p style={{ color: '#9ca3af' }}>No emails yet.</p>
+                ) : (
+                  contacts.map(c => (
+                    <div key={c.id} style={{ borderBottom: '1px solid #333', padding: '6px 0' }}>
+                      <div style={{ color: '#f9fafb' }}>{c.email}</div>
+                      <div style={{ color: '#9ca3af', fontSize: '12px' }}>
+                        {new Date(c.created_at).toLocaleString()}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
