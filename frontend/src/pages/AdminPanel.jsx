@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import BackgroundContainer from '../components/BackgroundContainer';
-import LoginContainer from '../components/LoginContainer';
-import styles from './AdminPanel.module.css';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -17,11 +13,9 @@ const AdminPanel = () => {
   const [generatedCode, setGeneratedCode] = useState(null);
   const [error, setError] = useState('');
 
-  // Password reset states
   const [studentEmail, setStudentEmail] = useState('');
   const [resetMessage, setResetMessage] = useState('');
 
-  // Contact email states
   const [contacts, setContacts] = useState([]);
   const [loadingContacts, setLoadingContacts] = useState(false);
   const [showContacts, setShowContacts] = useState(false);
@@ -125,7 +119,6 @@ Grade Insight Team`;
     setError('');
   };
 
-  // Reset student password
   const resetPassword = async (e) => {
     e.preventDefault();
     setResetMessage('');
@@ -153,8 +146,12 @@ Grade Insight Team`;
     }
   };
 
-  // Fetch contact emails
   const fetchContacts = async () => {
+    if (showContacts) {
+      setShowContacts(false);
+      return;
+    }
+    
     setLoadingContacts(true);
     try {
       const res = await fetch('https://gradeinsight.com:8083/api/admin/contact-emails', {
@@ -175,80 +172,220 @@ Grade Insight Team`;
   // Login view
   if (!isAuthenticated) {
     return (
-      <div className={styles.body}>
-        <Navbar
-          brand="Grade Insight"
-          links={[
-            { to: '/TeacherLogin', label: 'Teachers' },
-            { to: '/StudentLogin', label: 'Students' },
-            { to: '/ParentLogin', label: 'Parents' },
-            { to: '/contact', label: 'Contact Us' }
-          ]}
-        />
-        <BackgroundContainer image="/images/insightBG.jpg">
-          <LoginContainer title="Admin Login">
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: 'url(/images/insightBG.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(8px)',
+          opacity: 0.3,
+          zIndex: 0
+        }} />
+        
+        <div style={{
+          position: 'relative',
+          zIndex: 1,
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px'
+        }}>
+          <div style={{
+            width: '100%',
+            maxWidth: '400px',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '16px',
+            padding: '40px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+          }}>
+            <h1 style={{
+              fontSize: '1.75rem',
+              fontWeight: '300',
+              color: '#6ee7b7',
+              textAlign: 'center',
+              marginBottom: '32px',
+              letterSpacing: '-0.01em'
+            }}>Admin Login</h1>
+
             {loginError && (
               <div style={{
-                color: '#d32f2f',
-                backgroundColor: '#ffebee',
+                color: '#f87171',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
                 padding: '12px',
-                borderRadius: '4px',
-                marginBottom: '16px',
-                border: '1px solid #ffcdd2',
+                borderRadius: '8px',
+                marginBottom: '20px',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
                 fontSize: '14px'
               }}>
                 {loginError}
               </div>
             )}
 
-            <div className={styles.formGroup}>
+            <form onSubmit={handleLogin}>
               <input
                 type="password"
-                id="password"
-                className={styles.formInput}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
                 required
+                style={{
+                  width: '100%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  color: '#d1fae5',
+                  fontSize: '1rem',
+                  marginBottom: '20px',
+                  boxSizing: 'border-box'
+                }}
               />
-            </div>
 
-            <button
-              className={styles.loginButton}
-              type="submit"
-              onClick={handleLogin}
-            >
-              Login
-            </button>
-          </LoginContainer>
-        </BackgroundContainer>
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#a7f3d0',
+                  padding: '14px 24px',
+                  fontSize: '1rem',
+                  fontWeight: '400',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     );
   }
 
   // Main admin view
   return (
-    <div className={styles.body}>
-      <Navbar
-        brand="Grade Insight"
-        links={[
-          { to: '/TeacherLogin', label: 'Teachers' },
-          { to: '/StudentLogin', label: 'Students' },
-          { to: '/ParentLogin', label: 'Parents' },
-          { to: '/contact', label: 'Contact Us' },
-          { onClick: handleLogout, label: 'Logout', isButton: true }
-        ]}
-      />
-      <BackgroundContainer image="/images/insightBG.jpg">
-        <LoginContainer>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Blurred background */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: 'url(/images/insightBG.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        filter: 'blur(8px)',
+        opacity: 0.2,
+        zIndex: 0
+      }} />
+
+      {/* Header */}
+      <header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        background: 'rgba(15, 15, 15, 0.8)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        padding: '16px 24px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <h1 style={{
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            color: '#6ee7b7',
+            margin: 0,
+            letterSpacing: '0.05em'
+          }}>GRADE INSIGHT ADMIN</h1>
+          
+          <button
+            onClick={handleLogout}
+            style={{
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#fca5a5',
+              padding: '8px 20px',
+              fontSize: '0.875rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main style={{
+        position: 'relative',
+        zIndex: 1,
+        maxWidth: '900px',
+        margin: '0 auto',
+        padding: '40px 24px'
+      }}>
+        
+        {/* Generate Access Code Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}>
+          <h2 style={{
+            fontSize: '1.5rem',
+            fontWeight: '300',
+            color: '#6ee7b7',
+            marginTop: 0,
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{ fontSize: '1.75rem' }}>🎫</span>
+            Generate Access Code
+          </h2>
+
           {error && (
             <div style={{
-              color: '#d32f2f',
-              backgroundColor: '#ffebee',
+              color: '#f87171',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
               padding: '12px',
-              borderRadius: '4px',
-              marginBottom: '16px',
-              border: '1px solid #ffcdd2',
+              borderRadius: '8px',
+              marginBottom: '20px',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
               fontSize: '14px'
             }}>
               {error}
@@ -256,134 +393,408 @@ Grade Insight Team`;
           )}
 
           {!generatedCode ? (
-            <>
-              <div className={styles.formGroup}>
+            <form onSubmit={createCode}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{
+                  display: 'block',
+                  color: '#a7f3d0',
+                  fontSize: '0.875rem',
+                  marginBottom: '8px'
+                }}>Customer Email</label>
                 <input
                   type="email"
-                  id="email"
-                  className={styles.formInput}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Customer Email"
+                  placeholder="customer@example.com"
                   required
                   disabled={isSubmitting}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    color: '#d1fae5',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
 
-              <div className={styles.formGroup}>
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{
+                  display: 'block',
+                  color: '#a7f3d0',
+                  fontSize: '0.875rem',
+                  marginBottom: '8px'
+                }}>Notes (Optional)</label>
                 <textarea
-                  id="notes"
-                  className={styles.formInput}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Notes (optional, e.g., Paid $50 via PayPal)"
+                  placeholder="e.g., Paid $50 via PayPal"
                   disabled={isSubmitting}
-                  style={{ minHeight: '80px', resize: 'vertical' }}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    color: '#d1fae5',
+                    fontSize: '1rem',
+                    minHeight: '80px',
+                    resize: 'vertical',
+                    boxSizing: 'border-box',
+                    fontFamily: 'inherit'
+                  }}
                 />
               </div>
 
               <button
-                className={styles.loginButton}
                 type="submit"
-                onClick={createCode}
                 disabled={isSubmitting}
                 style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, rgba(52, 211, 153, 0.15) 100%)',
+                  border: '1px solid rgba(52, 211, 153, 0.4)',
+                  color: '#6ee7b7',
+                  padding: '14px 24px',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  borderRadius: '8px',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
                   opacity: isSubmitting ? 0.7 : 1,
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                  transition: 'all 0.3s ease'
                 }}
               >
                 {isSubmitting ? 'Generating...' : 'Generate Code'}
               </button>
-            </>
+            </form>
           ) : (
-            <div className={styles.codeResult}>
-              <h3 style={{ color: '#6ee7b7', marginBottom: '16px', textAlign: 'center' }}>Access Code Created!</h3>
-              <div style={{ marginBottom: '16px' }}>
-                <strong style={{ color: '#a7f3d0', display: 'block', marginBottom: '8px' }}>Code:</strong>
-                <div className={styles.codeDisplay}>{generatedCode.code}</div>
+            <div>
+              <div style={{
+                background: 'rgba(52, 211, 153, 0.1)',
+                border: '2px solid rgba(52, 211, 153, 0.4)',
+                borderRadius: '12px',
+                padding: '24px',
+                marginBottom: '20px'
+              }}>
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{
+                    display: 'block',
+                    color: '#a7f3d0',
+                    fontSize: '0.875rem',
+                    marginBottom: '8px',
+                    fontWeight: '500'
+                  }}>Access Code</label>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    fontFamily: 'monospace',
+                    fontSize: '1.5rem',
+                    color: '#67e8f9',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    letterSpacing: '0.1em'
+                  }}>
+                    {generatedCode.code}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'block',
+                    color: '#a7f3d0',
+                    fontSize: '0.875rem',
+                    marginBottom: '8px',
+                    fontWeight: '500'
+                  }}>Email</label>
+                  <div style={{
+                    color: '#d1fae5',
+                    fontSize: '1rem'
+                  }}>
+                    {generatedCode.email}
+                  </div>
+                </div>
               </div>
-              <div style={{ marginBottom: '16px' }}>
-                <strong style={{ color: '#a7f3d0', display: 'block', marginBottom: '8px' }}>Email:</strong>
-                <div className={styles.codeDisplay}>{generatedCode.email}</div>
-              </div>
-              <button className={styles.copyBtn} onClick={copyEmailText}>
-                Copy Email Template
-              </button>
+
               <button
-                className={styles.loginButton}
+                onClick={copyEmailText}
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, rgba(52, 211, 153, 0.15) 100%)',
+                  border: '1px solid rgba(52, 211, 153, 0.4)',
+                  color: '#6ee7b7',
+                  padding: '12px 24px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  marginBottom: '12px',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                📋 Copy Email Template
+              </button>
+
+              <button
                 onClick={resetForm}
-                style={{ marginTop: '12px' }}
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#a7f3d0',
+                  padding: '12px 24px',
+                  fontSize: '0.875rem',
+                  fontWeight: '400',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
               >
                 Generate Another Code
               </button>
             </div>
           )}
+        </div>
 
-          {/* 🔹 Reset Student Password */}
-          <div style={{ marginTop: '32px', borderTop: '1px solid #333', paddingTop: '24px' }}>
-            <h3 style={{ color: '#6ee7b7', marginBottom: '12px' }}>Reset Student Password</h3>
-            <input
-              type="email"
-              placeholder="Enter student email"
-              value={studentEmail}
-              onChange={(e) => setStudentEmail(e.target.value)}
-              className={styles.formInput}
-              style={{ marginBottom: '12px' }}
-            />
+        {/* Reset Student Password Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}>
+          <h2 style={{
+            fontSize: '1.5rem',
+            fontWeight: '300',
+            color: '#6ee7b7',
+            marginTop: 0,
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{ fontSize: '1.75rem' }}>🔑</span>
+            Reset Student Password
+          </h2>
+
+          <form onSubmit={resetPassword}>
+            <div style={{ marginBottom: '20px' }}>
+              <input
+                type="email"
+                value={studentEmail}
+                onChange={(e) => setStudentEmail(e.target.value)}
+                placeholder="student@example.com"
+                style={{
+                  width: '100%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  color: '#d1fae5',
+                  fontSize: '1rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+
             <button
-              className={styles.loginButton}
-              onClick={resetPassword}
+              type="submit"
               disabled={!studentEmail}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: '#a7f3d0',
+                padding: '14px 24px',
+                fontSize: '1rem',
+                fontWeight: '500',
+                borderRadius: '8px',
+                cursor: studentEmail ? 'pointer' : 'not-allowed',
+                opacity: studentEmail ? 1 : 0.5,
+                transition: 'all 0.3s ease'
+              }}
             >
               Reset Password
             </button>
-            {resetMessage && (
-              <div style={{ color: resetMessage.startsWith('✅') ? '#6ee7b7' : '#f87171', marginTop: '8px' }}>
-                {resetMessage}
-              </div>
-            )}
-          </div>
+          </form>
 
-          {/* 🔹 View Contact Emails */}
-          <div style={{ marginTop: '32px', borderTop: '1px solid #333', paddingTop: '24px' }}>
-            <h3 style={{ color: '#6ee7b7', marginBottom: '12px' }}>View Contact Emails</h3>
-            <button
-              className={styles.loginButton}
-              onClick={fetchContacts}
-              disabled={loadingContacts}
-            >
-              {loadingContacts ? 'Loading...' : 'Show Emails'}
-            </button>
+          {resetMessage && (
+            <div style={{
+              marginTop: '16px',
+              padding: '12px',
+              borderRadius: '8px',
+              fontSize: '0.875rem',
+              background: resetMessage.startsWith('✅') ? 'rgba(52, 211, 153, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+              border: resetMessage.startsWith('✅') ? '1px solid rgba(52, 211, 153, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+              color: resetMessage.startsWith('✅') ? '#6ee7b7' : '#f87171'
+            }}>
+              {resetMessage}
+            </div>
+          )}
+        </div>
 
-            {showContacts && (
-              <div
-                style={{
-                  marginTop: '16px',
-                  backgroundColor: '#1f2937',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  maxHeight: '250px',
-                  overflowY: 'auto',
-                  fontSize: '14px',
-                }}
-              >
-                {contacts.length === 0 ? (
-                  <p style={{ color: '#9ca3af' }}>No emails yet.</p>
-                ) : (
-                  contacts.map(c => (
-                    <div key={c.id} style={{ borderBottom: '1px solid #333', padding: '6px 0' }}>
-                      <div style={{ color: '#f9fafb' }}>{c.email}</div>
-                      <div style={{ color: '#9ca3af', fontSize: '12px' }}>
-                        {new Date(c.created_at).toLocaleString()}
-                      </div>
+        {/* Contact Emails Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}>
+          <h2 style={{
+            fontSize: '1.5rem',
+            fontWeight: '300',
+            color: '#6ee7b7',
+            marginTop: 0,
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{ fontSize: '1.75rem' }}>📧</span>
+            Contact Emails
+          </h2>
+
+          <button
+            onClick={fetchContacts}
+            disabled={loadingContacts}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: '#a7f3d0',
+              padding: '14px 24px',
+              fontSize: '1rem',
+              fontWeight: '500',
+              borderRadius: '8px',
+              cursor: loadingContacts ? 'not-allowed' : 'pointer',
+              opacity: loadingContacts ? 0.7 : 1,
+              transition: 'all 0.3s ease'
+            }}
+          >
+            {loadingContacts ? 'Loading...' : showContacts ? 'Hide Emails' : 'Show Emails'}
+          </button>
+
+          {showContacts && (
+            <div style={{
+              marginTop: '20px',
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: '8px',
+              maxHeight: '300px',
+              overflowY: 'auto',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+              {contacts.length === 0 ? (
+                <div style={{
+                  padding: '24px',
+                  textAlign: 'center',
+                  color: '#9ca3af'
+                }}>
+                  No contact emails yet.
+                </div>
+              ) : (
+                contacts.map((c, idx) => (
+                  <div
+                    key={c.id}
+                    style={{
+                      padding: '16px 20px',
+                      borderBottom: idx < contacts.length - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'
+                    }}
+                  >
+                    <div style={{
+                      color: '#d1fae5',
+                      fontSize: '1rem',
+                      marginBottom: '4px'
+                    }}>
+                      {c.email}
                     </div>
-                  ))
-                )}
-              </div>
-            )}
+                    <div style={{
+                      color: '#9ca3af',
+                      fontSize: '0.75rem'
+                    }}>
+                      {new Date(c.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Future Feature Placeholders */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '24px',
+          marginBottom: '24px'
+        }}>
+          {/* Placeholder 1 */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
+            backdropFilter: 'blur(12px)',
+            border: '1px dashed rgba(255, 255, 255, 0.2)',
+            borderRadius: '16px',
+            padding: '32px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '200px',
+            opacity: 0.6
+          }}>
+            <span style={{ fontSize: '3rem', marginBottom: '12px' }}>📊</span>
+            <p style={{
+              color: '#9ca3af',
+              fontSize: '0.875rem',
+              textAlign: 'center',
+              margin: 0
+            }}>Analytics Dashboard</p>
+            <p style={{
+              color: '#6b7280',
+              fontSize: '0.75rem',
+              textAlign: 'center',
+              margin: '8px 0 0 0'
+            }}>Coming Soon</p>
           </div>
-        </LoginContainer>
-      </BackgroundContainer>
+
+          {/* Placeholder 2 */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
+            backdropFilter: 'blur(12px)',
+            border: '1px dashed rgba(255, 255, 255, 0.2)',
+            borderRadius: '16px',
+            padding: '32px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '200px',
+            opacity: 0.6
+          }}>
+            <span style={{ fontSize: '3rem', marginBottom: '12px' }}>👥</span>
+            <p style={{
+              color: '#9ca3af',
+              fontSize: '0.875rem',
+              textAlign: 'center',
+              margin: 0
+            }}>User Management</p>
+            <p style={{
+              color: '#6b7280',
+              fontSize: '0.75rem',
+              textAlign: 'center',
+              margin: '8px 0 0 0'
+            }}>Coming Soon</p>
+          </div>
+        </div>
+
+      </main>
     </div>
   );
 };
