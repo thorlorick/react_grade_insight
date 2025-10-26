@@ -519,3 +519,5 @@ Other than the parent portal (still not sure about that one) things are coming t
 # CLOSE
 the app is almost done. I've got teacher, students, parents and contact all wired and ready to go. I need add more info to the landing page so that people know what it is that the app does....I also need to update the README so that it's more inline with what the app does.
 
+# IN THE WILD   
+gradeinsight has been live for awhile now...still only me as the teacher, but I'm getting closer. I really need Fonzie to check this thing over...but we have student, parent, admin, locked pages...it's good....even a slide show to start. nice!!!
