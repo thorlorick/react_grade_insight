@@ -104,5 +104,20 @@ router.get('/contact-emails', async (req, res) => {
 });
 
 
+// List all login attempts
+router.get('/login-attempts', checkAdminAuth, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, username, ip_address, success, timestamp FROM login_attempts ORDER BY timestamp DESC LIMIT 100'
+    );
+
+    res.json({ success: true, attempts: rows });
+  } catch (err) {
+    console.error('Error fetching login attempts:', err);
+    res.status(500).json({ message: 'Database error' });
+  }
+});
+
+
 module.exports = router;
 
