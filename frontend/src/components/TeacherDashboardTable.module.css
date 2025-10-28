@@ -241,3 +241,56 @@
   .gradeCell { font-size: 0.7rem; }
   .gradeScore { font-size: 0.65rem; }
 }
+
+/* ----- Force first column (Name) sticky ----- */
+
+/* Header cell (first column) — stays at top and left */
+.table th:nth-child(1),
+.table thead th:nth-child(1) {
+  position: sticky;
+  top: 0;               /* keep header row fixed vertically */
+  left: 0;              /* pin to left edge */
+  z-index: 40;          /* above normal header cells */
+  background: #000;     /* match header background */
+  min-width: 140px;     /* adjust to your preferred width */
+}
+
+/* Body cells (first column) */
+.table td:nth-child(1) {
+  position: sticky;
+  left: 0;
+  z-index: 30;          /* below header, above rows */
+  background: #000;     /* avoid transparency bleed when scrolled */
+  font-weight: 500;
+}
+
+/* Make sure second column is NOT sticky (unbreaks cases where Email was sticky) */
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  position: static !important;
+  left: auto !important;
+  z-index: auto !important;
+}
+
+/* Safety: ensure no leftover nth-child rules change left offset in responsive rules */
+.staticCell, .staticHeader {
+  /* keep styles that don't contradict stickiness */
+  background: #000;
+}
+
+/* remove earlier accidental offsets — ensure left=0 wins */
+@media (max-width: 768px) {
+  .table th:nth-child(1),
+  .table td:nth-child(1) { left: 0; min-width: 140px; }
+  .table th:nth-child(2),
+  .table td:nth-child(2) { position: static; left: auto; }
+}
+
+@media (max-width: 480px) {
+  .table th:nth-child(1),
+  .table td:nth-child(1) { left: 0; min-width: 120px; }
+  .table th:nth-child(2),
+  .table td:nth-child(2) { position: static; left: auto; }
+}
+
+
