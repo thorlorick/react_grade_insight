@@ -226,7 +226,7 @@
 @media (max-width: 768px) {
   .container { border-radius: 8px; margin: 0 -16px; }
   .headerCell, .cell { padding: 10px 8px; font-size: 0.8rem; }
-  .staticCell:nth-child(2) { left: 140px; }
+  .staticCell:nth-child(1) { left: 140px; }
   .staticCell:first-child { min-width: 140px; }
   .dynamicHeader { min-width: 100px; }
   .letterGrade { display: none; }
@@ -237,9 +237,10 @@
 @media (max-width: 480px) {
   .headerCell, .cell { padding: 8px 6px; font-size: 0.75rem; }
   .staticCell:first-child { min-width: 120px; }
-  .staticCell:nth-child(2) { left: 120px; }
+  .staticCell:nth-child(1) { left: 120px; }
   .dynamicHeader { min-width: 80px; max-width: 100px; }
   .gradeCell { font-size: 0.7rem; }
   .gradeScore { font-size: 0.65rem; }
 }
+
 
