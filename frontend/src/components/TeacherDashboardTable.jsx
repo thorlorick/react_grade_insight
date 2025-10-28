@@ -189,7 +189,7 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.tableWrapper}>
+      <div className={`${styles.tableWrapper} ${styles.atStart}`} ref={wrapperRef}>
         <table className={styles.table}>
           <thead>
             <tr>
@@ -258,4 +258,5 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
 };
 
 export default TeacherDashboardTable;
+
 
