@@ -1,23 +1,36 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react'; // ⬅️ NEW
 import styles from './TeacherDashboardTable.module.css';
 import StudentModal from './StudentModal';
 
 const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-
-  // --- Modal state ---
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+
+  const wrapperRef = useRef(null); // ⬅️ NEW
+
+  // ⬅️ NEW: Sticky toggle for Name/Email columns
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const toggleSticky = () => {
+      if (wrapper.scrollLeft === 0) wrapper.classList.add(styles.atStart);
+      else wrapper.classList.remove(styles.atStart);
+    };
+
+    wrapper.addEventListener('scroll', toggleSticky);
+    toggleSticky();
+    return () => wrapper.removeEventListener('scroll', toggleSticky);
+  }, []);
 
   const tableData = useMemo(() => {
     if (!data || data.length === 0) return { students: [], assignments: [] };
-
     const studentsMap = new Map();
     const assignmentsMap = new Map();
 
     data.forEach(row => {
       const studentKey = `${row.student_id}`;
       const assignmentKey = `${row.assignment_id}`;
-
       if (!studentsMap.has(studentKey)) {
         studentsMap.set(studentKey, {
           student_id: row.student_id,
@@ -26,7 +39,6 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
           grades: new Map()
         });
       }
-
       if (!assignmentsMap.has(assignmentKey)) {
         assignmentsMap.set(assignmentKey, {
           assignment_id: row.assignment_id,
@@ -35,7 +47,6 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
           max_points: row.max_points
         });
       }
-
       studentsMap.get(studentKey).grades.set(assignmentKey, {
         score: row.score,
         max_points: row.max_points
@@ -247,3 +258,4 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
 };
 
 export default TeacherDashboardTable;
+
