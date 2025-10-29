@@ -75,6 +75,18 @@ const StudentModal = ({ studentId, onClose }) => {
     }
   };
 
+  // Calculate simple grade average
+  const calculateAverage = (assignments) => {
+    const gradedAssignments = assignments.filter(a => a.grade !== null && a.grade !== undefined);
+    if (gradedAssignments.length === 0) return null;
+    
+    const totalPercentage = gradedAssignments.reduce((sum, a) => {
+      return sum + (a.grade / a.max_points);
+    }, 0);
+    
+    return (totalPercentage / gradedAssignments.length) * 100;
+  };
+
   if (loading) {
     return (
       <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -96,6 +108,7 @@ const StudentModal = ({ studentId, onClose }) => {
   }
 
   const { student, assignments, notes } = studentData;
+  const average = calculateAverage(assignments);
 
   return (
     <div
@@ -111,10 +124,18 @@ const StudentModal = ({ studentId, onClose }) => {
           >
             ✕
           </button>
-          <h2 className={styles.studentName}>
-            {student?.first_name} {student?.last_name}
-          </h2>
-          <p className={styles.studentEmail}>{student?.email}</p>
+          <div>
+            <h2 className={styles.studentName}>
+              {student?.first_name} {student?.last_name}
+            </h2>
+            <p className={styles.studentEmail}>{student?.email}</p>
+          </div>
+          {average !== null && (
+            <div className={styles.averageDisplay}>
+              <div className={styles.averageLabel}>Average</div>
+              <div className={styles.averageValue}>{average.toFixed(1)}%</div>
+            </div>
+          )}
         </div>
 
         <div className={styles.content}>
