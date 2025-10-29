@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'; // ⬅️ NEW
+import React, { useState, useMemo } from 'react';
 import styles from './TeacherDashboardTable.module.css';
 import StudentModal from './StudentModal';
 
@@ -6,22 +6,7 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [selectedStudentId, setSelectedStudentId] = useState(null);
 
-  const wrapperRef = useRef(null); // ⬅️ NEW
-
-  // ⬅️ NEW: Sticky toggle for Name/Email columns
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-
-    const toggleSticky = () => {
-      if (wrapper.scrollLeft === 0) wrapper.classList.add(styles.atStart);
-      else wrapper.classList.remove(styles.atStart);
-    };
-
-    wrapper.addEventListener('scroll', toggleSticky);
-    toggleSticky();
-    return () => wrapper.removeEventListener('scroll', toggleSticky);
-  }, []);
+  // Remove the wrapperRef and useEffect - not needed anymore
 
   const tableData = useMemo(() => {
     if (!data || data.length === 0) return { students: [], assignments: [] };
@@ -189,20 +174,20 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
 
   return (
     <div className={styles.container}>
-      <div className={`${styles.tableWrapper} ${styles.atStart}`} ref={wrapperRef}>
+      <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={`${styles.headerCell} ${styles.staticHeader}`} onClick={() => handleSort('name')}>
+              <th className={styles.headerCell} onClick={() => handleSort('name')}>
                 Name {sortConfig.key === 'name' && <span className={styles.sortIcon}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>}
               </th>
-              <th className={`${styles.headerCell} ${styles.staticHeader}`} onClick={() => handleSort('email')}>
+              <th className={styles.headerCell} onClick={() => handleSort('email')}>
                 Email {sortConfig.key === 'email' && <span className={styles.sortIcon}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>}
               </th>
               {tableData.assignments.map(a => (
                 <th
                   key={a.assignment_id}
-                  className={`${styles.headerCell} ${styles.dynamicHeader}`}
+                  className={styles.headerCell}
                   onClick={() => handleSort(a.assignment_id.toString())}
                   title={`Due: ${a.assignment_date || 'No due date'}`}
                 >
@@ -219,8 +204,8 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
                 onClick={() => setSelectedStudentId(student.student_id)}
                 style={{ cursor: 'pointer' }}
               >
-                <td className={`${styles.cell} ${styles.staticCell}`}>{student.name}</td>
-                <td className={`${styles.cell} ${styles.staticCell}`}>{student.email}</td>
+                <td className={styles.cell}>{student.name}</td>
+                <td className={styles.cell}>{student.email}</td>
                 {tableData.assignments.map(assignment => {
                   const grade = student.grades.get(assignment.assignment_id.toString());
                   const gradeInfo = getGradeDisplay(grade);
@@ -258,5 +243,3 @@ const TeacherDashboardTable = ({ data = [], loading = false, teacherId }) => {
 };
 
 export default TeacherDashboardTable;
-
-
