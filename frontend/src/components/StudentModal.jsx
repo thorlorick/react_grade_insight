@@ -80,11 +80,12 @@ const StudentModal = ({ studentId, onClose }) => {
     const gradedAssignments = assignments.filter(a => a.grade !== null && a.grade !== undefined);
     if (gradedAssignments.length === 0) return null;
     
-    const totalPercentage = gradedAssignments.reduce((sum, a) => {
-      return sum + (a.grade / a.max_points);
-    }, 0);
+    const totalEarned = gradedAssignments.reduce((sum, a) => sum + a.grade, 0);
+    const totalPossible = gradedAssignments.reduce((sum, a) => sum + a.max_points, 0);
     
-    return (totalPercentage / gradedAssignments.length) * 100;
+    if (totalPossible === 0) return null;
+    
+    return (totalEarned / totalPossible) * 100;
   };
 
   if (loading) {
