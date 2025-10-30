@@ -815,15 +815,15 @@ Grade Insight Team`;
                   alignItems: 'center'
                 }}>
                   <div>
-  <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>Username</p>
-  <p style={{ 
-    margin: '4px 0 0 0', 
-    fontWeight: '600', 
-    color: '#d1fae5',
-    wordBreak: 'break-word',
-    overflowWrap: 'break-word'
-  }}>{attempt.username}</p>
-</div>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>Username</p>
+                    <p style={{ 
+                    margin: '4px 0 0 0', 
+                    fontWeight: '600', 
+                    color: '#d1fae5',
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word'
+                       }}>{attempt.username}</p>
+                  </div>
                   <div>
                     <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>IP Address</p>
                     <p style={{ margin: '4px 0 0 0', fontWeight: '500', fontFamily: 'monospace', fontSize: '0.875rem', color: '#d1fae5' }}>
@@ -897,4 +897,5 @@ Grade Insight Team`;
 };
 
 export default AdminPanel;
+
 
