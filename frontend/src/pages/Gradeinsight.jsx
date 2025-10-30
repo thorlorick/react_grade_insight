@@ -218,7 +218,7 @@ const GradeInsight = () => {
             </div>
 
             <div className={styles.uploadCard}>
-              <div className={styles.uploadTitle}>Student View</div>
+              <div className={styles.uploadTitle}>Individual Student Modal</div>
               <img 
                 src="/images/StudentModal.png" 
                 alt="Student grade view showing individual assignments"
