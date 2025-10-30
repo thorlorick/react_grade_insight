@@ -522,4 +522,41 @@ the app is almost done. I've got teacher, students, parents and contact all wire
 # IN THE WILD   
 gradeinsight has been live for awhile now...still only me as the teacher, but I'm getting closer. I really need Fonzie to check this thing over...but we have student, parent, admin, locked pages...it's good....even a slide show to start. nice!!!
 
+# GUIDE FOR WHY IT EXISTS
+Grade Insight
+Overview
+
+Grade Insight is a lightweight platform that makes sharing grades simple and clear. Teachers can take their existing grade data from Google Classroom, download it as a CSV file, and upload it directly into Grade Insight. From there, the system organizes everything automatically, giving students and parents a clean, private view of grades — no extra setup or complicated steps.
+
+Why It Exists
+
+Google Classroom handles grading well, but it doesn’t make sharing those results easy outside its own system. Teachers often end up reformatting spreadsheets or sending screenshots just to keep parents updated. Grade Insight fixes that by turning the grades you already have into an organized dashboard that everyone can understand at a glance.
+
+Who It’s For
+
+Each teacher runs their own Grade Insight account, acting as both teacher and admin.
+
+Teachers manage all their students and parents in one place.
+
+Students log in to see their own grades and any general comments from their teacher.
+
+Parents have their own logins and can view multiple children’s grades (if they’re all taught by the same teacher).
+
+How It Works
+
+In Google Classroom, download your grades as a CSV file.
+
+Log in to Grade Insight and upload that file.
+
+The system automatically parses and organizes the data.
+
+Teachers can leave general comments for each student.
+
+Students and parents log in securely to view grades and feedback.
+
+There’s no need to edit the CSV, no setup process, and no central admin — everything runs under the teacher’s own account.
+
+The Vision
+
+Grade Insight bridges the gap between classroom grading and real-world communication. It gives teachers control, keeps data private, and helps students and parents stay informed without extra effort. One CSV upload turns everyday grade data into real, meaningful insight.
 
