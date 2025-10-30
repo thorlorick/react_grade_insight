@@ -35,43 +35,41 @@ const GradeInsight = () => {
               Overview
             </h3>
             <p className={styles.sectionSubtitle}>
-              A lightweight platform for clear, shareable grade insights.
+              A lightweight platform that makes sharing grades simple and clear.
             </p>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', justifyContent: 'space-between' }}>
-            <ul className={styles.securityList} style={{ flex: '1 1 400px', listStyle: 'disc', paddingLeft: '20px' }}>
-              <li><strong>Teachers:</strong> Upload CSVs directly from Google Classroom — no cleanup needed.</li>
-              <li><strong>Students:</strong> View their own grades privately in a simple dashboard.</li>
-              <li><strong>Parents:</strong> Access multiple children’s grades under the same teacher account.</li>
-              <li><strong>Why It Exists:</strong> To eliminate the hassle of sharing grades through spreadsheets and screenshots.</li>
-              <li><strong>Vision:</strong> Bridge the gap between classroom grading and transparent communication.</li>
-            </ul>
-
-            <div style={{ display: 'flex', gap: '16px', flex: '1 1 350px', justifyContent: 'center' }}>
-              <img
-                src="/images/TeachDash.png"
-                alt="Teacher dashboard"
-                style={{
-                  width: '240px',
-                  height: 'auto',
-                  borderRadius: '10px',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
-                }}
-              />
-              <img
-                src="/images/StudentModal.png"
-                alt="Student view"
-                style={{
-                  width: '240px',
-                  height: 'auto',
-                  borderRadius: '10px',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
-                }}
-              />
+          <div className={styles.uploadsGrid}>
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>What It Does</div>
+              <p className={styles.uploadDesc}>
+                Teachers can take their existing grade data from Google Classroom, download it as a CSV file, and upload it directly into Grade Insight. The system automatically organizes everything, giving students and parents a clean, private view of grades — no extra setup or complicated steps.
+              </p>
             </div>
+
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>Why It Exists</div>
+              <p className={styles.uploadDesc}>
+                Google Classroom handles grading well but doesn't make it easy to share results outside its own system. Teachers often reformat spreadsheets or send screenshots just to keep parents updated. Grade Insight fixes that by turning the grades you already have into an organized dashboard that everyone can understand at a glance.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.securityList} style={{ marginTop: '24px' }}>
+            <div className={styles.uploadTitle} style={{ marginBottom: '12px', paddingLeft: '0' }}>Who It's For</div>
+            <div className={styles.securityItem}><strong>Teachers</strong> manage all their students and parents in one place, acting as both teacher and admin.</div>
+            <div className={styles.securityItem}><strong>Students</strong> log in to see their own grades and any general comments from their teacher.</div>
+            <div className={styles.securityItem}><strong>Parents</strong> have their own logins and can view multiple children's grades (if they're all taught by the same teacher).</div>
+          </div>
+
+          <div className={styles.uploadCard} style={{ marginTop: '24px', border: '1px solid rgba(125,211,252,0.2)', background: 'linear-gradient(180deg, rgba(125,211,252,0.03), rgba(125,211,252,0.01))' }}>
+            <div className={styles.uploadTitle} style={{ color: '#7dd3fc' }}>The Vision</div>
+            <p className={styles.uploadDesc}>
+              Grade Insight bridges the gap between classroom grading and real-world communication. It gives teachers control, keeps data private, and helps students and parents stay informed without extra effort.
+            </p>
+            <p className={styles.uploadDesc} style={{ marginTop: '12px', color: '#a7f3d0', fontWeight: '600' }}>
+              One CSV upload turns everyday grade data into real, meaningful insight.
+            </p>
           </div>
         </section>
 
@@ -181,7 +179,7 @@ const GradeInsight = () => {
           </div>
         </section>
 
-        {/* Security Section */}
+        {/* Security & Flow Section */}
         <section
           id="security"
           className={`${styles.section} ${styles.securitySection}`}
@@ -196,43 +194,46 @@ const GradeInsight = () => {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
-            <div className={styles.securityList} style={{ flex: 1 }}>
-              <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
-              <div className={styles.securityItem}>Teacher sees all students and assignments in one dashboard.</div>
-              <div className={styles.securityItem}>Students see only their grades; parents can see multiple children.</div>
-              <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
-              <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
-            </div>
+          <div className={styles.securityList}>
+            <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
+            <div className={styles.securityItem}>Teacher sees all students and assignments in one dashboard.</div>
+            <div className={styles.securityItem}>Students see only their grades; parents can see multiple children.</div>
+            <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
+            <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
+          </div>
 
-            <div style={{ display: 'flex', gap: '12px', flexShrink: 0 }}>
+          <div className={styles.uploadsGrid} style={{ marginTop: '32px' }}>
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>Teacher Dashboard</div>
               <img 
                 src="/images/TeachDash.png" 
-                alt="Teacher dashboard"
+                alt="Teacher dashboard showing student grades and assignments"
                 style={{ 
-                  width: '160px',
-                  height: 'auto',
-                  borderRadius: '6px', 
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                  width: '100%', 
+                  borderRadius: '8px', 
+                  marginTop: '12px',
+                  border: '1px solid rgba(255,255,255,0.1)'
                 }}
               />
+            </div>
+
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>Student View</div>
               <img 
                 src="/images/StudentModal.png" 
-                alt="Student view"
+                alt="Student grade view showing individual assignments"
                 style={{ 
-                  width: '160px',
-                  height: 'auto',
-                  borderRadius: '6px', 
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                  width: '100%', 
+                  borderRadius: '8px', 
+                  marginTop: '12px',
+                  border: '1px solid rgba(255,255,255,0.1)'
                 }}
               />
             </div>
           </div>
         </section>
 
-        {/* Anchors */}
+        {/* Anchors to avoid dead links */}
         <section id="pricing" aria-hidden="true" style={{ height: 1 }} />
         <section id="contact" aria-hidden="true" style={{ height: 1 }} />
       </main>
