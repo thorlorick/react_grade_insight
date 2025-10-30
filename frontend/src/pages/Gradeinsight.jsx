@@ -28,6 +28,48 @@ const GradeInsight = () => {
       </BackgroundContainer>
 
       <main>
+        {/* Overview Section */}
+        <section id="overview" className={styles.section} aria-labelledby="overview-heading">
+          <div className={styles.sectionHeader}>
+            <h3 id="overview-heading" className={styles.sectionTitle}>
+              Overview
+            </h3>
+            <p className={styles.sectionSubtitle}>
+              A lightweight platform that makes sharing grades simple and clear.
+            </p>
+          </div>
+
+          <div className={styles.overviewContent}>
+            <p className={styles.overviewText}>
+              Teachers can take their existing grade data from Google Classroom, download it as a CSV file, and upload it directly into Grade Insight. The system automatically organizes everything, giving students and parents a clean, private view of grades — no extra setup or complicated steps.
+            </p>
+            
+            <div className={styles.overviewHighlight}>
+              <h4 className={styles.overviewSubheading}>Why It Exists</h4>
+              <p className={styles.overviewText}>
+                Google Classroom handles grading well but doesn't make it easy to share results outside its own system. Teachers often reformat spreadsheets or send screenshots just to keep parents updated. Grade Insight fixes that by turning the grades you already have into an organized dashboard that everyone can understand at a glance.
+              </p>
+            </div>
+
+            <div className={styles.overviewHighlight}>
+              <h4 className={styles.overviewSubheading}>Who It's For</h4>
+              <p className={styles.overviewText}>
+                Each teacher runs their own Grade Insight account, acting as both teacher and admin. <strong>Teachers</strong> manage all their students and parents in one place. <strong>Students</strong> log in to see their own grades and any general comments from their teacher. <strong>Parents</strong> have their own logins and can view multiple children's grades (if they're all taught by the same teacher).
+              </p>
+            </div>
+
+            <div className={styles.visionBox}>
+              <h4 className={styles.visionHeading}>The Vision</h4>
+              <p className={styles.visionText}>
+                Grade Insight bridges the gap between classroom grading and real-world communication. It gives teachers control, keeps data private, and helps students and parents stay informed without extra effort.
+              </p>
+              <p className={styles.visionTagline}>
+                <strong>One CSV upload turns everyday grade data into real, meaningful insight.</strong>
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Features Section */}
         <section id="features" className={styles.section} aria-labelledby="features-heading">
           <div className={styles.sectionHeader}>
@@ -113,7 +155,7 @@ const GradeInsight = () => {
                 </div>
               </div>
               <p className={styles.testimonialText}>
-                "I can finally see my child’s progress in one place — no more juggling spreadsheets
+                "I can finally see my child's progress in one place — no more juggling spreadsheets
                 and emails. With Grade Insight, it's all right there in one convenient place."
               </p>
             </blockquote>
