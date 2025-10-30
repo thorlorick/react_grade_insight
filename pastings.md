@@ -521,3 +521,5 @@ the app is almost done. I've got teacher, students, parents and contact all wire
 
 # IN THE WILD   
 gradeinsight has been live for awhile now...still only me as the teacher, but I'm getting closer. I really need Fonzie to check this thing over...but we have student, parent, admin, locked pages...it's good....even a slide show to start. nice!!!
+
+
