@@ -194,46 +194,42 @@ const GradeInsight = () => {
             </p>
           </div>
 
-          <div className={styles.uploadsGrid}>
-            <div>
-              <div className={styles.securityList}>
-                <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
-                <div className={styles.securityItem}>Teacher sees all students and assignments in one dashboard.</div>
-                <div className={styles.securityItem}>Students see only their grades; parents can see multiple children.</div>
-                <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
-                <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
-              </div>
+          <div className={styles.securityList}>
+            <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
+            <div className={styles.securityItem}>
+              Teacher sees all students and assignments in one dashboard.
+              <img 
+                src="/images/TeachDash.png" 
+                alt="Teacher dashboard"
+                style={{ 
+                  width: '200px',
+                  display: 'block',
+                  borderRadius: '6px', 
+                  marginTop: '8px',
+                  marginLeft: '12px',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                }}
+              />
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div className={styles.uploadCard}>
-                <div className={styles.uploadTitle}>Teacher Dashboard</div>
-                <img 
-                  src="/images/TeachDash.png" 
-                  alt="Teacher dashboard showing student grades and assignments"
-                  style={{ 
-                    width: '100%', 
-                    borderRadius: '8px', 
-                    marginTop: '12px',
-                    border: '1px solid rgba(255,255,255,0.1)'
-                  }}
-                />
-              </div>
-
-              <div className={styles.uploadCard}>
-                <div className={styles.uploadTitle}>Student View</div>
-                <img 
-                  src="/images/StudentModal.png" 
-                  alt="Student grade view showing individual assignments"
-                  style={{ 
-                    width: '100%', 
-                    borderRadius: '8px', 
-                    marginTop: '12px',
-                    border: '1px solid rgba(255,255,255,0.1)'
-                  }}
-                />
-              </div>
+            <div className={styles.securityItem}>
+              Students see only their grades; parents can see multiple children.
+              <img 
+                src="/images/StudentModal.png" 
+                alt="Student view"
+                style={{ 
+                  width: '200px',
+                  display: 'block',
+                  borderRadius: '6px', 
+                  marginTop: '8px',
+                  marginLeft: '12px',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                }}
+              />
             </div>
+            <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
+            <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
           </div>
         </section>
 
