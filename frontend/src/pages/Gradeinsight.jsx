@@ -194,42 +194,39 @@ const GradeInsight = () => {
             </p>
           </div>
 
-          <div className={styles.securityList}>
-            <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
-            <div className={styles.securityItem}>
-              Teacher sees all students and assignments in one dashboard.
+          <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+            <div className={styles.securityList} style={{ flex: 1 }}>
+              <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
+              <div className={styles.securityItem}>Teacher sees all students and assignments in one dashboard.</div>
+              <div className={styles.securityItem}>Students see only their grades; parents can see multiple children.</div>
+              <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
+              <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', flexShrink: 0 }}>
               <img 
                 src="/images/TeachDash.png" 
                 alt="Teacher dashboard"
                 style={{ 
-                  width: '200px',
-                  display: 'block',
+                  width: '160px',
+                  height: 'auto',
                   borderRadius: '6px', 
-                  marginTop: '8px',
-                  marginLeft: '12px',
                   border: '1px solid rgba(255,255,255,0.15)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
               />
-            </div>
-            <div className={styles.securityItem}>
-              Students see only their grades; parents can see multiple children.
               <img 
                 src="/images/StudentModal.png" 
                 alt="Student view"
                 style={{ 
-                  width: '200px',
-                  display: 'block',
+                  width: '160px',
+                  height: 'auto',
                   borderRadius: '6px', 
-                  marginTop: '8px',
-                  marginLeft: '12px',
                   border: '1px solid rgba(255,255,255,0.15)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
               />
             </div>
-            <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
-            <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
           </div>
         </section>
 
