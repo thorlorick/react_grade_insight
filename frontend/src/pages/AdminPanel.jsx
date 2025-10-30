@@ -20,6 +20,9 @@ const AdminPanel = () => {
   const [loadingContacts, setLoadingContacts] = useState(false);
   const [showContacts, setShowContacts] = useState(false);
 
+  const [loginAttempts, setLoginAttempts] = useState([]);
+  const [loadingAttempts, setLoadingAttempts] = useState(false);
+
   const adminPassword = localStorage.getItem('adminPassword');
 
   useEffect(() => {
@@ -166,6 +169,25 @@ Grade Insight Team`;
       console.error(err);
     } finally {
       setLoadingContacts(false);
+    }
+  };
+
+  const fetchLoginAttempts = async () => {
+    setLoadingAttempts(true);
+    try {
+      const response = await fetch('https://gradeinsight.com:8083/api/admin/login-attempts', {
+        headers: {
+          'Authorization': `Bearer ${adminPassword}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setLoginAttempts(data.attempts);
+      }
+    } catch (err) {
+      console.error('Failed to fetch login attempts:', err);
+    } finally {
+      setLoadingAttempts(false);
     }
   };
 
@@ -728,42 +750,111 @@ Grade Insight Team`;
           )}
         </div>
 
-        {/* Future Feature Placeholders */}
+        {/* Login Attempts Card - REPLACES FIRST PLACEHOLDER */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}>
+          <h2 style={{
+            fontSize: '1.5rem',
+            fontWeight: '300',
+            color: '#6ee7b7',
+            marginTop: 0,
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{ fontSize: '1.75rem' }}>🔐</span>
+            Recent Login Attempts
+          </h2>
+
+          <button
+            onClick={fetchLoginAttempts}
+            disabled={loadingAttempts}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: '#a7f3d0',
+              padding: '14px 24px',
+              fontSize: '1rem',
+              fontWeight: '500',
+              borderRadius: '8px',
+              cursor: loadingAttempts ? 'not-allowed' : 'pointer',
+              opacity: loadingAttempts ? 0.7 : 1,
+              transition: 'all 0.3s ease',
+              marginBottom: '20px'
+            }}
+          >
+            {loadingAttempts ? 'Loading...' : 'Load Login Attempts'}
+          </button>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {loginAttempts.length === 0 ? (
+              <p style={{ color: '#9ca3af', textAlign: 'center', padding: '24px' }}>
+                Click the button above to load login attempts
+              </p>
+            ) : (
+              loginAttempts.map((attempt) => (
+                <div key={attempt.id} style={{
+                  background: attempt.success 
+                    ? 'rgba(34, 197, 94, 0.1)' 
+                    : 'rgba(239, 68, 68, 0.1)',
+                  border: `1px solid ${attempt.success ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+                  borderRadius: '12px',
+                  padding: '16px',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                  gap: '16px',
+                  alignItems: 'center'
+                }}>
+                  <div>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>Username</p>
+                    <p style={{ margin: '4px 0 0 0', fontWeight: '600', color: '#d1fae5' }}>{attempt.username}</p>
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>IP Address</p>
+                    <p style={{ margin: '4px 0 0 0', fontWeight: '500', fontFamily: 'monospace', fontSize: '0.875rem', color: '#d1fae5' }}>
+                      {attempt.ip_address}
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>Time</p>
+                    <p style={{ margin: '4px 0 0 0', fontWeight: '500', fontSize: '0.875rem', color: '#d1fae5' }}>
+                      {new Date(attempt.timestamp).toLocaleString()}
+                    </p>
+                  </div>
+                  <div style={{
+                    background: attempt.success ? '#22c55e' : '#ef4444',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '0.75rem',
+                    fontWeight: '700',
+                    textAlign: 'center',
+                    textTransform: 'uppercase'
+                  }}>
+                    {attempt.success ? '✓ Success' : '✗ Failed'}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Remaining Placeholder */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
           gap: '24px',
           marginBottom: '24px'
         }}>
-          {/* Placeholder 1 */}
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
-            backdropFilter: 'blur(12px)',
-            border: '1px dashed rgba(255, 255, 255, 0.2)',
-            borderRadius: '16px',
-            padding: '32px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '200px',
-            opacity: 0.6
-          }}>
-            <span style={{ fontSize: '3rem', marginBottom: '12px' }}>📊</span>
-            <p style={{
-              color: '#9ca3af',
-              fontSize: '0.875rem',
-              textAlign: 'center',
-              margin: 0
-            }}>Analytics Dashboard</p>
-            <p style={{
-              color: '#6b7280',
-              fontSize: '0.75rem',
-              textAlign: 'center',
-              margin: '8px 0 0 0'
-            }}>Coming Soon</p>
-          </div>
-
           {/* Placeholder 2 */}
           <div style={{
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
