@@ -108,7 +108,7 @@ router.get('/contact-emails', async (req, res) => {
 router.get('/login-attempts', checkAdminAuth, async (req, res) => {
   try {
     const [rows] = await pool.query(
-      'SELECT attempt_id as id, user_email as username, ip_address, CASE WHEN status = "success" THEN 1 ELSE 0 END as success, attempt_time as timestamp FROM login_attempt ORDER BY attempt_time DESC LIMIT 100'
+      'SELECT attempt_id as id, user_email as username, ip_address, CASE WHEN status = "success" THEN 1 ELSE 0 END as success, attempt_time as timestamp FROM login_attempt ORDER BY attempt_time DESC LIMIT 20'
     );
 
     res.json({ success: true, attempts: rows });
@@ -120,6 +120,7 @@ router.get('/login-attempts', checkAdminAuth, async (req, res) => {
 
 
 module.exports = router;
+
 
 
 
