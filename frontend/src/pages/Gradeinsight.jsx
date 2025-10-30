@@ -39,34 +39,37 @@ const GradeInsight = () => {
             </p>
           </div>
 
-          <div className={styles.overviewContent}>
-            <p className={styles.overviewText}>
-              Teachers can take their existing grade data from Google Classroom, download it as a CSV file, and upload it directly into Grade Insight. The system automatically organizes everything, giving students and parents a clean, private view of grades — no extra setup or complicated steps.
-            </p>
-            
-            <div className={styles.overviewHighlight}>
-              <h4 className={styles.overviewSubheading}>Why It Exists</h4>
-              <p className={styles.overviewText}>
+          <div className={styles.uploadsGrid}>
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>What It Does</div>
+              <p className={styles.uploadDesc}>
+                Teachers can take their existing grade data from Google Classroom, download it as a CSV file, and upload it directly into Grade Insight. The system automatically organizes everything, giving students and parents a clean, private view of grades — no extra setup or complicated steps.
+              </p>
+            </div>
+
+            <div className={styles.uploadCard}>
+              <div className={styles.uploadTitle}>Why It Exists</div>
+              <p className={styles.uploadDesc}>
                 Google Classroom handles grading well but doesn't make it easy to share results outside its own system. Teachers often reformat spreadsheets or send screenshots just to keep parents updated. Grade Insight fixes that by turning the grades you already have into an organized dashboard that everyone can understand at a glance.
               </p>
             </div>
+          </div>
 
-            <div className={styles.overviewHighlight}>
-              <h4 className={styles.overviewSubheading}>Who It's For</h4>
-              <p className={styles.overviewText}>
-                Each teacher runs their own Grade Insight account, acting as both teacher and admin. <strong>Teachers</strong> manage all their students and parents in one place. <strong>Students</strong> log in to see their own grades and any general comments from their teacher. <strong>Parents</strong> have their own logins and can view multiple children's grades (if they're all taught by the same teacher).
-              </p>
-            </div>
+          <div className={styles.securityList} style={{ marginTop: '24px' }}>
+            <div className={styles.uploadTitle} style={{ marginBottom: '12px', paddingLeft: '0' }}>Who It's For</div>
+            <div className={styles.securityItem}><strong>Teachers</strong> manage all their students and parents in one place, acting as both teacher and admin.</div>
+            <div className={styles.securityItem}><strong>Students</strong> log in to see their own grades and any general comments from their teacher.</div>
+            <div className={styles.securityItem}><strong>Parents</strong> have their own logins and can view multiple children's grades (if they're all taught by the same teacher).</div>
+          </div>
 
-            <div className={styles.visionBox}>
-              <h4 className={styles.visionHeading}>The Vision</h4>
-              <p className={styles.visionText}>
-                Grade Insight bridges the gap between classroom grading and real-world communication. It gives teachers control, keeps data private, and helps students and parents stay informed without extra effort.
-              </p>
-              <p className={styles.visionTagline}>
-                <strong>One CSV upload turns everyday grade data into real, meaningful insight.</strong>
-              </p>
-            </div>
+          <div className={styles.uploadCard} style={{ marginTop: '24px', border: '1px solid rgba(125,211,252,0.2)', background: 'linear-gradient(180deg, rgba(125,211,252,0.03), rgba(125,211,252,0.01))' }}>
+            <div className={styles.uploadTitle} style={{ color: '#7dd3fc' }}>The Vision</div>
+            <p className={styles.uploadDesc}>
+              Grade Insight bridges the gap between classroom grading and real-world communication. It gives teachers control, keeps data private, and helps students and parents stay informed without extra effort.
+            </p>
+            <p className={styles.uploadDesc} style={{ marginTop: '12px', color: '#a7f3d0', fontWeight: '600' }}>
+              One CSV upload turns everyday grade data into real, meaningful insight.
+            </p>
           </div>
         </section>
 
