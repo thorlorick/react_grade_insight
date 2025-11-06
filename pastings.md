@@ -566,3 +566,5 @@ It gives teachers control, keeps data private, and helps students and parents st
 
 **One CSV upload turns everyday grade data into real, meaningful insight.**
 
+# RICK AI
+I've decided to coop RICK and make him a grade analysis AI that can read the database and then provide insights. The hardest part is going to be using a local model. Using inference(?) models gets pricey, so I'm hoping that the simple data structure will help.
