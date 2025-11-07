@@ -14,6 +14,7 @@ module.exports = {
     user: process.env.RICK_DB_USER || 'RICK',
     password: process.env.RICK_DB_PASSWORD,
     database: process.env.RICK_DB_NAME || 'gradeinsight',
+    port: parseInt(process.env.DB_PORT) || 3306,
   },
 
   // Security settings
