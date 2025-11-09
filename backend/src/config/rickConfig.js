@@ -13,7 +13,7 @@ module.exports = {
     host: process.env.RICK_DB_HOST || 'localhost',
     user: process.env.RICK_DB_USER || 'RICK',
     password: process.env.RICK_DB_PASSWORD,
-    database: process.env.RICK_DB_NAME || 'gradeinsight',
+    database: process.env.RICK_DB_NAME || 'grade_insight',
     port: parseInt(process.env.DB_PORT) || 3306,
   },
 
@@ -32,7 +32,17 @@ module.exports = {
     'assignments',
     'attendance',
     'courses',
-    'classes'
+    'classes',
+    'access_codes',            
+    'contact_emails',          
+    'login_attempt',           
+    'parent_student',          
+    'parents',                 
+    'rick_memory',             
+    'sessions',                              
+    'teacher_notes',           
+    'teachers',                
+    'uploads' 
   ],
 
   // Dangerous SQL keywords (block these)
