@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { executeQuickQuery } from '../../services/rickAPI';
-import './QuickActions.css';
+import './QuickActions.module.css';
 
 const QuickActions = ({ onQueryResult, disabled }) => {
   const [loading, setLoading] = useState(null);
