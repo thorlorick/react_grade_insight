@@ -1,0 +1,116 @@
+/* frontend/src/components/RickAI/RickTrigger.module.css */
+
+/* ============================================ */
+/* NAVBAR LINK VARIANT */
+/* ============================================ */
+.navLink {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.navLink:active {
+  transform: scale(0.98);
+}
+
+/* ============================================ */
+/* FLOATING BUTTON VARIANT */
+/* ============================================ */
+.floatingButton {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  z-index: 998;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.floatingButton:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 6px 30px rgba(102, 126, 234, 0.5);
+}
+
+.floatingButton:active {
+  transform: scale(1.05);
+}
+
+/* Pulse ring animation for floating button */
+.pulseRing {
+  position: absolute;
+  border: 3px solid #667eea;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  animation: pulse 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+@media (max-width: 768px) {
+  .floatingButton {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .navLink {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}
