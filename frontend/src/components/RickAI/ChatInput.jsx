@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { parseCommand, isValidCommand } from '../../utils/commandParser';
-import './ChatInput.css';
+import './ChatInput.module.css';
 
 const ChatInput = ({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState('');
