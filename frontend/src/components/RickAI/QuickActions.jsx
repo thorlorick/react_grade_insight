@@ -1,7 +1,7 @@
 // frontend/src/components/RickAI/QuickActions.jsx
 
 import React, { useState, useEffect } from 'react';
-import { executeQuickQuery } from '../../services/rickAPI';
+import { executeQuickQuery } from '../../api/rickAPI';
 import './QuickActions.module.css';
 
 const QuickActions = ({ onQueryResult, disabled }) => {
