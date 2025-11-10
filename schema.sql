@@ -139,3 +139,26 @@ CREATE TABLE access_codes (
     INDEX idx_code (code)
 );
 
+-- Create rick_memory table
+CREATE TABLE IF NOT EXISTS rick_memory (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  teacher_id INT NOT NULL,
+  student_id INT NULL,
+  memory_content TEXT NOT NULL,
+  tags JSON NULL COMMENT 'Student names, topics detected',
+  context_snapshot JSON NULL COMMENT 'Grades/data at time of memory',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  
+  -- Foreign key constraints (using YOUR table names)
+  FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+  
+  -- Indexes for performance
+  INDEX idx_teacher_id (teacher_id),
+  INDEX idx_student_id (student_id),
+  INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
