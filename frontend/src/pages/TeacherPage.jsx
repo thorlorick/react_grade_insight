@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 import TeacherDashboardTable from "../components/TeacherDashboardTable";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
-import RickTrigger from './components/RickAI/RickTrigger';
+import RickTrigger from '../components/RickAI/RickTrigger';
 
 const TeacherPage = () => {
   const [teacherData, setTeacherData] = useState([]);
