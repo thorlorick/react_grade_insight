@@ -5,7 +5,7 @@ import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import QuickActions from './QuickActions';
 import MemoryList from './MemoryList';
-import { sendMessage, getMemories } from '../../services/rickAPI';
+import { sendMessage, getMemories } from '../../api/rickAPI';
 import { parseCommand, COMMANDS } from '../../utils/commandParser';
 import './RickChat.css';
 
