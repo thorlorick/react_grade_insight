@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { deleteMemory } from '../../services/rickAPI';
-import './MemoryList.css';
+import './MemoryList.module.css';
 
 const MemoryList = ({ memories, onMemoryDeleted, onClose }) => {
   const [deleting, setDeleting] = useState(null);
