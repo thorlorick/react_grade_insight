@@ -1,7 +1,7 @@
 // frontend/src/components/RickAI/ChatMessage.jsx
 
 import React from 'react';
-import './ChatMessage.css';
+import './ChatMessage.module.css';
 
 const ChatMessage = ({ message, isUser, timestamp, data }) => {
   const formatTime = (date) => {
