@@ -1,7 +1,7 @@
 // frontend/src/components/RickAI/MemoryList.jsx
 
 import React, { useState } from 'react';
-import { deleteMemory } from '../../services/rickAPI';
+import { deleteMemory } from '../../api/rickAPI';
 import './MemoryList.module.css';
 
 const MemoryList = ({ memories, onMemoryDeleted, onClose }) => {
