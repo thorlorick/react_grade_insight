@@ -1,7 +1,7 @@
 // backend/services/queryService.js
 
 const mysql = require('mysql2/promise');
-const config = require('../config/rickConfig');
+const config = require('../../config/rickConfig');
 const { validateAndPrepareSQL } = require('../utils/sqlValidator');
 
 // Create connection pool for RICK read-only user
