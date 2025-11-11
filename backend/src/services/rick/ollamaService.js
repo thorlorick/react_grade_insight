@@ -1,7 +1,7 @@
 // backend/services/ollamaService.js
 
 const axios = require('axios');
-const config = require('../config/rickConfig');
+const config = require('../../config/rickConfig');
 
 /**
  * Call Ollama API to generate a response
