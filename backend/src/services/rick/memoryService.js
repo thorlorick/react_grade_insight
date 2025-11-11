@@ -2,7 +2,7 @@
 
 const mysql = require('mysql2/promise');
 const config = require('../../config/rickConfig');
-const { extractStudentNames } = require('../../utils/rick/contextBuilder');
+const { extractStudentNames } = require('../../utils/rick/contextBuilder.js');
 
 // Create connection pool
 const pool = mysql.createPool({
