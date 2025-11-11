@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const { rickAuth } = require('../../middleware/rickAuth');  
-const rickController = require('../../controllers/rickController');
+const rickController = require('../controllers/rickController');
 const config = require('../config/rickConfig');
 
 // Rate limiting
