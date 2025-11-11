@@ -2,7 +2,7 @@
 
 const mysql = require('mysql2/promise');
 const config = require('../../config/rickConfig');
-const { validateAndPrepareSQL } = require('../utils/sqlValidator');
+const { validateAndPrepareSQL } = require('../../utils/rick/sqlValidator');
 
 // Create connection pool for RICK read-only user
 const pool = mysql.createPool({

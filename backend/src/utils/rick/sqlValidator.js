@@ -1,6 +1,6 @@
 // backend/utils/sqlValidator.js
 
-const config = require('../config/rickConfig');
+const config = require('../../config/rickConfig');
 
 /**
  * Validate SQL query for security

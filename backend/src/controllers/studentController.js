@@ -1,10 +1,10 @@
 // backend/controllers/rickController.js
 
-const ollamaService = require('../services/ollamaService');
-const memoryService = require('../services/memoryService');
-const queryService = require('../services/queryService');
-const { buildSchemaDescription, formatMemories, formatConversationHistory } = require('../utils/contextBuilder');
-const { parseCommand, COMMANDS } = require('../utils/commandParser');
+const ollamaService = require('../services/rick/ollamaService');
+const memoryService = require('../services/rick/memoryService');
+const queryService = require('../services/rick/queryService');
+const { buildSchemaDescription, formatMemories, formatConversationHistory } = require('../utils/rick/contextBuilder');
+const { parseCommand, COMMANDS } = require('../utils/rick/commandParser');
 
 /**
  * Main chat handler
