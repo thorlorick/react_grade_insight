@@ -1,7 +1,7 @@
 // backend/services/memoryService.js
 
 const mysql = require('mysql2/promise');
-const config = require('../..config/rickConfig');
+const config = require('../../config/rickConfig');
 const { extractStudentNames } = require('../utils/contextBuilder');
 
 // Create connection pool
