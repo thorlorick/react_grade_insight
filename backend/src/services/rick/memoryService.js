@@ -1,8 +1,10 @@
 // backend/services/memoryService.js
 
 const mysql = require('mysql2/promise');
+const path = require('path');
 const config = require('../../config/rickConfig');
-const { extractStudentNames } = require('../../utils/rick/contextBuilder.js');
+const { extractStudentNames } = require(path.resolve(__dirname, '../../utils/rick/contextBuilder.js'));
+
 
 // Create connection pool
 const pool = mysql.createPool({
