@@ -9,13 +9,6 @@ const rickAuth = (req, res, next) => {
   // Check if user is authenticated
   // Adjust this based on your existing auth system
   
-  // Option 1: If you're using JWT
-  if (req.user && req.user.teacher_id) {
-    req.teacherId = req.user.teacher_id;
-    req.teacherName = req.user.name || req.user.username;
-    return next();
-  }
-  
   // Option 2: If you're using sessions
   if (req.session && req.session.teacher_id) {
     req.teacherId = req.session.teacher_id;
