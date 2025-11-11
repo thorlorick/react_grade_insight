@@ -28,7 +28,7 @@ const rickController = {
   async chat(req, res) {
     try {
       const { message } = req.body;
-      const teacherId = req.user.teacher_id;
+      const teacherId = req.teacher_id;
 
       // Check for commands
       const command = commandParser.parse(message);
@@ -60,7 +60,7 @@ const rickController = {
 
   // Handle memory commands
   async handleCommand(req, res, command) {
-    const teacherId = req.user.teacher_id;
+    const teacherId = req.teacher_id;
 
     try {
       switch (command.type) {
@@ -108,7 +108,7 @@ const rickController = {
   async quickQuery(req, res) {
     try {
       const { queryType } = req.body;
-      const teacherId = req.user.teacher_id;
+      const teacherId = req.teacher_id;
 
       const result = await queryService.executeQuickQuery(teacherId, queryType);
 
@@ -130,7 +130,7 @@ const rickController = {
   // Get memories
   async getMemories(req, res) {
     try {
-      const teacherId = req.user.teacher_id;
+      const teacherId = req.teacher_id;
       const memories = await memoryService.getMemories(teacherId);
 
       res.json({
@@ -150,7 +150,7 @@ const rickController = {
   // Delete memory
   async deleteMemory(req, res) {
     try {
-      const teacherId = req.user.teacher_id;
+      const teacherId = req.teacher_id;
       const { memoryId } = req.params;
 
       await memoryService.deleteMemory(teacherId, memoryId);
