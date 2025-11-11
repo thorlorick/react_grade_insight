@@ -31,7 +31,7 @@ const rickController = {
       const teacherId = req.session.teacher_id;
 
       // Check for commands
-      const command = commandParser.parse(message);
+      const command = commandParser.parseCommand(message);
       
       if (command) {
         return await rickController.handleCommand(req, res, command);
