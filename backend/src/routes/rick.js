@@ -23,8 +23,8 @@ const chatLimiter = rateLimit({
 router.use(rickAuth);
 
 // Routes
-router.post('/chat', chatLimiter, rickController.handleChat);
-router.get('/quick-queries', rickController.getQuickQueries);
+router.post('/chat', chatLimiter, rickController.chat);
+router.get('/quick-queries', rickController.quickQuery);
 router.get('/health', rickController.healthCheck);
 
 // Error handling
