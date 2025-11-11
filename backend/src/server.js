@@ -73,6 +73,9 @@ app.use('/api/parent', require('./routes/parent'));
 // Upload routes
 app.use('/api/uploads', uploadRoutes);
 
+// Rick AI routes
+app.use('/api/rick', require('./routes/rick'));
+
 // Serve frontend
 app.use(express.static(path.join(__dirname, '../../frontend/')));
 
