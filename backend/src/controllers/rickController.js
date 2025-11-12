@@ -24,11 +24,12 @@ const rickController = {
     }
   },
 
-  // Handle chat messages
+// Handle chat messages
   async chat(req, res) {
     try {
       const { message } = req.body;
-      const teacherId = req.session.teacher_id;
+      const teacherId = req.teacherId;
+      const teacherName = req.teacherName;
 
       // Check for commands
       const command = commandParser.parseCommand(message);
@@ -37,15 +38,38 @@ const rickController = {
         return await rickController.handleCommand(req, res, command);
       }
 
+      // Get memories
+      const memories = await memoryService.getMemories(teacherId);
+
       // Build context
-      const context = await contextBuilder.buildContext(teacherId);
-      
+      const context = contextBuilder.buildContext({
+        teacherId,
+        teacherName,
+        userMessage: message,
+        memories
+      });
+
+      // Format context into a prompt
+      const formattedMemories = contextBuilder.formatMemories(memories);
+      const prompt = `You are Rick, an AI teaching assistant. Help the teacher with their question.
+
+Teacher: ${teacherName}
+Memories: ${formattedMemories}
+
+Question: ${message}
+
+Provide a helpful, concise answer:`;
+
       // Generate response
-      const response = await ollamaService.generateResponse(message, context);
+      const result = await ollamaService.generateResponse(prompt);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to generate response');
+      }
 
       res.json({
         success: true,
-        response,
+        response: result.response,
         type: 'chat'
       });
     } catch (error) {
