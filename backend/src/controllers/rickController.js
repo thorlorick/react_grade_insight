@@ -1,9 +1,6 @@
 // backend/src/controllers/rickController.js
 const ollamaService = require('../services/rick/ollamaService');
-const memoryService = require('../services/rick/memoryService');
-const queryService = require('../services/rick/queryService');
 const contextBuilder = require('../utils/rick/contextBuilder');
-const commandParser = require('../utils/rick/commandParser');
 
 const rickController = {
   // Health check
@@ -24,105 +21,60 @@ const rickController = {
     }
   },
 
-// Handle chat messages
-async chat(req, res) {
-  try {
-    const { message } = req.body;
-    const teacherId = req.teacherId;
-    const teacherName = req.teacherName;
+  // Handle chat messages in real-time
+  async chat(req, res) {
+    try {
+      const { message } = req.body;
+      const teacherId = req.teacherId;
+      const teacherName = req.teacherName;
 
-    // Check for commands
-    const command = commandParser.parseCommand(message);
-    if (command) return await rickController.handleCommand(req, res, command);
+      // No memories used
+      const context = contextBuilder.buildContext({
+        teacherId,
+        teacherName,
+        userMessage: message,
+        memories: [] // empty
+      });
 
-    // Get only 5 recent memories
-    const memoriesResult = await memoryService.getMemories(teacherId, 5);
-    const memories = memoriesResult.success ? memoriesResult.memories : [];
-
-    // Format memories (truncate each to 150 chars max)
-    const formattedMemories = memories
-      .map(m => {
-        const truncated = m.content.length > 150 ? m.content.slice(0, 150) + '…' : m.content;
-        return `- ${truncated}`;
-      })
-      .join('\n');
-
-    // Build prompt
-    const prompt = `You are Rick, an AI teaching assistant. Provide a concise and helpful answer.
+      // Build prompt
+      const prompt = `You are Rick, an AI teaching assistant. Help the teacher with their question.
 
 Teacher: ${teacherName}
-Memories:
-${formattedMemories}
 
 Question: ${message}
 
-Answer concisely:`;
+Provide a helpful, concise answer:`;
 
-    // Generate response with optional timeout
-    const result = await ollamaService.generateResponse(prompt, { timeout: 15000 }); // 15s
+      // Generate response
+      const result = await ollamaService.generateResponse(prompt);
 
-    if (!result.success) throw new Error(result.error || 'Failed to generate response');
-
-    res.json({ success: true, response: result.response, type: 'chat' });
-  } catch (error) {
-    console.error('Chat error:', error);
-    res.status(500).json({ success: false, error: 'Failed to process message', details: error.message });
-  }
-},
-
-  // Handle memory commands
-  async handleCommand(req, res, command) {
-    const teacherId = req.session.teacher_id;
-
-    try {
-      switch (command.type) {
-        case 'remember':
-          await memoryService.saveMemory(teacherId, command.content);
-          return res.json({
-            success: true,
-            response: 'Got it! I\'ll remember that.',
-            type: 'memory'
-          });
-
-        case 'memories':
-          const memories = await memoryService.getMemories(teacherId);
-          return res.json({
-            success: true,
-            memories,
-            type: 'memory_list'
-          });
-
-        case 'forget':
-          if (command.memoryId) {
-            await memoryService.deleteMemory(teacherId, command.memoryId);
-            return res.json({
-              success: true,
-              response: 'Memory deleted.',
-              type: 'memory'
-            });
-          }
-          throw new Error('Memory ID required');
-
-        default:
-          throw new Error('Unknown command');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to generate response');
       }
+
+      res.json({
+        success: true,
+        response: result.response,
+        type: 'chat'
+      });
     } catch (error) {
-      console.error('Command error:', error);
+      console.error('Chat error:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to execute command',
+        error: 'Failed to process message',
         details: error.message
       });
     }
   },
 
-  // Execute quick queries
+  // Quick query endpoint can remain if needed
   async quickQuery(req, res) {
     try {
       const { queryType } = req.body;
       const teacherId = req.session.teacher_id;
 
-      const result = await queryService.executeQuickQuery(teacherId, queryType);
+      const result = await require('../services/rick/queryService')
+        .executeQuickQuery(teacherId, queryType);
 
       res.json({
         success: true,
@@ -134,48 +86,6 @@ Answer concisely:`;
       res.status(500).json({
         success: false,
         error: 'Failed to execute query',
-        details: error.message
-      });
-    }
-  },
-
-  // Get memories
-  async getMemories(req, res) {
-    try {
-      const teacherId = req.session.teacher_id;
-      const memories = await memoryService.getMemories(teacherId);
-
-      res.json({
-        success: true,
-        memories
-      });
-    } catch (error) {
-      console.error('Get memories error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve memories',
-        details: error.message
-      });
-    }
-  },
-
-  // Delete memory
-  async deleteMemory(req, res) {
-    try {
-      const teacherId = req.session.teacher_id;
-      const { memoryId } = req.params;
-
-      await memoryService.deleteMemory(teacherId, memoryId);
-
-      res.json({
-        success: true,
-        message: 'Memory deleted'
-      });
-    } catch (error) {
-      console.error('Delete memory error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to delete memory',
         details: error.message
       });
     }
