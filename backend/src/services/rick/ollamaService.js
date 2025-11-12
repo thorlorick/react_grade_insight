@@ -20,9 +20,7 @@ const generateResponse = async (prompt, options = {}) => {
           ...options
         }
       },
-      {
-        timeout: config.ollama.timeout
-      }
+      { timeout: config.ollama.timeout }
     );
 
     return {
@@ -32,11 +30,7 @@ const generateResponse = async (prompt, options = {}) => {
     };
   } catch (error) {
     console.error('Ollama API Error:', error.message);
-    return {
-      success: false,
-      error: error.message,
-      response: null
-    };
+    return { success: false, error: error.message, response: null };
   }
 };
 
@@ -44,15 +38,12 @@ const generateResponse = async (prompt, options = {}) => {
  * Generate SQL query from natural language
  */
 const generateSQL = async (context) => {
-  const { schema, userMessage, memories, conversationHistory } = context;
-  
+  const { schema, userMessage, conversationHistory } = context;
+
   const prompt = `You are Rick, an AI assistant for teachers analyzing student data.
 
 DATABASE SCHEMA:
 ${schema}
-
-RELEVANT MEMORIES:
-${memories || 'None'}
 
 CONVERSATION HISTORY:
 ${conversationHistory || 'None'}
@@ -70,47 +61,30 @@ Rules:
 SQL Query:`;
 
   const result = await generateResponse(prompt, { temperature: 0.3 });
-  
-  if (!result.success) {
-    return {
-      success: false,
-      sql: null,
-      error: result.error
-    };
-  }
 
-  // Extract SQL from response (remove any extra text)
+  if (!result.success) return { success: false, sql: null, error: result.error };
+
+  // Clean up SQL
   let sql = result.response.trim();
-  
-  // Remove markdown code blocks if present
   sql = sql.replace(/```sql/gi, '').replace(/```/g, '').trim();
-  
-  // Remove any explanatory text before/after the query
   const lines = sql.split('\n');
   sql = lines.find(line => line.trim().toUpperCase().startsWith('SELECT')) || sql;
 
-  return {
-    success: true,
-    sql: sql.trim(),
-    error: null
-  };
+  return { success: true, sql: sql.trim(), error: null };
 };
 
 /**
  * Format query results into natural language response
  */
 const formatResponse = async (context) => {
-  const { userMessage, queryResults, memories, conversationHistory } = context;
-  
-  const prompt = `You are Rick, a friendly AI assistant helping teachers analyze student data.
+  const { userMessage, queryResults, conversationHistory, teacherName } = context;
+
+  const prompt = `You are Rick, a friendly AI assistant helping ${teacherName} with their class.
 
 TEACHER'S QUESTION: "${userMessage}"
 
 QUERY RESULTS:
 ${JSON.stringify(queryResults, null, 2)}
-
-RELEVANT MEMORIES:
-${memories || 'None'}
 
 CONVERSATION HISTORY:
 ${conversationHistory || 'None'}
@@ -119,7 +93,6 @@ Generate a clear, conversational response to answer the teacher's question.
 Rules:
 - Be concise but friendly
 - Reference specific data from the results
-- If there are memories, weave them naturally into your response
 - Use the teacher's language style
 - If results are empty, say so politely
 - Keep response under 200 words
@@ -127,35 +100,24 @@ Rules:
 Response:`;
 
   const result = await generateResponse(prompt, { temperature: 0.7 });
-  
+
   if (!result.success) {
-    return {
-      success: false,
-      response: 'Sorry, I had trouble formatting that response.',
-      error: result.error
-    };
+    return { success: false, response: 'Sorry, I had trouble formatting that response.', error: result.error };
   }
 
-  return {
-    success: true,
-    response: result.response.trim(),
-    error: null
-  };
+  return { success: true, response: result.response.trim(), error: null };
 };
 
 /**
- * Simple chat response (no SQL needed)
+ * Simple chat response (no SQL, real-time only)
  */
 const chatResponse = async (context) => {
-  const { userMessage, memories, conversationHistory, teacherName } = context;
-  
+  const { userMessage, conversationHistory, teacherName } = context;
+
   const prompt = `You are Rick, a friendly AI assistant helping ${teacherName} with their class.
 
 CONVERSATION HISTORY:
 ${conversationHistory || 'This is the start of the conversation'}
-
-RELEVANT MEMORIES:
-${memories || 'None'}
 
 TEACHER: "${userMessage}"
 
@@ -164,20 +126,12 @@ Respond naturally and helpfully. Keep it conversational and brief (under 150 wor
 Rick:`;
 
   const result = await generateResponse(prompt, { temperature: 0.8 });
-  
+
   if (!result.success) {
-    return {
-      success: false,
-      response: 'Sorry, I seem to be having trouble right now.',
-      error: result.error
-    };
+    return { success: false, response: 'Sorry, I seem to be having trouble right now.', error: result.error };
   }
 
-  return {
-    success: true,
-    response: result.response.trim(),
-    error: null
-  };
+  return { success: true, response: result.response.trim(), error: null };
 };
 
 /**
@@ -185,24 +139,11 @@ Rick:`;
  */
 const healthCheck = async () => {
   try {
-    const response = await axios.get(`${config.ollama.url}/api/tags`, {
-      timeout: 5000
-    });
-    
-    const modelExists = response.data.models.some(
-      m => m.name === config.ollama.model
-    );
-    
-    return {
-      success: true,
-      modelAvailable: modelExists,
-      models: response.data.models.map(m => m.name)
-    };
+    const response = await axios.get(`${config.ollama.url}/api/tags`, { timeout: 5000 });
+    const modelExists = response.data.models.some(m => m.name === config.ollama.model);
+    return { success: true, modelAvailable: modelExists, models: response.data.models.map(m => m.name) };
   } catch (error) {
-    return {
-      success: false,
-      error: 'Ollama is not running or not accessible'
-    };
+    return { success: false, error: 'Ollama is not running or not accessible' };
   }
 };
 
