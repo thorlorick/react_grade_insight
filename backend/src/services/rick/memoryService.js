@@ -72,9 +72,16 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
       params.push(searchPattern, searchPattern);
     }
     
-    query += ` ORDER BY m.created_at DESC LIMIT ?`;
+   query += ` ORDER BY m.created_at DESC LIMIT ?`;
     params.push(limit);
-
+    
+    console.log('=== MEMORY SERVICE DEBUG ===');
+    console.log('Query:', query);
+    console.log('Params:', params);
+    console.log('Param count:', params.length);
+    console.log('Expected ? count:', (query.match(/\?/g) || []).length);
+    console.log('===========================');
+    
     const [memories] = await pool.execute(query, params);
 
     return {
