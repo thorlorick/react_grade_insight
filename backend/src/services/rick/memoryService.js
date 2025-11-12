@@ -115,7 +115,7 @@ const getRelevantMemories = async (teacherId, message, limit = 5) => {
   .map(n => n.trim())
   .filter(n => n.length > 0);
 
-if (!studentNames || studentNames.length === 0) {
+  if (!studentNames || studentNames.length === 0) {
   return getMemories(teacherId, null, limit);
 }
     
