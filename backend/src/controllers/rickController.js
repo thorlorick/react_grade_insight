@@ -39,7 +39,7 @@ const rickController = {
       }
 
       // Get memories
-      const memories = await memoryService.getMemories(teacherId);
+      const memoriesResult = await memoryService.getMemories(teacherId);
       const memories = memoriesResult.success ? memoriesResult.memories : [];
 
       // Build context
