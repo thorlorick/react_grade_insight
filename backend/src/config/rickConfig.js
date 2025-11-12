@@ -5,7 +5,7 @@ module.exports = {
   ollama: {
     url: process.env.OLLAMA_URL || 'http://localhost:11434',
     model: process.env.OLLAMA_MODEL || 'qwen2.5:1.5b',
-    timeout: 30000, // 30 seconds
+    timeout: 120000, 
   },
 
   // Database settings (RICK read-only user)
@@ -30,9 +30,6 @@ module.exports = {
     'students',
     'grades',
     'assignments',
-    'attendance',
-    'courses',
-    'classes',
     'access_codes',            
     'contact_emails',          
     'login_attempt',           
