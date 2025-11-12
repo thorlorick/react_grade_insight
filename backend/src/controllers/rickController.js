@@ -25,63 +25,50 @@ const rickController = {
   },
 
 // Handle chat messages
-  async chat(req, res) {
-    try {
-      const { message } = req.body;
-      const teacherId = req.teacherId;
-      const teacherName = req.teacherName;
+async chat(req, res) {
+  try {
+    const { message } = req.body;
+    const teacherId = req.teacherId;
+    const teacherName = req.teacherName;
 
-      // Check for commands
-      const command = commandParser.parseCommand(message);
-      
-      if (command) {
-        return await rickController.handleCommand(req, res, command);
-      }
+    // Check for commands
+    const command = commandParser.parseCommand(message);
+    if (command) return await rickController.handleCommand(req, res, command);
 
-      // Get memories
-      const memoriesResult = await memoryService.getMemories(teacherId);
-      const memories = memoriesResult.success ? memoriesResult.memories : [];
+    // Get only 5 recent memories
+    const memoriesResult = await memoryService.getMemories(teacherId, 5);
+    const memories = memoriesResult.success ? memoriesResult.memories : [];
 
-      // Build context
-      const context = contextBuilder.buildContext({
-        teacherId,
-        teacherName,
-        userMessage: message,
-        memories
-      });
+    // Format memories (truncate each to 150 chars max)
+    const formattedMemories = memories
+      .map(m => {
+        const truncated = m.content.length > 150 ? m.content.slice(0, 150) + '…' : m.content;
+        return `- ${truncated}`;
+      })
+      .join('\n');
 
-      // Format context into a prompt
-      const formattedMemories = contextBuilder.formatMemories(memories);
-      const prompt = `You are Rick, an AI teaching assistant. Help the teacher with their question.
+    // Build prompt
+    const prompt = `You are Rick, an AI teaching assistant. Provide a concise and helpful answer.
 
 Teacher: ${teacherName}
-Memories: ${formattedMemories}
+Memories:
+${formattedMemories}
 
 Question: ${message}
 
-Provide a helpful, concise answer:`;
+Answer concisely:`;
 
-      // Generate response
-      const result = await ollamaService.generateResponse(prompt);
+    // Generate response with optional timeout
+    const result = await ollamaService.generateResponse(prompt, { timeout: 15000 }); // 15s
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to generate response');
-      }
+    if (!result.success) throw new Error(result.error || 'Failed to generate response');
 
-      res.json({
-        success: true,
-        response: result.response,
-        type: 'chat'
-      });
-    } catch (error) {
-      console.error('Chat error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to process message',
-        details: error.message
-      });
-    }
-  },
+    res.json({ success: true, response: result.response, type: 'chat' });
+  } catch (error) {
+    console.error('Chat error:', error);
+    res.status(500).json({ success: false, error: 'Failed to process message', details: error.message });
+  }
+},
 
   // Handle memory commands
   async handleCommand(req, res, command) {
