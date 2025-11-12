@@ -73,8 +73,8 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
       params.push(searchPattern, searchPattern);
     }
     
-   query += ` ORDER BY m.created_at DESC LIMIT ?`;
-    params.push(parseInt(limit, 10));
+    query += ` ORDER BY m.created_at DESC LIMIT ${parseInt(limit, 10)}`;
+    // Don't push limit to params anymore
     
     console.log('=== MEMORY SERVICE DEBUG ===');
     console.log('Query:', query);
