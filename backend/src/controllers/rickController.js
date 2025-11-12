@@ -26,7 +26,7 @@ const rickController = {
     try {
       const { message } = req.body;
       const teacherId = req.teacherId;
-      const teacherName = req.teacherName;
+      const teacherName = req.teacherName || 'Teacher';
 
       // No memories used
       const context = contextBuilder.buildContext({
