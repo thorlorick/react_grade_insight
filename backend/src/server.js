@@ -32,6 +32,7 @@ const sslOptions = {
   cert: fs.readFileSync(process.env.FULLCHAIN_PATH)
 };
 
+
 // Session store
 const sessionStore = new MySQLStore({
   connectionLimit: 1,
