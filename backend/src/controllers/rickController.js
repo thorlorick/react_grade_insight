@@ -38,7 +38,7 @@ const rickController = {
       }
 
       // Build context
-      const context = await contextBuilder.build(teacherId);
+      const context = await contextBuilder.buildContext(teacherId);
       
       // Generate response
       const response = await ollamaService.generateResponse(message, context);
