@@ -3,7 +3,7 @@
 const mysql = require('mysql2/promise');
 const path = require('path');
 const config = require('../../config/rickConfig');
-const { extractStudentNames } = require(path.resolve(__dirname, '../../utils/rick/contextBuilder.js'));
+const { extractStudentNames } = require(path.resolve(__dirname, '../../utils/rick/contextBuilder'));
 
 
 // Create connection pool
@@ -55,6 +55,7 @@ const saveMemory = async (teacherId, memoryContent, studentId = null) => {
  * Get memories for a teacher (optionally filtered by student)
  */
 const getMemories = async (teacherId, studentName = null, limit = 20) => {
+  limit = parseInt(limit, 10);
   try {
     let query = `
     SELECT m.*, CONCAT(s.first_name, ' ', s.last_name) as student_name
@@ -73,7 +74,7 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
     }
     
    query += ` ORDER BY m.created_at DESC LIMIT ?`;
-    params.push(limit);
+    params.push(parseInt(limit, 10));
     
     console.log('=== MEMORY SERVICE DEBUG ===');
     console.log('Query:', query);
