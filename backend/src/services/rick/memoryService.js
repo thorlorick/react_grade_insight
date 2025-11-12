@@ -111,12 +111,13 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
 const getRelevantMemories = async (teacherId, message, limit = 5) => {
   try {
     // Extract potential student names from message
-    const studentNames = extractStudentNames(message);
-    
-    if (studentNames.length === 0) {
-      // No student names found, return recent general memories
-      return getMemories(teacherId, null, limit);
-    }
+    const studentNames = extractStudentNames(message)
+  .map(n => n.trim())
+  .filter(n => n.length > 0);
+
+if (!studentNames || studentNames.length === 0) {
+  return getMemories(teacherId, null, limit);
+}
     
     // Search for memories mentioning these students
     const namePlaceholders = studentNames.map(() => 'memory_content LIKE ?').join(' OR ');
