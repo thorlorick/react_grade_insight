@@ -83,7 +83,7 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
     console.log('Expected ? count:', (query.match(/\?/g) || []).length);
     console.log('===========================');
     
-    const [memories] = await pool.execute(query, params);
+    const [memories] = await pool.query(query, params);
 
     return {
       success: true,
