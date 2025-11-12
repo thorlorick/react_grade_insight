@@ -68,7 +68,8 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
     // Filter by student name if provided
     if (studentName) {
       query += ` AND (CONCAT(s.first_name, ' ', s.last_name) LIKE ? OR m.memory_content LIKE ?)`;
-      params.push(`%${studentName}%`, `%${studentName}%`);
+      const searchPattern = '%' + studentName + '%';
+      params.push(searchPattern, searchPattern);
     }
     
     query += ` ORDER BY m.created_at DESC LIMIT ?`;
