@@ -38,13 +38,15 @@ const saveMemory = async (teacherId, memoryContent) => {
  */
 const getMemories = async (teacherId, limit = 5) => {
   try {
+    limit = parseInt(limit, 10); // ensure it's a number
+
     const [memories] = await pool.execute(
-      `SELECT id, memory_content, created_at
-       FROM rick_memory
-       WHERE teacher_id = ?
-       ORDER BY created_at DESC
-       LIMIT ?`,
-      [teacherId, limit]
+     `SELECT id, memory_content, created_at
+      FROM rick_memory
+      WHERE teacher_id = ?
+      ORDER BY created_at DESC
+      LIMIT ${limit}`, // ✅ literal number, not a parameter
+     [teacherId]
     );
 
     return {
