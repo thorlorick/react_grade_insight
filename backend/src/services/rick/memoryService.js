@@ -57,17 +57,17 @@ const saveMemory = async (teacherId, memoryContent, studentId = null) => {
 const getMemories = async (teacherId, studentName = null, limit = 20) => {
   try {
     let query = `
-      SELECT m.*, s.name as student_name
-      FROM rick_memory m
-      LEFT JOIN students s ON m.student_id = s.id
-      WHERE m.teacher_id = ?
-    `;
+    SELECT m.*, CONCAT(s.first_name, ' ', s.last_name) as student_name
+    FROM rick_memory m
+    LEFT JOIN students s ON m.student_id = s.id
+    WHERE m.teacher_id = ?
+  `;
     
     const params = [teacherId];
     
     // Filter by student name if provided
     if (studentName) {
-      query += ` AND (s.name LIKE ? OR m.memory_content LIKE ?)`;
+      query += ` AND (CONCAT(s.first_name, ' ', s.last_name) LIKE ? OR m.memory_content LIKE ?)`;
       params.push(`%${studentName}%`, `%${studentName}%`);
     }
     
