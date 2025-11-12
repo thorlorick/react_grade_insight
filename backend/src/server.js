@@ -28,8 +28,8 @@ const app = express();
 
 // SSL Certificate
 const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, '../certs/privkey.pem')),
-  cert: fs.readFileSync(path.join(__dirname, '../certs/fullchain.pem'))
+  key: fs.readFileSync(process.env.PRIVKEY_PATH),
+  cert: fs.readFileSync(process.env.FULLCHAIN_PATH)
 };
 
 // Session store
