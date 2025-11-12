@@ -5,7 +5,6 @@ const path = require('path');
 const config = require('../../config/rickConfig');
 const { extractStudentNames } = require(path.resolve(__dirname, '../../utils/rick/contextBuilder'));
 
-
 // Create connection pool
 const pool = mysql.createPool({
   host: config.database.host,
@@ -20,22 +19,16 @@ const pool = mysql.createPool({
 /**
  * Save a new memory
  */
-const saveMemory = async (teacherId, memoryContent, studentId = null) => {
+const saveMemory = async (teacherId, memoryContent) => {
   try {
-    // Extract tags (student names, keywords)
-    const tags = extractStudentNames(memoryContent);
-    
-  const [result] = await pool.execute(
-  `INSERT INTO rick_memory 
-   (teacher_id, memory_content, tags, created_at) 
-   VALUES (?, ?, ?, NOW())`,
-  [
-    teacherId,
-    memoryContent,
-    JSON.stringify(tags)
-  ]
-);
+    const tags = extractStudentNames(memoryContent); // optional keywords
 
+    const [result] = await pool.execute(
+      `INSERT INTO rick_memory 
+       (teacher_id, memory_content, tags, created_at) 
+       VALUES (?, ?, ?, NOW())`,
+      [teacherId, memoryContent, JSON.stringify(tags)]
+    );
 
     return {
       success: true,
@@ -52,45 +45,25 @@ const saveMemory = async (teacherId, memoryContent, studentId = null) => {
 };
 
 /**
- * Get memories for a teacher (optionally filtered by student)
+ * Get memories for a teacher
  */
-const getMemories = async (teacherId, studentName = null, limit = 20) => {
+const getMemories = async (teacherId, limit = 20) => {
   limit = parseInt(limit, 10);
   try {
-    let query = `
-    SELECT m.*, CONCAT(s.first_name, ' ', s.last_name) as student_name
-    FROM rick_memory m
-    LEFT JOIN students s ON m.student_id = s.id
-    WHERE m.teacher_id = ?
-  `;
-    
-    const params = [teacherId];
-    
-    // Filter by student name if provided
-    if (studentName) {
-      query += ` AND (CONCAT(s.first_name, ' ', s.last_name) LIKE ? OR m.memory_content LIKE ?)`;
-      const searchPattern = '%' + studentName + '%';
-      params.push(searchPattern, searchPattern);
-    }
-    
-    query += ` ORDER BY m.created_at DESC LIMIT ${parseInt(limit, 10)}`;
-    // Don't push limit to params anymore
-    
-    console.log('=== MEMORY SERVICE DEBUG ===');
-    console.log('Query:', query);
-    console.log('Params:', params);
-    console.log('Param count:', params.length);
-    console.log('Expected ? count:', (query.match(/\?/g) || []).length);
-    console.log('===========================');
-    
-    const [memories] = await pool.query(query, params);
+    const query = `
+      SELECT * 
+      FROM rick_memory
+      WHERE teacher_id = ?
+      ORDER BY created_at DESC
+      LIMIT ?
+    `;
+    const [memories] = await pool.query(query, [teacherId, limit]);
 
     return {
       success: true,
       memories: memories.map(m => ({
         id: m.id,
         content: m.memory_content,
-        studentName: m.student_name,
         tags: JSON.parse(m.tags || '[]'),
         createdAt: m.created_at
       }))
@@ -106,43 +79,36 @@ const getMemories = async (teacherId, studentName = null, limit = 20) => {
 };
 
 /**
- * Get relevant memories based on current message context
+ * Get relevant memories based on keywords in message
  */
 const getRelevantMemories = async (teacherId, message, limit = 5) => {
   try {
-    // Extract potential student names from message
-    const studentNames = extractStudentNames(message)
-  .map(n => n.trim())
-  .filter(n => n.length > 0);
+    const keywords = extractStudentNames(message)
+      .map(k => k.trim())
+      .filter(k => k.length > 0);
 
-  if (!studentNames || studentNames.length === 0) {
-  return getMemories(teacherId, null, limit);
-}
-    
-    // Search for memories mentioning these students
-    const namePlaceholders = studentNames.map(() => 'memory_content LIKE ?').join(' OR ');
-    const nameParams = studentNames.map(name => `%${name}%`);
-    
+    if (keywords.length === 0) {
+      return getMemories(teacherId, limit);
+    }
+
+    const placeholders = keywords.map(() => 'memory_content LIKE ?').join(' OR ');
+    const params = [teacherId, ...keywords.map(k => `%${k}%`), limit];
+
     const query = `
-      SELECT m.*, s.name as student_name
-      FROM rick_memory m
-      LEFT JOIN students s ON m.student_id = s.id
-      WHERE m.teacher_id = ? AND (${namePlaceholders})
-      ORDER BY m.created_at DESC
+      SELECT * 
+      FROM rick_memory
+      WHERE teacher_id = ? AND (${placeholders})
+      ORDER BY created_at DESC
       LIMIT ?
     `;
-    
-    const [memories] = await pool.execute(
-      query,
-      [teacherId, ...nameParams, limit]
-    );
+
+    const [memories] = await pool.execute(query, params);
 
     return {
       success: true,
       memories: memories.map(m => ({
         id: m.id,
         content: m.memory_content,
-        studentName: m.student_name,
         tags: JSON.parse(m.tags || '[]'),
         createdAt: m.created_at
       }))
@@ -193,9 +159,9 @@ const deleteMemory = async (teacherId, memoryId) => {
 const updateMemory = async (teacherId, memoryId, newContent) => {
   try {
     const tags = extractStudentNames(newContent);
-    
+
     const [result] = await pool.execute(
-      `UPDATE rick_memory 
+      `UPDATE rick_memory
        SET memory_content = ?, tags = ?, updated_at = NOW()
        WHERE id = ? AND teacher_id = ?`,
       [newContent, JSON.stringify(tags), memoryId, teacherId]
