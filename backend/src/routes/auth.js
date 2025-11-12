@@ -4,18 +4,40 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { pool } = require('../db'); // Import pool from your db connection
 
-// Enhanced helper function to log all login attempts with user type
+// Enhanced helper function to log all login attempts with normalized user type and status
 const logLoginAttempt = async (email, ipAddress, status, userType = 'unknown') => {
   try {
+    // Normalize status to match ENUM
+    const statusMap = {
+      success: 'success',
+      fail: 'failure',
+      failed: 'failure',
+      weakPwd: 'weak_password',
+      passwordChange: 'password_change_required',
+      noPassword: 'no_password_set',
+      signupDup: 'signup_duplicate_email',
+      signupFail: 'signup_failure'
+    };
+    const normalizedStatus = statusMap[status] || 'failure'; // fallback
+
+    // Normalize userType to match ENUM
+    const userTypeMap = {
+      teacher: 'teacher',
+      student: 'student',
+      admin: 'admin'
+    };
+    const normalizedUserType = userTypeMap[userType] || 'unknown'; // fallback
+
     await pool.execute(
       'INSERT INTO login_attempt (user_email, ip_address, status, user_type, attempt_time) VALUES (?, ?, ?, ?, NOW())',
-      [email, ipAddress, status, userType]
+      [email, ipAddress, normalizedStatus, normalizedUserType]
     );
   } catch (error) {
     console.error('Error logging login attempt:', error);
     // Don't fail the login process if logging fails
   }
 };
+
 
 // ========================================
 // TEACHER ROUTES
@@ -763,5 +785,6 @@ router.post('/verifyAccessCode', async (req, res) => {
     });
   }
 });
+
 
 module.exports = router;
