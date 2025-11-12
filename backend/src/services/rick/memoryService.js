@@ -25,17 +25,17 @@ const saveMemory = async (teacherId, memoryContent, studentId = null) => {
     // Extract tags (student names, keywords)
     const tags = extractStudentNames(memoryContent);
     
-    const [result] = await pool.execute(
-      `INSERT INTO rick_memory 
-       (teacher_id, student_id, memory_content, tags, created_at) 
-       VALUES (?, ?, ?, ?, NOW())`,
-      [
-        teacherId,
-        studentId,
-        memoryContent,
-        JSON.stringify(tags)
-      ]
-    );
+  const [result] = await pool.execute(
+  `INSERT INTO rick_memory 
+   (teacher_id, memory_content, tags, created_at) 
+   VALUES (?, ?, ?, NOW())`,
+  [
+    teacherId,
+    memoryContent,
+    JSON.stringify(tags)
+  ]
+);
+
 
     return {
       success: true,
