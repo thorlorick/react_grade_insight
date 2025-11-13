@@ -21,25 +21,15 @@ const rickController = {
     }
   },
 
-  // Handle chat messages in real-time
+ // Handle chat messages
   async chat(req, res) {
     try {
       const { message } = req.body;
-      const teacherId = req.teacherId;
       const teacherName = req.teacherName || 'Teacher';
+      const teacherId = req.session.teacher_id;
 
-      // No memories used
-      const context = contextBuilder.buildContext({
-        teacherId,
-        teacherName,
-        userMessage: message,
-        memories: [] // empty
-      });
-
-      // Build prompt
-      const prompt = `You are Rick, an AI teaching assistant. Help the teacher with their question.
-
-Teacher: ${teacherName}
+      // Simple prompt without memories
+      const prompt = `You are Rick, an AI teaching assistant helping ${teacherName}. 
 
 Question: ${message}
 
