@@ -1,6 +1,7 @@
 // backend/src/controllers/rickController.js
 const ollamaService = require('../services/rick/ollamaService');
 const contextBuilder = require('../utils/rick/contextBuilder');
+const queryService = require('../services/rick/queryService');
 
 const rickController = {
   // Health check
@@ -22,14 +23,39 @@ const rickController = {
   },
 
  // Handle chat messages
-  async chat(req, res) {
+ async chat(req, res) {
     try {
       const { message } = req.body;
+      const teacherId = req.teacherId;
       const teacherName = req.teacherName || 'Teacher';
-      const teacherId = req.session.teacher_id;
 
-      // Simple prompt without memories
-      const prompt = `You are Rick, an AI teaching assistant helping ${teacherName}. 
+      // Check if asking about students/data
+      const isDataQuery = /\b(student|grade|assignment|average|who|show|list)\b/i.test(message);
+
+      let databaseInfo = '';
+      
+      if (isDataQuery) {
+        // Get some basic student info for context
+        try {
+          const students = await queryService.executeQuery(
+            teacherId,
+            `SELECT CONCAT(first_name, ' ', last_name) as name, email 
+             FROM students 
+             WHERE id IN (SELECT DISTINCT student_id FROM grades WHERE teacher_id = ?) 
+             LIMIT 10`,
+            [teacherId]
+          );
+          
+          if (students.success && students.data.length > 0) {
+            databaseInfo = `\n\nYour students include: ${students.data.map(s => s.name).join(', ')}`;
+          }
+        } catch (err) {
+          console.error('Error fetching student context:', err);
+        }
+      }
+
+      // Simple prompt
+      const prompt = `You are Rick, an AI teaching assistant helping ${teacherName}.${databaseInfo}
 
 Question: ${message}
 
