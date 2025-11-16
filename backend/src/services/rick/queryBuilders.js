@@ -36,11 +36,12 @@ const average = validGrades.length > 0
   : 0;
   
   return {
-    studentName: `${student.first_name} ${student.last_name}`,
-    grades: grades,
-    average: average.toFixed(1),
-    count: grades.length
-  };
+  studentName: `${student.first_name} ${student.last_name}`,
+  grades: grades,
+  average: average.toFixed(1),
+  count: validGrades.length,  // Show only graded assignments
+  totalAssignments: grades.length  // Total including null
+};
 }
 
 /**
