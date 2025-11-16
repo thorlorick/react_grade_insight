@@ -10,7 +10,7 @@ const rickController = {
       res.json({
         success: true,
         status: 'Rick AI is online',
-        patterns: 3
+        patterns: 5
       });
     } catch (error) {
       res.status(503).json({
@@ -46,6 +46,20 @@ const rickController = {
         });
       }
 
+      // Handle greetings
+      if (parsed.greeting) {
+        return res.json({
+          success: true,
+          response: "Hi! I'm Rick, your AI teaching assistant. I can help you:\n\n" +
+                   "• Check student grades: \"Show [name]'s grades\"\n" +
+                   "• Find struggling students: \"Who is failing?\"\n" +
+                   "• Get class stats: \"What's the class average?\"\n" +
+                   "• See missing work: \"Who has missing grades?\"\n" +
+                   "• Analyze assignments: \"Show grades for [assignment]\"\n\n" +
+                   "Just ask me a question in plain English!"
+        });
+      }
+
       // Execute appropriate query based on intent
       let result;
       let formatted;
@@ -66,43 +80,43 @@ const rickController = {
           formatted = formatters.formatClassAverage(result);
           break;
 
-          case 'missingWork':
-  // Resolve student/assignment from searchTerm if provided
-  if (parsed.entities.searchTerm) {
-    // Try student first
-    try {
-      parsed.entities.student = await require('../services/rick/patternMatcher').fuzzyFindStudent(parsed.entities.searchTerm, teacherId);
-    } catch (e) {
-      // Not a student, try assignment
-      try {
-        parsed.entities.assignment = await require('../services/rick/patternMatcher').fuzzyFindAssignment(parsed.entities.searchTerm, teacherId);
-      } catch (e2) {
-        // Neither - show all missing work
-      }
-    }
-  }
-  result = await queryBuilders.missingWorkQuery(parsed.entities, teacherId);
-  formatted = formatters.formatMissingWork(result);
-  break;
+        case 'missingWork':
+          // Resolve student/assignment from searchTerm if provided
+          if (parsed.entities.searchTerm) {
+            // Try student first
+            try {
+              parsed.entities.student = await require('../services/rick/patternMatcher').fuzzyFindStudent(parsed.entities.searchTerm, teacherId);
+            } catch (e) {
+              // Not a student, try assignment
+              try {
+                parsed.entities.assignment = await require('../services/rick/patternMatcher').fuzzyFindAssignment(parsed.entities.searchTerm, teacherId);
+              } catch (e2) {
+                // Neither - show all missing work
+              }
+            }
+          }
+          result = await queryBuilders.missingWorkQuery(parsed.entities, teacherId);
+          formatted = formatters.formatMissingWork(result);
+          break;
 
-case 'assignmentAnalysis':
-  // Resolve assignment
-  const { fuzzyFindAssignment } = require('../services/rick/patternMatcher');
-  parsed.entities.assignment = await fuzzyFindAssignment(parsed.entities.assignmentName, teacherId);
-  
-  if (parsed.entities.assignment.needsClarification) {
-    return res.json({
-      success: false,
-      response: `I found multiple assignments. Did you mean:\n` +
-                parsed.entities.assignment.options.map((a, i) => 
-                  `${i + 1}. ${a.name}`
-                ).join('\n')
-    });
-  }
-  
-  result = await queryBuilders.assignmentAnalysisQuery(parsed.entities, teacherId);
-  formatted = formatters.formatAssignmentAnalysis(result);
-  break;
+        case 'assignmentAnalysis':
+          // Resolve assignment
+          const { fuzzyFindAssignment } = require('../services/rick/patternMatcher');
+          parsed.entities.assignment = await fuzzyFindAssignment(parsed.entities.assignmentName, teacherId);
+          
+          if (parsed.entities.assignment.needsClarification) {
+            return res.json({
+              success: false,
+              response: `I found multiple assignments. Did you mean:\n` +
+                        parsed.entities.assignment.options.map((a, i) => 
+                          `${i + 1}. ${a.name}`
+                        ).join('\n')
+            });
+          }
+          
+          result = await queryBuilders.assignmentAnalysisQuery(parsed.entities, teacherId);
+          formatted = formatters.formatAssignmentAnalysis(result);
+          break;
 
         default:
           return res.json({
