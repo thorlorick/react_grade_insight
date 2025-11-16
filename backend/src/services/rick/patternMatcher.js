@@ -38,7 +38,46 @@ const PATTERNS = [
     entities: [],
     description: 'Calculate class average grade'
   }
+  {
+  // Pattern 5: Missing Work
+  patterns: [
+    /who\s+(?:has|is)\s+missing\s+(?:grades?|work|assignments?)/i,
+    /(?:show|list)\s+missing\s+(?:grades?|work|assignments?)/i,
+    /what\s+(?:is|are)\s+(.+?)\s+missing/i,
+    /missing\s+(?:work|grades?|assignments?)\s+for\s+(.+)/i,
+    /(?:which|what)\s+students?\s+(?:didn't|haven't|did not|have not)\s+(?:submit|turn in|complete)/i,
+    /(?:who|which students?)\s+(?:are|is)\s+missing\s+(.+)/i
+  ],
+  intent: 'missingWork',
+  entities: ['studentName', 'assignmentName'],  // Both optional
+  description: 'Show missing/incomplete work',
+  entityParser: (match) => {
+    // Extract student or assignment name from various patterns
+    const entities = {};
+    if (match[1]) {
+      // Could be student name or assignment name
+      // We'll resolve later based on fuzzy matching
+      entities.searchTerm = match[1];
+    }
+    return entities;
+  }
+},
+{
+  // Pattern 6: Assignment Analysis
+  patterns: [
+    /(?:show|display|list)\s+(?:grades?\s+for|results?\s+for)\s+(.+)/i,
+    /(?:what|show)\s+(?:is|are)\s+(?:the\s+)?(?:grades?|results?|scores?)\s+(?:for|on)\s+(.+)/i,
+    /(?:how\s+did|how\s+are)\s+students?\s+do\s+on\s+(.+)/i,
+    /(.+)\s+(?:grades?|results?|scores?)$/i,
+    /(?:average|results?|performance)\s+(?:for|on)\s+(.+)/i
+  ],
+  intent: 'assignmentAnalysis',
+  entities: ['assignmentName'],
+  description: 'Analyze grades for a specific assignment'
+}
 ];
+
+
 
 /**
  * Match user message against patterns
