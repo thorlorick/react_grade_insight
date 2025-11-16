@@ -42,15 +42,59 @@ function formatClassAverage(result) {
     return result.message;
   }
   
-  return `**Class Performance Summary**\n\n` +
-         `📊 Average: ${result.average}%\n` +
-         `📈 Highest: ${result.highest}%\n` +
-         `📉 Lowest: ${result.lowest}%\n\n` +
-         `👥 ${result.studentCount} students • ${result.totalGrades} total grades`;
+ /**
+ * Format missing work results
+ */
+function formatMissingWork(result) {
+  if (result.count === 0) {
+    return result.studentName 
+      ? `${result.studentName} has no missing work! ✅`
+      : result.assignmentName
+        ? `No students are missing ${result.assignmentName}! ✅`
+        : 'No missing work found! ✅';
+  }
+  
+  // Group by student
+  const byStudent = {};
+  result.missing.forEach(m => {
+    const key = `${m.first_name} ${m.last_name}`;
+    if (!byStudent[key]) byStudent[key] = [];
+    byStudent[key].push(m.assignment_name);
+  });
+  
+  const list = Object.entries(byStudent).map(([name, assignments]) => 
+    `  • ${name}: ${assignments.length} missing (${assignments.slice(0, 3).join(', ')}${assignments.length > 3 ? '...' : ''})`
+  ).join('\n');
+  
+  return `**Missing Work**\n` +
+         `${result.count} missing assignment${result.count === 1 ? '' : 's'} found:\n\n` +
+         list;
 }
 
+/**
+ * Format assignment analysis
+ */
+function formatAssignmentAnalysis(result) {
+  const stats = result.stats;
+  const passRate = stats.graded_count > 0 
+    ? ((stats.passed_count / stats.graded_count) * 100).toFixed(0)
+    : 0;
+  
+  return `**${result.assignmentName}**\n` +
+         `Due: ${result.dueDate ? new Date(result.dueDate).toLocaleDateString() : 'N/A'}\n` +
+         `Max Points: ${result.maxPoints || 'N/A'}\n\n` +
+         `📊 Average: ${parseFloat(stats.average).toFixed(1)}%\n` +
+         `📈 Highest: ${stats.highest}%\n` +
+         `📉 Lowest: ${stats.lowest}%\n` +
+         `✅ Pass Rate: ${passRate}% (${stats.passed_count}/${stats.graded_count})\n\n` +
+         `${stats.graded_count} students graded`;
+}
+
+// Add to module.exports:
 module.exports = {
   formatGradesList,
   formatStudentList,
-  formatClassAverage
+  formatClassAverage,
+  formatMissingWork,           // NEW
+  formatAssignmentAnalysis     // NEW
 };
