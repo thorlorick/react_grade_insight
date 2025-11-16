@@ -568,3 +568,6 @@ It gives teachers control, keeps data private, and helps students and parents st
 
 # RICK AI
 I've decided to coop RICK and make him a grade analysis AI that can read the database and then provide insights. The hardest part is going to be using a local model. Using inference(?) models gets pricey, so I'm hoping that the simple data structure will help.
+
+# Version 2 or 3 maybe....
+Rick AI did not work. trying to run a local model was just not feasible and using one online requires potential costs which I need to keep to zero. So, with that in mind, Claude and I decided to use pattern recognition and fuzzy logic to mimic AI. fuse.js to the rescue!!
