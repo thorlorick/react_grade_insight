@@ -1,107 +1,90 @@
 // backend/src/controllers/rickController.js
-const ollamaService = require('../services/rick/ollamaService');
-const contextBuilder = require('../utils/rick/contextBuilder');
-const queryService = require('../services/rick/queryService');
+const { parseNaturalLanguage } = require('../services/rick/patternMatcher');
+const queryBuilders = require('../services/rick/queryBuilders');
+const formatters = require('../services/rick/formatters');
 
 const rickController = {
   // Health check
   async healthCheck(req, res) {
     try {
-      const ollamaStatus = await ollamaService.checkHealth();
       res.json({
         success: true,
-        status: 'healthy',
-        ollama: ollamaStatus
+        status: 'Rick AI is online',
+        patterns: 3
       });
     } catch (error) {
       res.status(503).json({
         success: false,
-        error: 'Service unavailable',
-        details: error.message
+        error: 'Service unavailable'
       });
     }
   },
 
- // Handle chat messages
- async chat(req, res) {
+  // Handle chat messages
+  async chat(req, res) {
     try {
       const { message } = req.body;
       const teacherId = req.teacherId;
       const teacherName = req.teacherName || 'Teacher';
 
-      // Check if asking about students/data
-      const isDataQuery = /\b(student|grade|assignment|average|who|show|list)\b/i.test(message);
-
-      let databaseInfo = '';
-      
-      if (isDataQuery) {
-        // Get some basic student info for context
-        try {
-          const students = await queryService.executeQuery(
-            teacherId,
-            `SELECT CONCAT(first_name, ' ', last_name) as name, email 
-             FROM students 
-             WHERE id IN (SELECT DISTINCT student_id FROM grades WHERE teacher_id = ?) 
-             LIMIT 10`,
-            [teacherId]
-          );
-          
-          if (students.success && students.data.length > 0) {
-            databaseInfo = `\n\nYour students include: ${students.data.map(s => s.name).join(', ')}`;
-          }
-        } catch (err) {
-          console.error('Error fetching student context:', err);
-        }
+      if (!message || !message.trim()) {
+        return res.status(400).json({
+          success: false,
+          error: 'Message is required'
+        });
       }
 
-      // Simple prompt
-      const prompt = `You are Rick, an AI teaching assistant helping ${teacherName}.${databaseInfo}
+      console.log(`Rick query from teacher ${teacherId}: "${message}"`);
 
-Question: ${message}
+      // Parse natural language
+      const parsed = await parseNaturalLanguage(message, teacherId);
 
-Provide a helpful, concise answer:`;
+      if (!parsed.success) {
+        return res.json({
+          success: false,
+          response: parsed.error || parsed.message
+        });
+      }
 
-      // Generate response
-      const result = await ollamaService.generateResponse(prompt);
+      // Execute appropriate query based on intent
+      let result;
+      let formatted;
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to generate response');
+      switch (parsed.intent) {
+        case 'showGrades':
+          result = await queryBuilders.showGradesQuery(parsed.entities, teacherId);
+          formatted = formatters.formatGradesList(result);
+          break;
+
+        case 'filterByStatus':
+          result = await queryBuilders.filterByStatusQuery(parsed.entities, teacherId);
+          formatted = formatters.formatStudentList(result);
+          break;
+
+        case 'classAverage':
+          result = await queryBuilders.classAverageQuery(parsed.entities, teacherId);
+          formatted = formatters.formatClassAverage(result);
+          break;
+
+        default:
+          return res.json({
+            success: false,
+            response: 'I don\'t know how to handle that question yet.'
+          });
       }
 
       res.json({
         success: true,
-        response: result.response,
-        type: 'chat'
+        response: formatted,
+        intent: parsed.intent,
+        data: result
       });
+
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Rick chat error:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to process message',
-        details: error.message
-      });
-    }
-  },
-
-  // Quick query endpoint can remain if needed
-  async quickQuery(req, res) {
-    try {
-      const { queryType } = req.body;
-      const teacherId = req.session.teacher_id;
-
-      const result = await require('../services/rick/queryService')
-        .executeQuickQuery(teacherId, queryType);
-
-      res.json({
-        success: true,
-        result,
-        type: 'query'
-      });
-    } catch (error) {
-      console.error('Quick query error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to execute query',
+        error: 'Sorry, I encountered an error processing your question.',
         details: error.message
       });
     }
