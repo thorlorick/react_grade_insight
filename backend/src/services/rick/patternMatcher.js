@@ -1,6 +1,6 @@
 // backend/src/services/rick/patternMatcher.js
 const Fuse = require('fuse.js');
-const db = require('../../config/database');
+const { pool: db } = require('../../db');
 
 /**
  * Pattern definitions - add more here as you expand
