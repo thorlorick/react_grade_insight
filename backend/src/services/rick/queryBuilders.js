@@ -1,5 +1,5 @@
 // backend/src/services/rick/queryBuilders.js
-const db = require('../../config/database');
+const { pool: db } = require('../../db');
 
 /**
  * Query 1: Show grades for a specific student
