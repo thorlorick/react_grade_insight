@@ -29,8 +29,11 @@ async function showGradesQuery(entities, teacherId) {
     };
   }
   
-  // Calculate average
-  const average = grades.reduce((sum, g) => sum + parseFloat(g.grade), 0) / grades.length;
+// NEW (filter out nulls):
+const validGrades = grades.filter(g => g.grade !== null);
+const average = validGrades.length > 0 
+  ? validGrades.reduce((sum, g) => sum + parseFloat(g.grade), 0) / validGrades.length
+  : 0;
   
   return {
     studentName: `${student.first_name} ${student.last_name}`,
