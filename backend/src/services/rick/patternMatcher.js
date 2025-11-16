@@ -202,8 +202,46 @@ async function parseNaturalLanguage(message, teacherId) {
   };
 }
 
+/**
+ * Fuzzy find assignment by name
+ */
+async function fuzzyFindAssignment(name, teacherId) {
+  const [assignments] = await db.query(`
+    SELECT id, name, due_date, max_points
+    FROM assignments
+    WHERE teacher_id = ?
+  `, [teacherId]);
+  
+  if (assignments.length === 0) {
+    throw new Error('No assignments found');
+  }
+  
+  const fuse = new Fuse(assignments, {
+    keys: ['name'],
+    threshold: 0.4,
+    includeScore: true
+  });
+  
+  const results = fuse.search(name);
+  
+  if (results.length === 0) {
+    throw new Error(`No assignment found matching "${name}"`);
+  }
+  
+  if (results.length === 1 || results[0].score < 0.2) {
+    return results[0].item;
+  }
+  
+  return {
+    needsClarification: true,
+    options: results.slice(0, 3).map(r => r.item)
+  };
+}
+
+// Add to module.exports:
 module.exports = {
   parseNaturalLanguage,
   matchPattern,
-  fuzzyFindStudent
+  fuzzyFindStudent,
+  fuzzyFindAssignment  // NEW
 };
