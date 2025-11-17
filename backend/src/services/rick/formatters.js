@@ -1,5 +1,7 @@
 // backend/src/services/rick/formatters.js
 
+console.log("FORMATTERS LOADED", new Date().toISOString());
+
 /**
  * Format grades list for a student
  */
