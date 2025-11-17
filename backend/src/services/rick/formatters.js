@@ -41,6 +41,11 @@ function formatClassAverage(result) {
   if (result.message) {
     return result.message;
   }
+
+  return `**Class Average**\n` +
+         `Overall Average: ${result.average}%\n` +
+         `Assignments Counted: ${result.count}`;
+}
   
  /**
  * Format missing work results
