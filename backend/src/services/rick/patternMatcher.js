@@ -37,7 +37,7 @@ const PATTERNS = [
     intent: 'classAverage',
     entities: [],
     description: 'Calculate class average grade'
-  }
+  },
   {
   // Pattern 5: Missing Work
   patterns: [
