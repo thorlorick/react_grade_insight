@@ -135,3 +135,70 @@ const RickModal = ({ onClose }) => {
       <div className={styles.modal}>
         {/* HEADER */}
         <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <span className={styles.icon}>🤖</span>
+            <div>
+              <h2 className={styles.title}>Rick AI</h2>
+              <p className={styles.subtitle}>Your teaching assistant</p>
+            </div>
+          </div>
+          <div className={styles.headerButtons}>
+            <button
+              onClick={() => setMinimized(true)}
+              className={styles.minimizeButton}
+              title="Minimize"
+            >
+              −
+            </button>
+            <button
+              onClick={clearChat}
+              className={styles.clearButton}
+              title="Clear chat"
+            >
+              🗑️
+            </button>
+            <button
+              onClick={onClose}
+              className={styles.closeButton}
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <QuickActions onQueryResult={handleQuickQueryResult} disabled={isLoading} />
+
+        {/* MESSAGES */}
+        <div className={styles.messagesContainer}>
+          {messages.map((msg) => (
+            <ChatMessage
+              key={msg.id}
+              message={msg.content}
+              isUser={msg.isUser}
+              timestamp={msg.timestamp}
+              data={msg.data}
+            />
+          ))}
+
+          {isLoading && (
+            <div className={styles.loadingIndicator}>
+              <div className={styles.typingAnimation}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <span className={styles.loadingText}>Rick is thinking...</span>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+      </div>
+    </div>
+  );
+};
+
+export default RickModal;
