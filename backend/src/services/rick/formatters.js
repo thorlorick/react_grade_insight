@@ -44,10 +44,10 @@ function formatClassAverage(result) {
   }
   
   return `**Class Performance Summary**\n\n` +
-         `📊 Average: ${result.average}%\n` +
-         `📈 Highest: ${result.highest}%\n` +
-         `📉 Lowest: ${result.lowest}%\n\n` +
-         `👥 ${result.studentCount} students • ${result.totalGrades} total grades`;
+         `Average: ${result.average}%\n` +
+         `Highest: ${result.highest}%\n` +
+         `Lowest: ${result.lowest}%\n\n` +
+         `${result.studentCount} students • ${result.totalGrades} total grades`;
 }
 
 /**
@@ -91,10 +91,10 @@ function formatAssignmentAnalysis(result) {
   return `**${result.assignmentName}**\n` +
          `Due: ${result.dueDate ? new Date(result.dueDate).toLocaleDateString() : 'N/A'}\n` +
          `Max Points: ${result.maxPoints || 'N/A'}\n\n` +
-         `📊 Average: ${parseFloat(stats.average).toFixed(1)}%\n` +
-         `📈 Highest: ${stats.highest}%\n` +
-         `📉 Lowest: ${stats.lowest}%\n` +
-         `✅ Pass Rate: ${passRate}% (${stats.passed_count}/${stats.graded_count})\n\n` +
+         `Average: ${parseFloat(stats.average).toFixed(1)}%\n` +
+         `Highest: ${stats.highest}%\n` +
+         `Lowest: ${stats.lowest}%\n` +
+         `Pass Rate: ${passRate}% (${stats.passed_count}/${stats.graded_count})\n\n` +
          `${stats.graded_count} students graded`;
 }
 
