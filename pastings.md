@@ -571,3 +571,6 @@ I've decided to coop RICK and make him a grade analysis AI that can read the dat
 
 # Version 2 or 3 maybe....
 Rick AI did not work. trying to run a local model was just not feasible and using one online requires potential costs which I need to keep to zero. So, with that in mind, Claude and I decided to use pattern recognition and fuzzy logic to mimic AI. fuse.js to the rescue!!
+
+# PATTERN MATCHER
+As of right now (11/18/25) Rick is a pattern matcher. He's got nothing else other than pattern matching, but so far he's decent at it!!!
