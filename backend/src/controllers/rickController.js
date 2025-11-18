@@ -27,7 +27,12 @@ const rickController = {
       const teacherId = req.teacherId;
       const teacherName = req.teacherName || 'Teacher';
 
+      console.log('=== RICK CHAT DEBUG START ===');
+      console.log('Message:', message);
+      console.log('Teacher ID:', teacherId);
+
       if (!message || !message.trim()) {
+        console.log('ERROR: Empty message');
         return res.status(400).json({
           success: false,
           error: 'Message is required'
@@ -37,9 +42,12 @@ const rickController = {
       console.log(`Rick query from teacher ${teacherId}: "${message}"`);
 
       // Parse natural language
+      console.log('Calling parseNaturalLanguage...');
       const parsed = await parseNaturalLanguage(message, teacherId);
+      console.log('Parsed result:', JSON.stringify(parsed, null, 2));
 
       if (!parsed.success) {
+        console.log('Parse failed, sending error response');
         return res.json({
           success: false,
           response: parsed.error || parsed.message
@@ -48,6 +56,7 @@ const rickController = {
 
       // Handle greetings
       if (parsed.greeting) {
+        console.log('Detected greeting, sending response');
         return res.json({
           success: true,
           response: "Hi! I'm Rick, your AI teaching assistant. I can help you:\n\n" +
@@ -60,27 +69,33 @@ const rickController = {
         });
       }
 
+      console.log('Processing intent:', parsed.intent);
+
       // Execute appropriate query based on intent
       let result;
       let formatted;
 
       switch (parsed.intent) {
         case 'showGrades':
+          console.log('Executing showGrades query...');
           result = await queryBuilders.showGradesQuery(parsed.entities, teacherId);
           formatted = formatters.formatGradesList(result);
           break;
 
         case 'filterByStatus':
+          console.log('Executing filterByStatus query...');
           result = await queryBuilders.filterByStatusQuery(parsed.entities, teacherId);
           formatted = formatters.formatStudentList(result);
           break;
 
         case 'classAverage':
+          console.log('Executing classAverage query...');
           result = await queryBuilders.classAverageQuery(parsed.entities, teacherId);
           formatted = formatters.formatClassAverage(result);
           break;
 
         case 'missingWork':
+          console.log('Executing missingWork query...');
           // Resolve student/assignment from searchTerm if provided
           if (parsed.entities.searchTerm) {
             // Try student first
@@ -100,6 +115,7 @@ const rickController = {
           break;
 
         case 'assignmentAnalysis':
+          console.log('Executing assignmentAnalysis query...');
           // Resolve assignment
           const { fuzzyFindAssignment } = require('../services/rick/patternMatcher');
           parsed.entities.assignment = await fuzzyFindAssignment(parsed.entities.assignmentName, teacherId);
@@ -119,11 +135,15 @@ const rickController = {
           break;
 
         default:
+          console.log('Unknown intent:', parsed.intent);
           return res.json({
             success: false,
             response: 'I don\'t know how to handle that question yet.'
           });
       }
+
+      console.log('Sending successful response');
+      console.log('=== RICK CHAT DEBUG END ===');
 
       res.json({
         success: true,
@@ -133,7 +153,9 @@ const rickController = {
       });
 
     } catch (error) {
-      console.error('Rick chat error:', error);
+      console.error('=== RICK CHAT ERROR ===');
+      console.error('Error details:', error);
+      console.error('Stack trace:', error.stack);
       res.status(500).json({
         success: false,
         error: 'Sorry, I encountered an error processing your question.',
