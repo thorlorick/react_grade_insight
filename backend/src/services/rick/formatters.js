@@ -1,7 +1,5 @@
 // backend/src/services/rick/formatters.js
 
-console.log("FORMATTERS LOADED", new Date().toISOString());
-
 /**
  * Format grades list for a student
  */
@@ -10,12 +8,13 @@ function formatGradesList(result) {
     return result.message || 'No grades found';
   }
   
-  const gradesList = result.grades.map(g => 
-    `  • ${g.assignment_name}: ${g.grade}%`
-  ).join('\n');
+  const gradesList = result.grades.map(g => {
+    const gradeDisplay = g.grade !== null ? `${g.grade}%` : 'not graded';
+    return `  • ${g.assignment_name}: ${gradeDisplay}`;
+  }).join('\n');
   
   return `**${result.studentName}**\n` +
-         `Average: ${result.average}% (${result.count} assignments)\n\n` +
+         `Average: ${result.average}% (${result.validCount} graded out of ${result.totalCount} assignments)\n\n` +
          `Recent grades:\n${gradesList}`;
 }
 
@@ -43,13 +42,15 @@ function formatClassAverage(result) {
   if (result.message) {
     return result.message;
   }
-
-  return `**Class Average**\n` +
-         `Overall Average: ${result.average}%\n` +
-         `Assignments Counted: ${result.count}`;
-}
   
- /**
+  return `**Class Performance Summary**\n\n` +
+         `📊 Average: ${result.average}%\n` +
+         `📈 Highest: ${result.highest}%\n` +
+         `📉 Lowest: ${result.lowest}%\n\n` +
+         `👥 ${result.studentCount} students • ${result.totalGrades} total grades`;
+}
+
+/**
  * Format missing work results
  */
 function formatMissingWork(result) {
@@ -97,11 +98,10 @@ function formatAssignmentAnalysis(result) {
          `${stats.graded_count} students graded`;
 }
 
-// Add to module.exports:
 module.exports = {
   formatGradesList,
   formatStudentList,
   formatClassAverage,
-  formatMissingWork,           // NEW
-  formatAssignmentAnalysis     // NEW
+  formatMissingWork,
+  formatAssignmentAnalysis
 };
