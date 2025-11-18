@@ -1,81 +1,137 @@
-import React, { useState, useEffect, useRef } from "react";
-import styles from "./RickModal.module.css";
-import { sendMessage } from "../../api/rickAPI";
+import React, { useState, useRef, useEffect } from 'react';
+import ChatMessage from './ChatMessage';
+import ChatInput from './ChatInput';
+import QuickActions from './QuickActions';
+import { sendMessage } from '../../api/rickAPI';
+import styles from './RickModal.module.css';
 
-export default function RickModal({ isOpen, onClose }) {
+const RickModal = ({ onClose }) => {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const endRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [minimized, setMinimized] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (!minimized) {
+      scrollToBottom();
+    }
+  }, [messages, minimized]);
 
   const scrollToBottom = () => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(scrollToBottom, [messages]);
+  // Initial greeting
+  useEffect(() => {
+    setMessages([
+      {
+        id: Date.now(),
+        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class. Try asking me something or use the Quick Queries below!",
+        isUser: false,
+        timestamp: new Date(),
+        data: null,
+      },
+    ]);
+  }, []);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async (messageText) => {
+    if (isLoading) return;
 
-    const userMsg = { sender: "user", text: input };
-    setMessages((m) => [...m, userMsg]);
-    setInput("");
-    setLoading(true);
+    // Add user message
+    const userMessage = {
+      id: Date.now(),
+      content: messageText,
+      isUser: true,
+      timestamp: new Date(),
+      data: null,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
 
     try {
-      const aiReply = await sendMessage(input);
-      setMessages((m) => [...m, { sender: "ai", text: aiReply }]);
-    } catch (err) {
-      setMessages((m) => [
-        ...m,
-        { sender: "ai", text: "⚠️ Error talking to Rick_AI." }
-      ]);
-    }
+      // Get conversation history
+      const conversationHistory = messages.slice(-10).map((msg) => ({
+        role: msg.isUser ? 'user' : 'assistant',
+        content: msg.content,
+      }));
 
-    setLoading(false);
+      // Send to backend (teacher_id handled by auth)
+      const result = await sendMessage(messageText, conversationHistory);
+
+      if (result.success) {
+        const rickMessage = {
+          id: Date.now() + 1,
+          content: result.response,
+          isUser: false,
+          timestamp: new Date(),
+          data: result.data || null,
+        };
+        setMessages((prev) => [...prev, rickMessage]);
+      } else {
+        throw new Error(result.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        content: `Sorry, I encountered an error: ${error.message}. Please try again.`,
+        isUser: false,
+        timestamp: new Date(),
+        data: null,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (!isOpen) return null;
+  const handleQuickQueryResult = (result) => {
+    const rickMessage = {
+      id: Date.now(),
+      content: result.response,
+      isUser: false,
+      timestamp: new Date(),
+      data: result.data || null,
+    };
+    setMessages((prev) => [...prev, rickMessage]);
+  };
+
+  const clearChat = () => {
+    if (window.confirm('Clear all messages?')) {
+      setMessages([
+        {
+          id: Date.now(),
+          content: 'Chat cleared. How can I help you?',
+          isUser: false,
+          timestamp: new Date(),
+          data: null,
+        },
+      ]);
+    }
+  };
+
+  // Handle click outside to close
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (minimized) {
+    return (
+      <div className={styles.minimized} onClick={() => setMinimized(false)}>
+        <span className={styles.minimizedIcon}>🤖</span>
+        <span className={styles.minimizedText}>Rick AI</span>
+        {messages.length > 1 && (
+          <span className={styles.messageCount}>{messages.length - 1}</span>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.overlay}>
+    <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
         {/* HEADER */}
         <div className={styles.header}>
-          <h3 className={styles.title}>Rick_AI</h3>
-          <button onClick={onClose}>✖</button>
-        </div>
-
-        {/* MESSAGES */}
-        <div className={styles.messagesContainer}>
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={
-                msg.sender === "user"
-                  ? styles.userMessage
-                  : styles.aiMessage
-              }
-            >
-              {msg.text}
-            </div>
-          ))}
-
-          {loading && <div className={styles.loading}>Typing...</div>}
-
-          <div ref={endRef}></div>
-        </div>
-
-        {/* INPUT */}
-        <div className={styles.inputContainer}>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Rick something…"
-          />
-          <button onClick={handleSend}>Send</button>
-        </div>
-      </div>
-    </div>
-  );
-}
