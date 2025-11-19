@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
-import styles from './RickChat.module.css';
+import styles from './RickModal.module.css';
 
 const RickModal = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
