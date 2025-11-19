@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
-import styles from './RickChat.module.css';
+import './RickChat.css';
 
 const RickChat = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
@@ -107,47 +107,47 @@ const RickChat = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
+    <div className="rick-overlay" onClick={handleOverlayClick}>
+      <div className="rick-modal">
         {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.headerLeft}>
-            <span className={styles.icon}>🤖</span>
+        <div className="rick-header">
+          <div className="rick-header-left">
+            <span className="rick-icon">🤖</span>
             <div>
-              <h2 className={styles.title}>Rick AI</h2>
-              <p className={styles.subtitle}>Your teaching assistant</p>
+              <h2 className="rick-title">Rick AI</h2>
+              <p className="rick-subtitle">Your teaching assistant</p>
             </div>
           </div>
-          <div className={styles.headerButtons}>
-            <button onClick={clearChat} className={styles.clearBtn} title="Clear chat">
+          <div className="rick-header-buttons">
+            <button onClick={clearChat} className="rick-clear-btn" title="Clear chat">
               🗑️
             </button>
-            <button onClick={onClose} className={styles.closeBtn} title="Close">
+            <button onClick={onClose} className="rick-close-btn" title="Close">
               ✕
             </button>
           </div>
         </div>
 
         {/* Messages */}
-        <div className={styles.messages}>
+        <div className="rick-messages">
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
+              className={`rick-message ${msg.isUser ? 'rick-message-user' : 'rick-message-assistant'}`}
             >
-              <div className={styles.messageContent}>{msg.content}</div>
+              <div className="rick-message-content">{msg.content}</div>
             </div>
           ))}
 
           {isLoading && (
-            <div className={`${styles.message} ${styles.messageAssistant}`}>
-              <div className={styles.loading}>
-                <div className={styles.typing}>
+            <div className="rick-message rick-message-assistant">
+              <div className="rick-loading">
+                <div className="rick-typing">
                   <span></span>
                   <span></span>
                   <span></span>
                 </div>
-                <span className={styles.loadingText}>Rick is thinking...</span>
+                <span className="rick-loading-text">Rick is thinking...</span>
               </div>
             </div>
           )}
@@ -156,19 +156,19 @@ const RickChat = ({ isOpen, onClose }) => {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSendMessage} className={styles.inputForm}>
+        <form onSubmit={handleSendMessage} className="rick-input-form">
           <input
             ref={inputRef}
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Ask me anything..."
-            className={styles.input}
+            className="rick-input"
             disabled={isLoading}
           />
           <button
             type="submit"
-            className={styles.sendBtn}
+            className="rick-send-btn"
             disabled={isLoading || !inputValue.trim()}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
