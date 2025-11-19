@@ -1,4 +1,4 @@
-// frontend/src/components/RickAI/RickTrigger.jsx
+// frontend/src/components/RickAI/RickTrigger.jsx - need it not black
 
 import React, { useState } from 'react';
 import RickModal from './RickModal';
