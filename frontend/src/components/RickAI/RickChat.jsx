@@ -1,79 +1,63 @@
-// frontend/src/components/RickAI/RickChat.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
-import ChatMessage from './ChatMessage';
-import ChatInput from './ChatInput';
-import QuickActions from './QuickActions';
-import MemoryList from './MemoryList';
-import { sendMessage, getMemories } from '../../api/rickAPI';
-import { parseCommand, COMMANDS } from '../../utils/commandParser';
-import './RickChat.css';
+import { sendMessage } from '../../api/rickAPI';
+import styles from './RickChat.module.css';
 
-const RickChat = ({ teacherName }) => {
+const RickChat = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showMemories, setShowMemories] = useState(false);
-  const [memories, setMemories] = useState([]);
   const messagesEndRef = useRef(null);
-  const [error, setError] = useState(null);
+  const inputRef = useRef(null);
 
-  // Scroll to bottom when new messages arrive
+  // Initial greeting
   useEffect(() => {
-    scrollToBottom();
+    if (isOpen && messages.length === 0) {
+      setMessages([
+        {
+          id: Date.now(),
+          content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class.",
+          isUser: false,
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [isOpen]);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // Add initial greeting
+  // Focus input when opened
   useEffect(() => {
-    setMessages([
-      {
-        id: Date.now(),
-        content: `Hi${teacherName ? ' ' + teacherName : ''}! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class. Try asking me something, or use the Quick Queries below!`,
-        isUser: false,
-        timestamp: new Date(),
-        data: null
-      }
-    ]);
-  }, [teacherName]);
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
-  const handleSendMessage = async (messageText) => {
-    if (isLoading) return;
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    const messageText = inputValue.trim();
+    if (!messageText || isLoading) return;
 
-    setError(null);
-    
-    // Add user message to chat
+    // Add user message
     const userMessage = {
       id: Date.now(),
       content: messageText,
       isUser: true,
       timestamp: new Date(),
-      data: null
     };
-    
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue('');
     setIsLoading(true);
 
     try {
-      // Check if it's a /memories command
-      const parsed = parseCommand(messageText);
-      if (parsed.isCommand && parsed.command === COMMANDS.MEMORIES) {
-        await handleMemoriesCommand(parsed.args);
-        setIsLoading(false);
-        return;
-      }
-
       // Get conversation history (last 10 messages)
-      const conversationHistory = messages
-        .slice(-10)
-        .map(msg => ({
-          role: msg.isUser ? 'user' : 'assistant',
-          content: msg.content
-        }));
+      const conversationHistory = messages.slice(-10).map((msg) => ({
+        role: msg.isUser ? 'user' : 'assistant',
+        content: msg.content,
+      }));
 
-      // Send to backend
       const result = await sendMessage(messageText, conversationHistory);
 
       if (result.success) {
@@ -82,74 +66,22 @@ const RickChat = ({ teacherName }) => {
           content: result.response,
           isUser: false,
           timestamp: new Date(),
-          data: result.data || null
         };
-        
-        setMessages(prev => [...prev, rickMessage]);
+        setMessages((prev) => [...prev, rickMessage]);
       } else {
         throw new Error(result.error || 'Failed to send message');
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setError(error.message);
-      
       const errorMessage = {
         id: Date.now() + 1,
         content: `Sorry, I encountered an error: ${error.message}. Please try again.`,
         isUser: false,
         timestamp: new Date(),
-        data: null
       };
-      
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleQuickQueryResult = (result) => {
-    const rickMessage = {
-      id: Date.now(),
-      content: result.response,
-      isUser: false,
-      timestamp: new Date(),
-      data: result.data || null
-    };
-    
-    setMessages(prev => [...prev, rickMessage]);
-  };
-
-  const handleMemoriesCommand = async (studentName) => {
-    try {
-      const result = await getMemories(studentName);
-      
-      if (result.success && result.memories) {
-        setMemories(result.memories);
-        setShowMemories(true);
-      } else {
-        const rickMessage = {
-          id: Date.now(),
-          content: studentName 
-            ? `I don't have any memories about ${studentName}.`
-            : "I don't have any saved memories yet. Use /remember to save notes!",
-          isUser: false,
-          timestamp: new Date(),
-          data: null
-        };
-        
-        setMessages(prev => [...prev, rickMessage]);
-      }
-    } catch (error) {
-      console.error('Error fetching memories:', error);
-    }
-  };
-
-  const handleMemoryDeleted = (memoryId) => {
-    setMemories(prev => prev.filter(m => m.id !== memoryId));
-    
-    // If no memories left, close the modal
-    if (memories.length <= 1) {
-      setShowMemories(false);
     }
   };
 
@@ -158,77 +90,93 @@ const RickChat = ({ teacherName }) => {
       setMessages([
         {
           id: Date.now(),
-          content: `Chat cleared. How can I help you${teacherName ? ', ' + teacherName : ''}?`,
+          content: 'Chat cleared. How can I help you?',
           isUser: false,
           timestamp: new Date(),
-          data: null
-        }
+        },
       ]);
     }
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <div className="rick-chat-container">
-      <div className="chat-header">
-        <div className="header-content">
-          <h2>🤖 Rick AI Assistant</h2>
-          <p className="header-subtitle">
-            Your intelligent teaching companion
-          </p>
-        </div>
-        <button onClick={clearChat} className="clear-chat-button">
-          🗑️ Clear Chat
-        </button>
-      </div>
-
-      {error && (
-        <div className="error-banner">
-          ⚠️ {error}
-        </div>
-      )}
-
-      <QuickActions 
-        onQueryResult={handleQuickQueryResult}
-        disabled={isLoading}
-      />
-
-      <div className="messages-container">
-        {messages.map(msg => (
-          <ChatMessage
-            key={msg.id}
-            message={msg.content}
-            isUser={msg.isUser}
-            timestamp={msg.timestamp}
-            data={msg.data}
-          />
-        ))}
-        
-        {isLoading && (
-          <div className="loading-indicator">
-            <div className="typing-animation">
-              <span></span>
-              <span></span>
-              <span></span>
+    <div className={styles.overlay} onClick={handleOverlayClick}>
+      <div className={styles.modal}>
+        {/* Header */}
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <span className={styles.icon}>🤖</span>
+            <div>
+              <h2 className={styles.title}>Rick AI</h2>
+              <p className={styles.subtitle}>Your teaching assistant</p>
             </div>
-            <span className="loading-text">Rick is thinking...</span>
           </div>
-        )}
-        
-        <div ref={messagesEndRef} />
+          <div className={styles.headerButtons}>
+            <button onClick={clearChat} className={styles.clearBtn} title="Clear chat">
+              🗑️
+            </button>
+            <button onClick={onClose} className={styles.closeBtn} title="Close">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className={styles.messages}>
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
+            >
+              <div className={styles.messageContent}>{msg.content}</div>
+            </div>
+          ))}
+
+          {isLoading && (
+            <div className={`${styles.message} ${styles.messageAssistant}`}>
+              <div className={styles.loading}>
+                <div className={styles.typing}>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span className={styles.loadingText}>Rick is thinking...</span>
+              </div>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input */}
+        <form onSubmit={handleSendMessage} className={styles.inputForm}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Ask me anything..."
+            className={styles.input}
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            className={styles.sendBtn}
+            disabled={isLoading || !inputValue.trim()}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+            </svg>
+          </button>
+        </form>
       </div>
-
-      <ChatInput 
-        onSendMessage={handleSendMessage}
-        disabled={isLoading}
-      />
-
-      {showMemories && (
-        <MemoryList
-          memories={memories}
-          onMemoryDeleted={handleMemoryDeleted}
-          onClose={() => setShowMemories(false)}
-        />
-      )}
     </div>
   );
 };
