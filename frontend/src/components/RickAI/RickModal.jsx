@@ -1,44 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ChatMessage from './ChatMessage';
+import ChatInput from './ChatInput';
+import QuickActions from './QuickActions';
 import { sendMessage } from '../../api/rickAPI';
 import styles from './RickModal.module.css';
 
-const RickModal = ({ isOpen, onClose }) => {
+const RickModal = ({ onClose }) => {
   const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (!minimized) {
+      scrollToBottom();
+    }
+  }, [messages, minimized]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // Initial greeting
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      setMessages([
-        {
-          id: Date.now(),
-          content: "Hi! I'm Rick, your NOT SO AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class.",
-          isUser: false,
-          timestamp: new Date(),
-        },
-      ]);
-    }
-  }, [isOpen]);
+    setMessages([
+      {
+        id: Date.now(),
+        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class. Try asking me something or use the Quick Queries below!",
+        isUser: false,
+        timestamp: new Date(),
+        data: null,
+      },
+    ]);
+  }, []);
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // Focus input when opened
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isOpen]);
-
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    const messageText = inputValue.trim();
-    if (!messageText || isLoading) return;
+  const handleSendMessage = async (messageText) => {
+    if (isLoading) return;
 
     // Add user message
     const userMessage = {
@@ -46,18 +44,19 @@ const RickModal = ({ isOpen, onClose }) => {
       content: messageText,
       isUser: true,
       timestamp: new Date(),
+      data: null,
     };
     setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
     setIsLoading(true);
 
     try {
-      // Get conversation history (last 10 messages)
+      // Get conversation history
       const conversationHistory = messages.slice(-10).map((msg) => ({
         role: msg.isUser ? 'user' : 'assistant',
         content: msg.content,
       }));
 
+      // Send to backend (teacher_id handled by auth)
       const result = await sendMessage(messageText, conversationHistory);
 
       if (result.success) {
@@ -66,6 +65,7 @@ const RickModal = ({ isOpen, onClose }) => {
           content: result.response,
           isUser: false,
           timestamp: new Date(),
+          data: result.data || null,
         };
         setMessages((prev) => [...prev, rickMessage]);
       } else {
@@ -78,11 +78,23 @@ const RickModal = ({ isOpen, onClose }) => {
         content: `Sorry, I encountered an error: ${error.message}. Please try again.`,
         isUser: false,
         timestamp: new Date(),
+        data: null,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleQuickQueryResult = (result) => {
+    const rickMessage = {
+      id: Date.now(),
+      content: result.response,
+      isUser: false,
+      timestamp: new Date(),
+      data: result.data || null,
+    };
+    setMessages((prev) => [...prev, rickMessage]);
   };
 
   const clearChat = () => {
@@ -93,23 +105,35 @@ const RickModal = ({ isOpen, onClose }) => {
           content: 'Chat cleared. How can I help you?',
           isUser: false,
           timestamp: new Date(),
+          data: null,
         },
       ]);
     }
   };
 
+  // Handle click outside to close
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  if (!isOpen) return null;
+  if (minimized) {
+    return (
+      <div className={styles.minimized} onClick={() => setMinimized(false)}>
+        <span className={styles.minimizedIcon}>🤖</span>
+        <span className={styles.minimizedText}>Rick AI</span>
+        {messages.length > 1 && (
+          <span className={styles.messageCount}>{messages.length - 1}</span>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
-        {/* Header */}
+        {/* HEADER */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
@@ -119,63 +143,59 @@ const RickModal = ({ isOpen, onClose }) => {
             </div>
           </div>
           <div className={styles.headerButtons}>
-            <button onClick={clearChat} className={styles.clearBtn} title="Clear chat">
+            <button
+              onClick={() => setMinimized(true)}
+              className={styles.minimizeButton}
+              title="Minimize"
+            >
+              −
+            </button>
+            <button
+              onClick={clearChat}
+              className={styles.clearButton}
+              title="Clear chat"
+            >
               🗑️
             </button>
-            <button onClick={onClose} className={styles.closeBtn} title="Close">
+            <button
+              onClick={onClose}
+              className={styles.closeButton}
+              title="Close"
+            >
               ✕
             </button>
           </div>
         </div>
 
-        {/* Messages */}
-        <div className={styles.messages}>
+        <QuickActions onQueryResult={handleQuickQueryResult} disabled={isLoading} />
+
+        {/* MESSAGES */}
+        <div className={styles.messagesContainer}>
           {messages.map((msg) => (
-            <div
+            <ChatMessage
               key={msg.id}
-              className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
-            >
-              <div className={styles.messageContent}>{msg.content}</div>
-            </div>
+              message={msg.content}
+              isUser={msg.isUser}
+              timestamp={msg.timestamp}
+              data={msg.data}
+            />
           ))}
 
           {isLoading && (
-            <div className={`${styles.message} ${styles.messageAssistant}`}>
-              <div className={styles.loading}>
-                <div className={styles.typing}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <span className={styles.loadingText}>Rick is thinking...</span>
+            <div className={styles.loadingIndicator}>
+              <div className={styles.typingAnimation}>
+                <span></span>
+                <span></span>
+                <span></span>
               </div>
+              <span className={styles.loadingText}>Rick is thinking...</span>
             </div>
           )}
 
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <form onSubmit={handleSendMessage} className={styles.inputForm}>
-          <input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask me anything..."
-            className={styles.input}
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            className={styles.sendBtn}
-            disabled={isLoading || !inputValue.trim()}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-            </svg>
-          </button>
-        </form>
+        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
       </div>
     </div>
   );
