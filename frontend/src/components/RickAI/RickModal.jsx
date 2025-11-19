@@ -1,7 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ChatMessage from './ChatMessage';
-import ChatInput from './ChatInput';
-import QuickActions from './QuickActions';
 import { sendMessage } from '../../api/rickAPI';
 import styles from './RickModal.module.css';
 
@@ -9,7 +6,9 @@ const RickModal = ({ onClose }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -27,7 +26,7 @@ const RickModal = ({ onClose }) => {
     setMessages([
       {
         id: Date.now(),
-        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class. Try asking me something or use the Quick Queries below!",
+        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class.",
         isUser: false,
         timestamp: new Date(),
         data: null,
@@ -35,8 +34,10 @@ const RickModal = ({ onClose }) => {
     ]);
   }, []);
 
-  const handleSendMessage = async (messageText) => {
-    if (isLoading) return;
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    const messageText = inputValue.trim();
+    if (!messageText || isLoading) return;
 
     // Add user message
     const userMessage = {
@@ -47,6 +48,7 @@ const RickModal = ({ onClose }) => {
       data: null,
     };
     setMessages((prev) => [...prev, userMessage]);
+    setInputValue('');
     setIsLoading(true);
 
     try {
@@ -84,17 +86,6 @@ const RickModal = ({ onClose }) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleQuickQueryResult = (result) => {
-    const rickMessage = {
-      id: Date.now(),
-      content: result.response,
-      isUser: false,
-      timestamp: new Date(),
-      data: result.data || null,
-    };
-    setMessages((prev) => [...prev, rickMessage]);
   };
 
   const clearChat = () => {
@@ -167,18 +158,15 @@ const RickModal = ({ onClose }) => {
           </div>
         </div>
 
-        <QuickActions onQueryResult={handleQuickQueryResult} disabled={isLoading} />
-
         {/* MESSAGES */}
         <div className={styles.messagesContainer}>
           {messages.map((msg) => (
-            <ChatMessage
+            <div
               key={msg.id}
-              message={msg.content}
-              isUser={msg.isUser}
-              timestamp={msg.timestamp}
-              data={msg.data}
-            />
+              className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
+            >
+              <div className={styles.messageContent}>{msg.content}</div>
+            </div>
           ))}
 
           {isLoading && (
@@ -195,7 +183,27 @@ const RickModal = ({ onClose }) => {
           <div ref={messagesEndRef} />
         </div>
 
-        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+        {/* INPUT */}
+        <form onSubmit={handleSendMessage} className={styles.inputContainer}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Ask me anything..."
+            className={styles.input}
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            className={styles.sendButton}
+            disabled={isLoading || !inputValue.trim()}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+            </svg>
+          </button>
+        </form>
       </div>
     </div>
   );
