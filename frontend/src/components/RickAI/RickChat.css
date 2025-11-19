@@ -1,121 +1,327 @@
-/* frontend/src/components/RickAI/RickChat.css */
+/* RickChat.css - Matches GradeInsight design system */
 
-.rick-chat-container {
+.rick-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.rick-modal {
+  width: 100%;
+  max-width: 600px;
+  height: 700px;
+  max-height: 90vh;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
-.chat-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px;
+/* Header */
+.rick-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
 }
 
-.header-content h2 {
+.rick-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rick-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.rick-title {
+  color: #7dd3fc;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   margin: 0;
-  font-size: 24px;
 }
 
-.header-subtitle {
-  margin: 5px 0 0 0;
-  font-size: 14px;
-  opacity: 0.9;
+.rick-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  margin: 2px 0 0 0;
+  letter-spacing: 0.02em;
 }
 
-.clear-chat-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+.rick-header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.rick-clear-btn,
+.rick-close-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  font-size: 1rem;
 }
 
-.clear-chat-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+.rick-clear-btn:hover,
+.rick-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
 }
 
-.error-banner {
-  background: #ff4444;
-  color: white;
-  padding: 12px 20px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.messages-container {
+/* Messages */
+.rick-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  background: #f8f9fa;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.loading-indicator {
+.rick-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rick-messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.rick-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.rick-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.rick-message {
+  display: flex;
+  max-width: 85%;
+  animation: messageSlideIn 0.3s ease;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rick-message-user {
+  margin-left: auto;
+}
+
+.rick-message-assistant {
+  margin-right: auto;
+}
+
+.rick-message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.rick-message-user .rick-message-content {
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.2) 0%, rgba(125, 211, 252, 0.1) 100%);
+  border: 1px solid rgba(125, 211, 252, 0.3);
+  color: #d1fae5;
+}
+
+.rick-message-assistant .rick-message-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Loading indicator */
+.rick-loading {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 15px 20px;
-  background: #e9ecef;
-  border-radius: 12px;
-  margin: 10px 0;
+  gap: 8px;
+  padding: 12px 16px;
 }
 
-.typing-animation {
+.rick-typing {
   display: flex;
   gap: 4px;
 }
 
-.typing-animation span {
-  width: 8px;
-  height: 8px;
-  background: #667eea;
+.rick-typing span {
+  width: 6px;
+  height: 6px;
+  background: #7dd3fc;
   border-radius: 50%;
   animation: typing 1.4s infinite;
 }
 
-.typing-animation span:nth-child(2) {
+.rick-typing span:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.typing-animation span:nth-child(3) {
+.rick-typing span:nth-child(3) {
   animation-delay: 0.4s;
 }
 
 @keyframes typing {
   0%, 60%, 100% {
+    opacity: 0.3;
     transform: translateY(0);
   }
   30% {
-    transform: translateY(-10px);
+    opacity: 1;
+    transform: translateY(-6px);
   }
 }
 
-.loading-text {
-  color: #666;
-  font-size: 14px;
+.rick-loading-text {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+/* Input form */
+.rick-input-form {
+  display: flex;
+  gap: 8px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+}
+
+.rick-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #d1fae5;
+  font-size: 0.95rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.rick-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.rick-input:focus {
+  outline: none;
+  border-color: rgba(125, 211, 252, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.1);
+}
+
+.rick-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rick-send-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.2) 0%, rgba(125, 211, 252, 0.1) 100%);
+  border: 1px solid rgba(125, 211, 252, 0.3);
+  border-radius: 10px;
+  color: #7dd3fc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rick-send-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.3) 0%, rgba(125, 211, 252, 0.15) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(125, 211, 252, 0.2);
+}
+
+.rick-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .chat-header {
-    padding: 15px;
+  .rick-modal {
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
   }
 
-  .header-content h2 {
-    font-size: 20px;
+  .rick-overlay {
+    padding: 0;
   }
 
-  .messages-container {
-    padding: 15px;
+  .rick-messages {
+    padding: 16px;
+  }
+
+  .rick-message {
+    max-width: 90%;
+  }
+
+  .rick-input-form {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rick-header {
+    padding: 16px;
+  }
+
+  .rick-title {
+    font-size: 1rem;
+  }
+
+  .rick-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .rick-message-content {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+
+  .rick-input {
+    font-size: 16px; /* Prevents iOS zoom */
   }
 }
