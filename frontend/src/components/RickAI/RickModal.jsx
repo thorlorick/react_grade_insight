@@ -27,7 +27,7 @@ const RickModal = ({ onClose }) => {
     setMessages([
       {
         id: Date.now(),
-        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class. Try asking me something or use the Quick Queries below!",
+        content: "Hi! I'm Rick, your NOT SO AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class. Try asking me something or use the Quick Queries below!",
         isUser: false,
         timestamp: new Date(),
         data: null,
