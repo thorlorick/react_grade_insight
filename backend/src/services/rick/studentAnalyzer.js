@@ -7,8 +7,8 @@ const Fuse = require('fuse.js');
  * @param {Array} studentRecords - array of { assignment, grade }
  */
 function analyzeStudentPerformance(studentName, studentRecords) {
-  const normalizedRecords = studentRecords.filter(r => r.name.toLowerCase() === studentName.toLowerCase());
-  if (normalizedRecords.length === 0) return null;
+  const normalizedRecords = studentRecords; // all records already belong to student
+if (normalizedRecords.length === 0) return null;
 
   const grades = normalizedRecords.map(r => r.grade);
   const average = grades.reduce((a, b) => a + b, 0) / grades.length;
