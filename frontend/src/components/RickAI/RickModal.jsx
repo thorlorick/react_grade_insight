@@ -170,6 +170,7 @@ const RickModal = ({ onClose }) => {
                 {msg.content}
                 </pre>
               </div>
+            </div>
           ))}
 
           {isLoading && (
