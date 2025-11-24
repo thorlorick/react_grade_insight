@@ -158,7 +158,7 @@ const RickModal = ({ onClose }) => {
           </div>
         </div>
 
-        {/* MESSAGES */}
+    
         <div className={styles.messagesContainer}>
           {messages.map((msg) => (
             <div
@@ -187,7 +187,7 @@ const RickModal = ({ onClose }) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* INPUT */}
+     
         <form onSubmit={handleSendMessage} className={styles.inputContainer}>
           <input
             ref={inputRef}
