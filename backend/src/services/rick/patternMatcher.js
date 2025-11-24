@@ -108,7 +108,9 @@ const PATTERNS = [
     `, [student.id]);
 
     const analysis = analyzeStudentPerformance(`${student.first_name} ${student.last_name}`, records);
-    return { success: true, analysis };
+    return { success: true, 
+            intent: 'analyzeStudent', 
+            analysis };
   }
 }
   
