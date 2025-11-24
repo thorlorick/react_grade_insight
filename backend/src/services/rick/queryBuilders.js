@@ -1,8 +1,9 @@
 // backend/src/services/rick/queryBuilders.js
 const { pool: db } = require('../../db');
+const { analyzeByCategory, generateInsights } = require('../../utils/rick/assignmentCategorizer');
 
 /**
- * Query 1: Show grades for a specific student
+ * Query 1: Show grades for a specific student (WITH SMART ANALYSIS)
  */
 async function showGradesQuery(entities, teacherId) {
   const { student } = entities;
@@ -29,19 +30,33 @@ async function showGradesQuery(entities, teacherId) {
     };
   }
   
-// NEW (filter out nulls):
-const validGrades = grades.filter(g => g.grade !== null);
-const average = validGrades.length > 0 
-  ? validGrades.reduce((sum, g) => sum + parseFloat(g.grade), 0) / validGrades.length
-  : 0;
+  // Filter out null grades for average calculation
+  const validGrades = grades.filter(g => g.grade !== null && g.grade !== undefined);
+  
+  // Calculate average only from valid grades
+  const average = validGrades.length > 0
+    ? validGrades.reduce((sum, g) => sum + parseFloat(g.grade), 0) / validGrades.length
+    : 0;
+  
+  // ANALYZE BY CATEGORY (NEW)
+  const categoryStats = analyzeByCategory(grades);
+  
+  // GENERATE INSIGHTS (NEW)
+  const insights = generateInsights(
+    `${student.first_name} ${student.last_name}`,
+    average,
+    categoryStats
+  );
   
   return {
-  studentName: `${student.first_name} ${student.last_name}`,
-  grades: grades,
-  average: average.toFixed(1),
-  count: validGrades.length,  // Show only graded assignments
-  totalAssignments: grades.length  // Total including null
-};
+    studentName: `${student.first_name} ${student.last_name}`,
+    grades: grades,
+    average: average.toFixed(1),
+    validCount: validGrades.length,
+    totalCount: grades.length,
+    categoryStats: categoryStats,
+    insights: insights
+  };
 }
 
 /**
@@ -69,6 +84,7 @@ async function filterByStatusQuery(entities, teacherId) {
     FROM students s
     JOIN grades g ON s.id = g.student_id
     WHERE g.teacher_id = ?
+      AND g.grade IS NOT NULL
     GROUP BY s.id, s.first_name, s.last_name
     HAVING avg_grade < ?
     ORDER BY avg_grade ASC
@@ -84,7 +100,6 @@ async function filterByStatusQuery(entities, teacherId) {
 
 /**
  * Query 3: Calculate class average
- * "Class" = all students who have grades from this teacher
  */
 async function classAverageQuery(entities, teacherId) {
   const [result] = await db.query(`
@@ -96,6 +111,7 @@ async function classAverageQuery(entities, teacherId) {
       COUNT(g.id) as total_grades
     FROM grades g
     WHERE g.teacher_id = ?
+      AND g.grade IS NOT NULL
   `, [teacherId]);
   
   if (!result[0] || result[0].class_average === null) {
@@ -205,11 +221,10 @@ async function assignmentAnalysisQuery(entities, teacherId) {
   };
 }
 
-// Add to module.exports:
 module.exports = {
   showGradesQuery,
   filterByStatusQuery,
   classAverageQuery,
-  missingWorkQuery,           // NEW
-  assignmentAnalysisQuery     // NEW
+  missingWorkQuery,
+  assignmentAnalysisQuery
 };
