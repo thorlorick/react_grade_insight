@@ -74,7 +74,44 @@ const PATTERNS = [
   intent: 'assignmentAnalysis',
   entities: ['assignmentName'],
   description: 'Analyze grades for a specific assignment'
+},
+  {
+  // Pattern 7: "How is [STUDENT] doing?"
+  patterns: [
+    /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
+    /(.+?)\s+(?:grades?|performance|doing)/i
+  ],
+  intent: 'analyzeStudent',
+  entities: ['studentName'],
+  description: 'Analyze a student’s overall performance',
+  handler: async (entities, teacherId, db) => {
+    const { fuzzyFindStudent } = require('./patternMatcher');
+    const { analyzeStudentPerformance } = require('./studentAnalyzer');
+
+    const student = await fuzzyFindStudent(entities.studentName, teacherId);
+    if (student.needsClarification) {
+      return {
+        success: false,
+        needsClarification: true,
+        options: student.options,
+        message: `I found multiple students. Did you mean:\n` +
+          student.options.map((s,i) => `${i+1}. ${s.first_name} ${s.last_name}`).join('\n')
+      };
+    }
+
+    const [records] = await db.query(`
+      SELECT s.first_name AS name, a.name AS assignment, g.grade
+      FROM students s
+      JOIN grades g ON s.id = g.student_id
+      JOIN assignments a ON g.assignment_id = a.id
+      WHERE s.id = ?
+    `, [student.id]);
+
+    const analysis = analyzeStudentPerformance(`${student.first_name} ${student.last_name}`, records);
+    return { success: true, analysis };
+  }
 }
+  
 ];
 
 
