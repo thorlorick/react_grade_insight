@@ -87,6 +87,12 @@ const rickController = {
           result = await queryBuilders.filterByStatusQuery(parsed.entities, teacherId);
           formatted = formatters.formatStudentList(result);
           break;
+        
+        case 'analyzeStudent':
+          console.log('Executing analyzeStudent handler...');
+          formatted = parsed.analysis || 'No analysis available.';
+          result = parsed.analysis;
+          break;
 
         case 'classAverage':
           console.log('Executing classAverage query...');
