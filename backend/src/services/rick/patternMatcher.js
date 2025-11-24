@@ -61,7 +61,7 @@ const PATTERNS = [
     }
     return entities;
   }
-},
+}
 {
   // Pattern 6: Assignment Analysis
   patterns: [
@@ -114,11 +114,12 @@ handler: async (entities, teacherId, db) => {
   // Analyze performance
   const analysis = analyzeStudentPerformance(`${student.first_name} ${student.last_name}`, records);
 
-  return {
-    success: true,
-    intent: 'analyzeStudent',
-    analysis
-  };
+   return {
+      success: true,
+      intent: 'analyzeStudent',
+      analysis
+    };
+  }
 }
 ];
 
