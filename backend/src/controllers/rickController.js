@@ -10,7 +10,7 @@ const rickController = {
       res.json({
         success: true,
         status: 'Rick AI is online',
-        patterns: 5
+        patterns: 7
       });
     } catch (error) {
       res.status(503).json({
