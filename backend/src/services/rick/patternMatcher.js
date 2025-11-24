@@ -61,7 +61,7 @@ const PATTERNS = [
     }
     return entities;
   }
-}
+},
 {
   // Pattern 6: Assignment Analysis
   patterns: [
