@@ -165,8 +165,11 @@ const RickModal = ({ onClose }) => {
               key={msg.id}
               className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
             >
-              <div className={styles.messageContent}>{msg.content}</div>
-            </div>
+              <div className={styles.messageContent}>
+                <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                {msg.content}
+                </pre>
+              </div>
           ))}
 
           {isLoading && (
