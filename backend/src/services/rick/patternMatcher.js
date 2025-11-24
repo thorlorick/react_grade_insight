@@ -192,9 +192,8 @@ async function fuzzyFindStudent(name, teacherId) {
  * Main parsing function
  */
 async function parseNaturalLanguage(message, teacherId) {
-  // Match pattern
   const matched = matchPattern(message);
-  
+
   if (!matched) {
     return {
       success: false,
@@ -204,33 +203,34 @@ async function parseNaturalLanguage(message, teacherId) {
              '- "What\'s the class average?"'
     };
   }
-  
-  // Resolve student entity if needed
+
+  // Find the full pattern definition
+  const patternDef = PATTERNS.find(p => p.intent === matched.intent);
+
+  // If it has a handler, call it
+  if (patternDef?.handler) {
+    return await patternDef.handler(matched.entities, teacherId, db);
+  }
+
+  // Otherwise, resolve student entity if needed
   if (matched.entities.studentName) {
     try {
       const student = await fuzzyFindStudent(matched.entities.studentName, teacherId);
-      
       if (student.needsClarification) {
         return {
           success: false,
           needsClarification: true,
           options: student.options,
           message: `I found multiple students. Did you mean:\n` +
-                  student.options.map((s, i) => 
-                    `${i + 1}. ${s.first_name} ${s.last_name}`
-                  ).join('\n')
+                  student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
         };
       }
-      
       matched.entities.student = student;
     } catch (error) {
-      return {
-        success: false,
-        error: error.message
-      };
+      return { success: false, error: error.message };
     }
   }
-  
+
   return {
     success: true,
     intent: matched.intent,
