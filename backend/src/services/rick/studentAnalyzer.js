@@ -6,20 +6,33 @@ const Fuse = require('fuse.js');
  * Rules:
  *  - null / undefined => NaN (missing)
  *  - string with only spaces => NaN (missing)
+ *  - empty string => NaN (missing)
  *  - numeric string (including "0") => Number(n)
  *  - number 0 => 0 (kept)
  *  - anything non-numeric => NaN
  */
 function parseGrade(raw) {
+  // Explicit null/undefined check
   if (raw === null || raw === undefined) return NaN;
 
+  // If it's a string, check for empty or whitespace-only
   if (typeof raw === 'string') {
-    // explicit check for empty/whitespace-only string -> treat as missing
-    if (raw.trim() === '') return NaN;
+    const trimmed = raw.trim();
+    // Empty string after trimming = missing grade
+    if (trimmed === '') return NaN;
+    
+    // Try to parse the trimmed string
+    const n = Number(trimmed);
+    return Number.isFinite(n) ? n : NaN;
   }
 
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : NaN;
+  // If it's already a number, use it directly
+  if (typeof raw === 'number') {
+    return Number.isFinite(raw) ? raw : NaN;
+  }
+
+  // Anything else (objects, arrays, etc.) is invalid
+  return NaN;
 }
 
 /**
@@ -44,14 +57,14 @@ function analyzeStudentPerformance(studentName, studentRecords) {
     return `No grades found for ${studentName}`;
   }
 
-  // Extract valid numeric grades (zeros count, empty strings do not)
+  // Extract valid numeric grades (zeros count, empty strings/nulls do not)
   const grades = validGrades(normalizedRecords);
 
   if (grades.length === 0) {
     return `${studentName} has no completed assignments yet.`;
   }
 
-  // Overall summary stats
+  // Overall summary stats - ONLY uses valid grades
   const average = grades.reduce((a, b) => a + b, 0) / grades.length;
   const highest = Math.max(...grades);
   const lowest = Math.min(...grades);
@@ -78,7 +91,7 @@ function analyzeStudentPerformance(studentName, studentRecords) {
     byCategory[cat].push(r);
   });
 
-  // Category summaries (count only graded items)
+  // Category summaries - ONLY count graded items
   const categoryStats = Object.entries(byCategory).map(([cat, records]) => {
     const catGrades = validGrades(records);
     const avg = catGrades.length > 0
