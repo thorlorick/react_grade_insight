@@ -2,20 +2,24 @@
 const Fuse = require('fuse.js');
 
 /**
- * Analyze a student's performance
+ * Analyze a student's performance and return formatted text
  * @param {string} studentName
  * @param {Array} studentRecords - array of { assignment, grade }
+ * @returns {string} - Formatted analysis text
  */
 function analyzeStudentPerformance(studentName, studentRecords) {
   const normalizedRecords = studentRecords; // all records already belong to student
-if (normalizedRecords.length === 0) return null;
-
+  
+  if (normalizedRecords.length === 0) {
+    return `No grades found for ${studentName}`;
+  }
+  
   const grades = normalizedRecords.map(r => r.grade);
   const average = grades.reduce((a, b) => a + b, 0) / grades.length;
   const highest = Math.max(...grades);
   const lowest = Math.min(...grades);
   const range = highest - lowest;
-
+  
   const categorizeAssignment = (name) => {
     const n = name.toLowerCase();
     if (n.match(/math|algebra|geometry|calculus|trigonometry|statistics|equation|formula/)) return 'Math';
@@ -27,55 +31,67 @@ if (normalizedRecords.length === 0) return null;
     if (n.match(/homework|hw|assignment|practice/)) return 'Homework';
     return 'Other';
   };
-
+  
   const byCategory = {};
   normalizedRecords.forEach(r => {
     const cat = categorizeAssignment(r.assignment);
     if (!byCategory[cat]) byCategory[cat] = [];
     byCategory[cat].push(r);
   });
-
+  
   const categoryStats = Object.entries(byCategory).map(([cat, records]) => {
     const catGrades = records.map(r => r.grade);
     const avg = catGrades.reduce((a, b) => a + b, 0) / catGrades.length;
     return { category: cat, average: avg, count: records.length, grades: catGrades, records };
-  }).sort((a,b) => b.average - a.average);
-
+  }).sort((a, b) => b.average - a.average);
+  
   const strongest = categoryStats[0];
   const weakest = categoryStats[categoryStats.length - 1];
-
   const variance = grades.reduce((sum, g) => sum + Math.pow(g - average, 2), 0) / grades.length;
   const stdDev = Math.sqrt(variance);
-
-  let summary = `${studentName} has completed ${normalizedRecords.length} assignment${normalizedRecords.length > 1 ? 's' : ''} with an overall average of ${average.toFixed(1)}%. `;
   
-  if (average >= 90) summary += 'They are performing at an excellent level. ';
-  else if (average >= 80) summary += 'They are performing at a strong level. ';
-  else if (average >= 70) summary += 'They are performing at a satisfactory level. ';
-  else if (average >= 60) summary += 'They are passing but could use support. ';
-  else summary += 'They are struggling and may need additional support. ';
-
+  // BUILD FORMATTED STRING RESPONSE
+  let response = `**${studentName}**\n`;
+  response += `Average: ${average.toFixed(1)}% (${normalizedRecords.length} assignment${normalizedRecords.length > 1 ? 's' : ''})\n`;
+  response += `Range: ${lowest}% - ${highest}%\n\n`;
+  
+  // Performance level
+  if (average >= 90) response += '📊 Performing at an excellent level. ';
+  else if (average >= 80) response += '📊 Performing at a strong level. ';
+  else if (average >= 70) response += '📊 Performing at a satisfactory level. ';
+  else if (average >= 60) response += '📊 Passing but could use support. ';
+  else response += '📊 May need additional support. ';
+  
+  // Category analysis
   if (categoryStats.length > 1) {
-    summary += `Looking at different areas: `;
-    if (strongest.count > 0) summary += `${studentName} excels in ${strongest.category} work (${strongest.average.toFixed(1)}%). `;
-    if (strongest.average - weakest.average > 10) summary += `However, ${weakest.category} assignments are more challenging (${weakest.average.toFixed(1)}%). `;
-    summary += `Breakdown by type: ${categoryStats.map(c => `${c.category} (${c.average.toFixed(1)}%)`).join(', ')}. `;
+    response += '\n\n**Performance by Subject:**\n';
+    
+    if (strongest.count > 0) {
+      response += `✅ Strongest: ${strongest.category} (${strongest.average.toFixed(1)}%)\n`;
+    }
+    
+    if (strongest.average - weakest.average > 10) {
+      response += `⚠️ Needs support: ${weakest.category} (${weakest.average.toFixed(1)}%)\n`;
+    }
+    
+    response += '\n**Breakdown:**\n';
+    categoryStats.forEach(c => {
+      const emoji = c.average >= 80 ? '✅' : c.average >= 70 ? '📊' : '⚠️';
+      response += `  ${emoji} ${c.category}: ${c.average.toFixed(1)}% (${c.count} assignment${c.count > 1 ? 's' : ''})\n`;
+    });
   }
-
-  if (stdDev < 5) summary += `${studentName} demonstrates very consistent work quality. `;
-  else if (range > 20) summary += `Performance varies notably (${lowest}% to ${highest}%). `;
-  else summary += `Work shows moderate variation across assignments. `;
-
-  return {
-    name: studentName,
-    average: average.toFixed(1),
-    highest,
-    lowest,
-    totalAssignments: normalizedRecords.length,
-    categoryStats,
-    records: normalizedRecords,
-    summary
-  };
+  
+  // Consistency
+  response += '\n';
+  if (stdDev < 5) {
+    response += '✨ Very consistent work quality across all assignments.';
+  } else if (range > 20) {
+    response += `📉 Performance varies notably (${lowest}% to ${highest}%).`;
+  } else {
+    response += '📊 Moderate variation across assignments.';
+  }
+  
+  return response;
 }
 
 module.exports = {
