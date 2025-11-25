@@ -2,12 +2,33 @@
 const Fuse = require('fuse.js');
 
 /**
- * Return only valid numeric grades
+ * Parse a raw grade value to a Number or return NaN for "missing"/invalid.
+ * Rules:
+ *  - null / undefined => NaN (missing)
+ *  - string with only spaces => NaN (missing)
+ *  - numeric string (including "0") => Number(n)
+ *  - number 0 => 0 (kept)
+ *  - anything non-numeric => NaN
+ */
+function parseGrade(raw) {
+  if (raw === null || raw === undefined) return NaN;
+
+  if (typeof raw === 'string') {
+    // explicit check for empty/whitespace-only string -> treat as missing
+    if (raw.trim() === '') return NaN;
+  }
+
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+/**
+ * Return only valid numeric grades (0 allowed). Uses parseGrade.
  */
 function validGrades(records) {
   return records
-    .map(r => Number(r.grade))
-    .filter(n => !isNaN(n));
+    .map(r => parseGrade(r.grade))
+    .filter(n => !Number.isNaN(n));
 }
 
 /**
@@ -17,13 +38,13 @@ function validGrades(records) {
  * @returns {string} - Formatted analysis text
  */
 function analyzeStudentPerformance(studentName, studentRecords) {
-  const normalizedRecords = studentRecords; // all belong to student
+  const normalizedRecords = studentRecords || [];
 
   if (normalizedRecords.length === 0) {
     return `No grades found for ${studentName}`;
   }
 
-  // Extract valid numeric grades
+  // Extract valid numeric grades (zeros count, empty strings do not)
   const grades = validGrades(normalizedRecords);
 
   if (grades.length === 0) {
@@ -38,7 +59,7 @@ function analyzeStudentPerformance(studentName, studentRecords) {
 
   // Categorize
   const categorizeAssignment = (name) => {
-    const n = name.toLowerCase();
+    const n = (name || '').toLowerCase();
     if (n.match(/math|algebra|geometry|calculus|trigonometry|statistics|equation|formula/)) return 'Math';
     if (n.match(/science|biology|chemistry|physics|lab|experiment|hypothesis/)) return 'Science';
     if (n.match(/english|essay|writing|literature|reading|grammar|composition|poetry|novel/)) return 'English';
@@ -57,7 +78,7 @@ function analyzeStudentPerformance(studentName, studentRecords) {
     byCategory[cat].push(r);
   });
 
-  // Category summaries
+  // Category summaries (count only graded items)
   const categoryStats = Object.entries(byCategory).map(([cat, records]) => {
     const catGrades = validGrades(records);
     const avg = catGrades.length > 0
@@ -89,11 +110,11 @@ function analyzeStudentPerformance(studentName, studentRecords) {
   if (categoryStats.length > 1) {
     response += '\n\n**Performance by Subject:**\n';
 
-    if (strongest.count > 0) {
+    if (strongest && strongest.count > 0) {
       response += `✅ Strongest: ${strongest.category} (${strongest.average.toFixed(1)}%)\n`;
     }
 
-    if (strongest.average - weakest.average > 10) {
+    if (strongest && weakest && (strongest.average - weakest.average > 10)) {
       response += `⚠️ Needs support: ${weakest.category} (${weakest.average.toFixed(1)}%)\n`;
     }
 
@@ -121,5 +142,8 @@ function analyzeStudentPerformance(studentName, studentRecords) {
 }
 
 module.exports = {
-  analyzeStudentPerformance
+  analyzeStudentPerformance,
+  // export helpers in case you want to reuse or unit-test them
+  parseGrade,
+  validGrades
 };
