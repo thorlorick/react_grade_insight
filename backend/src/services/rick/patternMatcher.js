@@ -76,45 +76,58 @@ const PATTERNS = [
   description: 'Analyze grades for a specific assignment'
 },
   {
- // Pattern 7: "How is [STUDENT] doing?"
-patterns: [
-  /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
-  /(.+?)\s+(?:grades?|performance|doing)/i
-],
-intent: 'analyzeStudent',
-entities: ['studentName'],
-description: 'Analyze a student’s overall performance',
-handler: async (entities, teacherId, db) => {
-  const { fuzzyFindStudent } = require('./patternMatcher');
-  const { analyzeStudentPerformance } = require('./studentAnalyzer');
+  // Pattern 7: "How is [STUDENT] doing?"
+  patterns: [
+    /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
+    /(.+?)\s+(?:grades?|performance|doing)/i
+  ],
+  intent: 'analyzeStudent',
+  entities: ['studentName'],
+  description: 'Analyze a student's overall performance',
+  handler: async (entities, teacherId, db) => {
+    const { fuzzyFindStudent } = require('./patternMatcher');
+    const { analyzeStudentPerformance } = require('./studentAnalyzer');
 
-  // Fuzzy find the student
-  const student = await fuzzyFindStudent(entities.studentName, teacherId);
-  if (student.needsClarification) {
+    // Fuzzy find the student
+    const student = await fuzzyFindStudent(entities.studentName, teacherId);
+    if (student.needsClarification) {
+      return {
+        success: false,
+        needsClarification: true,
+        options: student.options,
+        message: `I found multiple students. Did you mean:\n` +
+          student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+      };
+    }
+
+    // Fetch grades for this student WITH max_points to calculate percentages
+    const [records] = await db.query(`
+      SELECT 
+        s.first_name AS name, 
+        a.name AS assignment, 
+        g.grade AS raw_grade,
+        a.max_points,
+        -- Calculate percentage: (grade / max_points) * 100
+        CASE 
+          WHEN g.grade IS NULL OR g.grade = '' THEN NULL
+          WHEN a.max_points > 0 THEN ROUND((g.grade / a.max_points) * 100, 1)
+          ELSE g.grade
+        END AS grade
+      FROM students s
+      JOIN grades g ON s.id = g.student_id
+      JOIN assignments a ON g.assignment_id = a.id
+      WHERE s.id = ? AND g.teacher_id = ?
+    `, [student.id, teacherId]);
+
+    console.log('Grades fetched (first 3):', records.slice(0, 3));
+
+    // Analyze performance - grades are now already percentages from the query
+    const analysis = analyzeStudentPerformance(
+      `${student.first_name} ${student.last_name}`, 
+      records
+    );
+
     return {
-      success: false,
-      needsClarification: true,
-      options: student.options,
-      message: `I found multiple students. Did you mean:\n` +
-        student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
-    };
-  }
-
-  // Fetch grades for this student **filtered by teacher**
-  const [records] = await db.query(`
-    SELECT s.first_name AS name, a.name AS assignment, g.grade
-    FROM students s
-    JOIN grades g ON s.id = g.student_id
-    JOIN assignments a ON g.assignment_id = a.id
-    WHERE s.id = ? AND g.teacher_id = ?
-  `, [student.id, teacherId]);
-
-  console.log('Grades records fetched:', records); // Debug log
-
-  // Analyze performance
-  const analysis = analyzeStudentPerformance(`${student.first_name} ${student.last_name}`, records);
-
-   return {
       success: true,
       intent: 'analyzeStudent',
       analysis
