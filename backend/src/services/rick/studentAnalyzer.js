@@ -53,12 +53,22 @@ function validGrades(records) {
 function analyzeStudentPerformance(studentName, studentRecords) {
   const normalizedRecords = studentRecords || [];
 
+  // DEBUG: Log the raw data
+  console.log('=== DEBUG: Student Analysis ===');
+  console.log('Student:', studentName);
+  console.log('Total records:', normalizedRecords.length);
+  console.log('Raw records:', JSON.stringify(normalizedRecords, null, 2));
+
   if (normalizedRecords.length === 0) {
     return `No grades found for ${studentName}`;
   }
 
   // Extract valid numeric grades (zeros count, empty strings/nulls do not)
   const grades = validGrades(normalizedRecords);
+
+  // DEBUG: Log parsed grades
+  console.log('Parsed grades:', grades);
+  console.log('Valid grade count:', grades.length);
 
   if (grades.length === 0) {
     return `${studentName} has no completed assignments yet.`;
