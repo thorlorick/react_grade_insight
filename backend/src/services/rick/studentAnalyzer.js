@@ -1,14 +1,12 @@
 // backend/src/services/rick/studentAnalyzer.js
-const Fuse = require('fuse.js');
 
 /**
  * Parse a raw grade value to a Number or return NaN for "missing"/invalid.
  * Rules:
  *  - null / undefined => NaN (missing)
- *  - string with only spaces => NaN (missing)
- *  - empty string => NaN (missing)
+ *  - empty string or whitespace-only => NaN (missing)
  *  - numeric string (including "0") => Number(n)
- *  - number 0 => 0 (kept)
+ *  - number 0 => 0 (kept as valid grade)
  *  - anything non-numeric => NaN
  */
 function parseGrade(raw) {
@@ -45,30 +43,73 @@ function validGrades(records) {
 }
 
 /**
+ * Categorize assignments by subject/type using keyword matching
+ */
+function categorizeAssignment(assignmentName) {
+  const name = (assignmentName || '').toLowerCase();
+  
+  if (name.match(/math|algebra|geometry|calculus|trigonometry|statistics|equation|formula|number|decimal|fraction/)) {
+    return 'Math';
+  }
+  
+  if (name.match(/science|biology|chemistry|physics|lab|experiment|hypothesis/)) {
+    return 'Science';
+  }
+  
+  if (name.match(/english|essay|writing|literature|reading|grammar|composition|poetry|novel|language|capitalization|comma|colon|semi-colon/)) {
+    return 'English';
+  }
+  
+  if (name.match(/history|social studies|geography|civics|government|historical/)) {
+    return 'Social Studies';
+  }
+  
+  if (name.match(/project|presentation|research|portfolio|profile|instagram/)) {
+    return 'Project';
+  }
+  
+  if (name.match(/test|quiz|exam|midterm|final/)) {
+    return 'Assessment';
+  }
+  
+  if (name.match(/homework|hw|assignment|practice|exit|ticket/)) {
+    return 'Homework';
+  }
+  
+  return 'Other';
+}
+
+/**
  * Analyze a student's performance and return formatted text
  * @param {string} studentName
- * @param {Array} studentRecords - array of { assignment, grade }
+ * @param {Array} studentRecords - array of { assignment, grade } OR { name, assignment, grade }
  * @returns {string} - Formatted analysis text
  */
 function analyzeStudentPerformance(studentName, studentRecords) {
   const normalizedRecords = studentRecords || [];
 
-  // DEBUG: Log the raw data
-  console.log('=== DEBUG: Student Analysis ===');
+  console.log('=== STUDENT ANALYZER DEBUG ===');
   console.log('Student:', studentName);
-  console.log('Total records:', normalizedRecords.length);
-  console.log('Raw records:', JSON.stringify(normalizedRecords, null, 2));
+  console.log('Total records received:', normalizedRecords.length);
+  console.log('First record sample:', normalizedRecords[0]);
 
   if (normalizedRecords.length === 0) {
     return `No grades found for ${studentName}`;
   }
 
-  // Extract valid numeric grades (zeros count, empty strings/nulls do not)
-  const grades = validGrades(normalizedRecords);
+  // Normalize the record format - handle both 'assignment' and 'name' fields
+  const records = normalizedRecords.map(r => ({
+    assignment: r.assignment || r.assignment_name || r.name || 'Unknown',
+    grade: r.grade
+  }));
 
-  // DEBUG: Log parsed grades
-  console.log('Parsed grades:', grades);
-  console.log('Valid grade count:', grades.length);
+  console.log('Normalized first record:', records[0]);
+
+  // Extract valid numeric grades (zeros count, empty strings/nulls do not)
+  const grades = validGrades(records);
+
+  console.log('Valid grades found:', grades.length);
+  console.log('Valid grades:', grades);
 
   if (grades.length === 0) {
     return `${studentName} has no completed assignments yet.`;
@@ -80,34 +121,23 @@ function analyzeStudentPerformance(studentName, studentRecords) {
   const lowest = Math.min(...grades);
   const range = highest - lowest;
 
-  // Categorize
-  const categorizeAssignment = (name) => {
-    const n = (name || '').toLowerCase();
-    if (n.match(/math|algebra|geometry|calculus|trigonometry|statistics|equation|formula/)) return 'Math';
-    if (n.match(/science|biology|chemistry|physics|lab|experiment|hypothesis/)) return 'Science';
-    if (n.match(/english|essay|writing|literature|reading|grammar|composition|poetry|novel/)) return 'English';
-    if (n.match(/history|social studies|geography|civics|government|historical/)) return 'Social Studies';
-    if (n.match(/project|presentation|research|portfolio/)) return 'Project';
-    if (n.match(/test|quiz|exam|midterm|final/)) return 'Assessment';
-    if (n.match(/homework|hw|assignment|practice/)) return 'Homework';
-    return 'Other';
-  };
+  console.log('Calculated average:', average);
 
   // Group by category
   const byCategory = {};
-  normalizedRecords.forEach(r => {
+  records.forEach(r => {
     const cat = categorizeAssignment(r.assignment);
     if (!byCategory[cat]) byCategory[cat] = [];
     byCategory[cat].push(r);
   });
 
   // Category summaries - ONLY count graded items
-  const categoryStats = Object.entries(byCategory).map(([cat, records]) => {
-    const catGrades = validGrades(records);
+  const categoryStats = Object.entries(byCategory).map(([cat, catRecords]) => {
+    const catGrades = validGrades(catRecords);
     const avg = catGrades.length > 0
       ? catGrades.reduce((a, b) => a + b, 0) / catGrades.length
       : 0;
-    return { category: cat, average: avg, count: catGrades.length, records };
+    return { category: cat, average: avg, count: catGrades.length, records: catRecords };
   }).sort((a, b) => b.average - a.average);
 
   const strongest = categoryStats[0];
@@ -166,7 +196,7 @@ function analyzeStudentPerformance(studentName, studentRecords) {
 
 module.exports = {
   analyzeStudentPerformance,
-  // export helpers in case you want to reuse or unit-test them
   parseGrade,
-  validGrades
+  validGrades,
+  categorizeAssignment
 };
