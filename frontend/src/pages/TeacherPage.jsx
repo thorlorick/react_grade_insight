@@ -273,11 +273,13 @@ const TeacherPage = () => {
           }
         ]}
       >
+         <RickTrigger variant="link" />
+        
         <div className="search-bar">
           <SearchBar onSearch={handleSearch} />
         </div>
 
-        <RickTrigger variant="link" />
+
       </Navbar>
 
       {/* Upload feedback */}
