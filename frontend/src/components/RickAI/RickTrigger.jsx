@@ -25,7 +25,7 @@ const RickTrigger = ({ variant = 'button' }) => {
           className={styles.navLink}
           aria-label="Open Rick AI Assistant"
         >
-          🤖 Rick AI
+          Rick AI
         </button>
         
         {showRick && (
@@ -44,7 +44,7 @@ const RickTrigger = ({ variant = 'button' }) => {
         title="Ask Rick AI"
         aria-label="Open Rick AI Assistant"
       >
-        🤖
+        
         <span className={styles.pulseRing}></span>
       </button>
       
