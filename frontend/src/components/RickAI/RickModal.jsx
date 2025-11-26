@@ -17,6 +17,12 @@ const RickModal = ({ onClose }) => {
     }
   }, [messages, minimized]);
 
+  useEffect(() => {
+    if (!isLoading && inputRef.current) {
+    inputRef.current.focus();
+    }
+  }, [isLoading]);
+ 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
