@@ -83,7 +83,7 @@ const PATTERNS = [
   ],
   intent: 'analyzeStudent',
   entities: ['studentName'],
-  description: 'Analyze a student's overall performance',
+  description: 'Analyze overall performance',
   handler: async (entities, teacherId, db) => {
     const { fuzzyFindStudent } = require('./patternMatcher');
     const { analyzeStudentPerformance } = require('./studentAnalyzer');
