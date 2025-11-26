@@ -29,3 +29,4 @@ const Navbar = ({ brand = "Grade Insight", links = [], children }) => {
 };
 
 export default Navbar;
+
