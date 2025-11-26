@@ -1,32 +1,29 @@
 /* frontend/src/components/RickAI/RickTrigger.module.css */
-
 /* ============================================ */
 /* NAVBAR LINK VARIANT */
 /* ============================================ */
 .navLink {
   background: transparent;
-  color: inherit;
+  color: rgba(255, 255, 255, 0.7);
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s, transform 0.1s, color 0.3s ease;
   display: flex;
   align-items: center;
   gap: 6px;
   white-space: nowrap;
 }
-
 .navLink:hover {
   background: rgba(102, 126, 234, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
-
 .navLink:active {
   transform: scale(0.98);
 }
-
 /* ============================================ */
 /* FLOATING BUTTON VARIANT */
 /* ============================================ */
@@ -50,7 +47,6 @@
   justify-content: center;
   animation: fadeIn 0.5s ease-out;
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -61,16 +57,13 @@
     transform: scale(1) translateY(0);
   }
 }
-
 .floatingButton:hover {
   transform: scale(1.1) rotate(10deg);
   box-shadow: 0 6px 30px rgba(102, 126, 234, 0.5);
 }
-
 .floatingButton:active {
   transform: scale(1.05);
 }
-
 /* Pulse ring animation for floating button */
 .pulseRing {
   position: absolute;
@@ -81,7 +74,6 @@
   animation: pulse 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
   opacity: 0;
 }
-
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -96,7 +88,6 @@
     opacity: 0;
   }
 }
-
 /* ============================================ */
 /* RESPONSIVE */
 /* ============================================ */
