@@ -85,6 +85,8 @@ const RickModal = ({ onClose }) => {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+       // Refocus the input after sending
+      inputRef.current?.focus();
     }
   };
 
