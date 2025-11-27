@@ -1,89 +1,12 @@
 // backend/src/services/rick/studentAnalyzer.js
 
-/**
- * Parse a raw grade value to a Number or return NaN for "missing"/invalid.
- * Rules:
- *  - null / undefined => NaN (missing)
- *  - empty string or whitespace-only => NaN (missing)
- *  - numeric string (including "0") => Number(n)
- *  - number 0 => 0 (kept as valid grade)
- *  - anything non-numeric => NaN
- */
-function parseGrade(raw) {
-  // Explicit null/undefined check
-  if (raw === null || raw === undefined) return NaN;
-
-  // If it's a string, check for empty or whitespace-only
-  if (typeof raw === 'string') {
-    const trimmed = raw.trim();
-    // Empty string after trimming = missing grade
-    if (trimmed === '') return NaN;
-    
-    // Try to parse the trimmed string
-    const n = Number(trimmed);
-    return Number.isFinite(n) ? n : NaN;
-  }
-
-  // If it's already a number, use it directly
-  if (typeof raw === 'number') {
-    return Number.isFinite(raw) ? raw : NaN;
-  }
-
-  // Anything else (objects, arrays, etc.) is invalid
-  return NaN;
-}
+const { validGrades, calculateStats, groupByCategory } = require('../../utils/gradeUtils');
 
 /**
- * Return only valid numeric grades (0 allowed). Uses parseGrade.
- */
-function validGrades(records) {
-  return records
-    .map(r => parseGrade(r.grade))
-    .filter(n => !Number.isNaN(n));
-}
-
-/**
- * Categorize assignments by subject/type using keyword matching
- */
-function categorizeAssignment(assignmentName) {
-  const name = (assignmentName || '').toLowerCase();
-  
-  if (name.match(/math|algebra|geometry|calculus|trigonometry|statistics|equation|formula|number|decimal|fraction/)) {
-    return 'Math';
-  }
-  
-  if (name.match(/science|biology|chemistry|physics|lab|experiment|hypothesis/)) {
-    return 'Science';
-  }
-  
-  if (name.match(/english|essay|writing|literature|reading|grammar|composition|poetry|novel|language|capitalization|comma|colon|semi-colon/)) {
-    return 'English';
-  }
-  
-  if (name.match(/history|social studies|geography|civics|government|historical/)) {
-    return 'Social Studies';
-  }
-  
-  if (name.match(/project|presentation|research|portfolio|profile|instagram/)) {
-    return 'Project';
-  }
-  
-  if (name.match(/test|quiz|exam|midterm|final/)) {
-    return 'Assessment';
-  }
-  
-  if (name.match(/homework|hw|assignment|practice|exit|ticket/)) {
-    return 'Homework';
-  }
-  
-  return 'Other';
-}
-
-/**
- * Analyze a student's performance and return formatted text
- * @param {string} studentName
- * @param {Array} studentRecords - array of { assignment, grade } OR { name, assignment, grade }
- * @returns {string} - Formatted analysis text
+ * Analyze a student's performance and return formatted intelligence
+ * @param {string} studentName - Student's full name
+ * @param {Array} studentRecords - Array of { assignment, grade } or { name, assignment, grade }
+ * @returns {string} - Formatted analysis text with intelligence
  */
 function analyzeStudentPerformance(studentName, studentRecords) {
   const normalizedRecords = studentRecords || [];
@@ -115,41 +38,21 @@ function analyzeStudentPerformance(studentName, studentRecords) {
     return `${studentName} has no completed assignments yet.`;
   }
 
-  // Overall summary stats - ONLY uses valid grades
-  const average = grades.reduce((a, b) => a + b, 0) / grades.length;
-  const highest = Math.max(...grades);
-  const lowest = Math.min(...grades);
+  // Calculate overall statistics using utility
+  const stats = calculateStats(grades);
+  const { average, min: lowest, max: highest, stdDev } = stats;
   const range = highest - lowest;
 
   console.log('Calculated average:', average);
 
-  // Group by category
-  const byCategory = {};
-  records.forEach(r => {
-    const cat = categorizeAssignment(r.assignment);
-    if (!byCategory[cat]) byCategory[cat] = [];
-    byCategory[cat].push(r);
-  });
-
-  // Category summaries - ONLY count graded items
-  const categoryStats = Object.entries(byCategory).map(([cat, catRecords]) => {
-    const catGrades = validGrades(catRecords);
-    const avg = catGrades.length > 0
-      ? catGrades.reduce((a, b) => a + b, 0) / catGrades.length
-      : 0;
-    return { category: cat, average: avg, count: catGrades.length, records: catRecords };
-  }).sort((a, b) => b.average - a.average);
-
+  // Group by category and get stats
+  const categoryStats = groupByCategory(records);
   const strongest = categoryStats[0];
   const weakest = categoryStats[categoryStats.length - 1];
 
-  // Standard deviation (with valid numbers only)
-  const variance = grades.reduce((sum, g) => sum + Math.pow(g - average, 2), 0) / grades.length;
-  const stdDev = Math.sqrt(variance);
-
   // ===== BUILD RESPONSE =====
   let response = `**${studentName}**\n`;
-  response += `Average: ${average.toFixed(1)}% (${grades.length} graded assignment${grades.length > 1 ? 's' : ''})\n`;
+  response += `Average: ${average}% (${grades.length} graded assignment${grades.length > 1 ? 's' : ''})\n`;
   response += `Range: ${lowest}% - ${highest}%\n\n`;
 
   // Performance level
@@ -164,11 +67,11 @@ function analyzeStudentPerformance(studentName, studentRecords) {
     response += '\n\n**Performance by Subject:**\n';
 
     if (strongest && strongest.count > 0) {
-      response += `✅ Strongest: ${strongest.category} (${strongest.average.toFixed(1)}%)\n`;
+      response += `✅ Strongest: ${strongest.category} (${strongest.average}%)\n`;
     }
 
     if (strongest && weakest && (strongest.average - weakest.average > 10)) {
-      response += `⚠️ Needs support: ${weakest.category} (${weakest.average.toFixed(1)}%)\n`;
+      response += `⚠️ Needs support: ${weakest.category} (${weakest.average}%)\n`;
     }
 
     response += '\n**Breakdown:**\n';
@@ -177,7 +80,7 @@ function analyzeStudentPerformance(studentName, studentRecords) {
         c.average >= 80 ? '✅' :
         c.average >= 70 ? '📊' :
         '⚠️';
-      response += `  ${emoji} ${c.category}: ${c.average.toFixed(1)}% (${c.count} graded)\n`;
+      response += `  ${emoji} ${c.category}: ${c.average}% (${c.count} graded)\n`;
     });
   }
 
@@ -194,9 +97,46 @@ function analyzeStudentPerformance(studentName, studentRecords) {
   return response;
 }
 
+/**
+ * Get structured data for a student (for other analyzers to use)
+ * @param {string} studentName - Student's full name
+ * @param {Array} studentRecords - Array of grade records
+ * @returns {Object} - Structured performance data
+ */
+function getStudentData(studentName, studentRecords) {
+  const normalizedRecords = (studentRecords || []).map(r => ({
+    assignment: r.assignment || r.assignment_name || r.name || 'Unknown',
+    grade: r.grade
+  }));
+
+  if (normalizedRecords.length === 0) {
+    return {
+      studentName,
+      average: 0,
+      graded: 0,
+      categoryStats: [],
+      stats: { average: 0, min: 0, max: 0, count: 0, stdDev: 0 }
+    };
+  }
+
+  const grades = validGrades(normalizedRecords);
+  const stats = calculateStats(grades);
+  const categoryStats = groupByCategory(normalizedRecords);
+  
+  return {
+    studentName,
+    average: stats.average,
+    graded: grades.length,
+    total: normalizedRecords.length,
+    missing: normalizedRecords.length - grades.length,
+    categoryStats,
+    stats,
+    strongest: categoryStats[0] || null,
+    weakest: categoryStats[categoryStats.length - 1] || null
+  };
+}
+
 module.exports = {
   analyzeStudentPerformance,
-  parseGrade,
-  validGrades,
-  categorizeAssignment
+  getStudentData
 };
