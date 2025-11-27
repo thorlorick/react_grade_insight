@@ -574,3 +574,7 @@ Rick AI did not work. trying to run a local model was just not feasible and usin
 
 # PATTERN MATCHER
 As of right now (11/18/25) Rick is a pattern matcher. He's got nothing else other than pattern matching, but so far he's decent at it!!!
+
+# CLEAN UP TIME
+I have so many files from so many different iterations that I need to clean up. BUT..deleting the wrong file....oh man this is going to be stressful.
+Here we go.....
