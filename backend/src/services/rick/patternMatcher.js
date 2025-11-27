@@ -62,9 +62,9 @@ const PATTERNS = [
   {
     // Pattern 2: "Who didn't do [ASSIGNMENT]?"
     patterns: [
-      /who\s+(?:didn't|did not|hasn't|has not)\s+(?:do|submit|turn in|complete)\s+(.+)/i,
+      /who\s+(?:didn't|did not|hasn't|has not|haven't|have not)\s+(?:do|done|submit|submitted|turn in|turned in|complete|completed)\s+(.+)/i,
       /(?:show|list)\s+(?:me\s+)?missing\s+(?:work|submissions?)\s+(?:for|on)\s+(.+)/i,
-      /what\s+(?:students?|kids?)\s+(?:didn't|did not)\s+(?:do|submit)\s+(.+)/i,
+      /what\s+(?:students?|kids?)\s+(?:didn't|did not|hasn't|has not)\s+(?:do|done|submit|submitted)\s+(.+)/i,
       /who\s+(?:is|are)\s+missing\s+(.+)/i,
     ],
     intent: 'missingWork',
