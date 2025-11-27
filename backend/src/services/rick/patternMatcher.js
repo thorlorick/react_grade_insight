@@ -1,142 +1,149 @@
 // backend/src/services/rick/patternMatcher.js
+
 const Fuse = require('fuse.js');
 const { pool: db } = require('../../db');
+const { analyzeStudentPerformance } = require('./studentAnalyzer');
+const { analyzeMissingWork, analyzeFailures } = require('./assignmentAnalyzer');
+const { findAtRiskStudents, findChronicMissingWork } = require('./populationAnalyzer');
 
 /**
- * Pattern definitions - add more here as you expand
+ * Pattern definitions
  */
 const PATTERNS = [
   {
-    // Pattern 1: "Show [student] grades"
+    // Pattern 1: "How is [STUDENT] doing?"
     patterns: [
-      /show\s+(?:me\s+)?(.+?)(?:'s)?\s+(?:grades?|scores?)/i,
-      /(?:grades?|scores?)\s+for\s+(.+)/i,
-      /^(.+?)(?:'s)?\s+(?:grades?|scores?)$/i
+      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
+      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)/i,
     ],
-    intent: 'showGrades',
+    intent: 'analyzeStudent',
     entities: ['studentName'],
-    description: 'Show grades for a specific student'
-  },
-  {
-    // Pattern 2: "Who is failing?"
-    patterns: [
-      /who\s+(?:is|are)\s+(failing|struggling|behind)/i,
-      /(?:list|show)\s+(?:me\s+)?(failing|struggling|behind)\s+students/i
-    ],
-    intent: 'filterByStatus',
-    entities: ['status'],
-    description: 'List students by performance status'
-  },
-  {
-    // Pattern 3: "What's the class average?"
-    patterns: [
-      /(?:what(?:'s| is)|show)\s+(?:the\s+)?class\s+average/i,
-      /(?:class|overall)\s+average/i,
-      /average\s+(?:grade|score)\s+for\s+(?:class|everyone)/i
-    ],
-    intent: 'classAverage',
-    entities: [],
-    description: 'Calculate class average grade'
-  },
-  {
-  // Pattern 5: Missing Work
-  patterns: [
-    /who\s+(?:has|is)\s+missing\s+(?:grades?|work|assignments?)/i,
-    /(?:show|list)\s+missing\s+(?:grades?|work|assignments?)/i,
-    /what\s+(?:is|are)\s+(.+?)\s+missing/i,
-    /missing\s+(?:work|grades?|assignments?)\s+for\s+(.+)/i,
-    /(?:which|what)\s+students?\s+(?:didn't|haven't|did not|have not)\s+(?:submit|turn in|complete)/i,
-    /(?:who|which students?)\s+(?:are|is)\s+missing\s+(.+)/i
-  ],
-  intent: 'missingWork',
-  entities: ['studentName', 'assignmentName'],  // Both optional
-  description: 'Show missing/incomplete work',
-  entityParser: (match) => {
-    // Extract student or assignment name from various patterns
-    const entities = {};
-    if (match[1]) {
-      // Could be student name or assignment name
-      // We'll resolve later based on fuzzy matching
-      entities.searchTerm = match[1];
-    }
-    return entities;
-  }
-},
-{
-  // Pattern 6: Assignment Analysis
-  patterns: [
-    /(?:show|display|list)\s+(?:grades?\s+for|results?\s+for)\s+(.+)/i,
-    /(?:what|show)\s+(?:is|are)\s+(?:the\s+)?(?:grades?|results?|scores?)\s+(?:for|on)\s+(.+)/i,
-    /(?:how\s+did|how\s+are)\s+students?\s+do\s+on\s+(.+)/i,
-    /(.+)\s+(?:grades?|results?|scores?)$/i,
-    /(?:average|results?|performance)\s+(?:for|on)\s+(.+)/i
-  ],
-  intent: 'assignmentAnalysis',
-  entities: ['assignmentName'],
-  description: 'Analyze grades for a specific assignment'
-},
-  {
-  // Pattern 7: "How is [STUDENT] doing?"
-  patterns: [
-    /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
-    /(.+?)\s+(?:grades?|performance|doing)/i
-  ],
-  intent: 'analyzeStudent',
-  entities: ['studentName'],
-  description: 'Analyze overall performance',
-  handler: async (entities, teacherId, db) => {
-    const { fuzzyFindStudent } = require('./patternMatcher');
-    const { analyzeStudentPerformance } = require('./studentAnalyzer');
+    description: 'Analyze overall student performance',
+    handler: async (entities, teacherId) => {
+      const student = await fuzzyFindStudent(entities.studentName, teacherId);
+      if (student.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          options: student.options,
+          message: `I found multiple students. Did you mean:\n` +
+            student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+        };
+      }
 
-    // Fuzzy find the student
-    const student = await fuzzyFindStudent(entities.studentName, teacherId);
-    if (student.needsClarification) {
+      // Fetch grades for this student WITH percentages
+      const [records] = await db.query(`
+        SELECT 
+          a.name AS assignment, 
+          g.grade AS raw_grade,
+          a.max_points,
+          CASE 
+            WHEN g.grade IS NULL OR g.grade = '' THEN NULL
+            WHEN a.max_points > 0 THEN ROUND((g.grade / a.max_points) * 100, 1)
+            ELSE g.grade
+          END AS grade
+        FROM grades g
+        JOIN assignments a ON g.assignment_id = a.id
+        WHERE g.student_id = ? AND g.teacher_id = ?
+      `, [student.id, teacherId]);
+
+      const analysis = analyzeStudentPerformance(
+        `${student.first_name} ${student.last_name}`, 
+        records
+      );
+
       return {
-        success: false,
-        needsClarification: true,
-        options: student.options,
-        message: `I found multiple students. Did you mean:\n` +
-          student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+        success: true,
+        intent: 'analyzeStudent',
+        analysis
       };
     }
+  },
+  {
+    // Pattern 2: "Who didn't do [ASSIGNMENT]?"
+    patterns: [
+      /who\s+(?:didn't|did not|hasn't|has not)\s+(?:do|submit|turn in|complete)\s+(.+)/i,
+      /(?:show|list)\s+(?:me\s+)?missing\s+(?:work|submissions?)\s+(?:for|on)\s+(.+)/i,
+      /what\s+(?:students?|kids?)\s+(?:didn't|did not)\s+(?:do|submit)\s+(.+)/i,
+      /who\s+(?:is|are)\s+missing\s+(.+)/i,
+    ],
+    intent: 'missingWork',
+    entities: ['assignmentName'],
+    description: 'Find students who didn\'t submit assignment',
+    handler: async (entities, teacherId) => {
+      const assignment = await fuzzyFindAssignment(entities.assignmentName, teacherId);
+      if (assignment.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          options: assignment.options,
+          message: `I found multiple assignments. Did you mean:\n` +
+            assignment.options.map((a, i) => `${i + 1}. ${a.name}`).join('\n')
+        };
+      }
 
-    // Fetch grades for this student WITH max_points to calculate percentages
-    const [records] = await db.query(`
-      SELECT 
-        s.first_name AS name, 
-        a.name AS assignment, 
-        g.grade AS raw_grade,
-        a.max_points,
-        -- Calculate percentage: (grade / max_points) * 100
-        CASE 
-          WHEN g.grade IS NULL OR g.grade = '' THEN NULL
-          WHEN a.max_points > 0 THEN ROUND((g.grade / a.max_points) * 100, 1)
-          ELSE g.grade
-        END AS grade
-      FROM students s
-      JOIN grades g ON s.id = g.student_id
-      JOIN assignments a ON g.assignment_id = a.id
-      WHERE s.id = ? AND g.teacher_id = ?
-    `, [student.id, teacherId]);
+      const result = await analyzeMissingWork(assignment.id, teacherId);
+      return result;
+    }
+  },
+  {
+    // Pattern 3: "Who failed [ASSIGNMENT]?"
+    patterns: [
+      /who\s+(?:failed|is failing)\s+(.+)/i,
+      /(?:show|list)\s+(?:me\s+)?(?:students?|kids?)\s+who\s+failed\s+(.+)/i,
+      /what\s+(?:students?|kids?)\s+(?:failed|are failing)\s+(.+)/i,
+      /(?:failures?|failing students?)\s+(?:for|on)\s+(.+)/i,
+    ],
+    intent: 'failedAssignment',
+    entities: ['assignmentName'],
+    description: 'Find students who failed assignment',
+    handler: async (entities, teacherId) => {
+      const assignment = await fuzzyFindAssignment(entities.assignmentName, teacherId);
+      if (assignment.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          options: assignment.options,
+          message: `I found multiple assignments. Did you mean:\n` +
+            assignment.options.map((a, i) => `${i + 1}. ${a.name}`).join('\n')
+        };
+      }
 
-    console.log('Grades fetched (first 3):', records.slice(0, 3));
-
-    // Analyze performance - grades are now already percentages from the query
-    const analysis = analyzeStudentPerformance(
-      `${student.first_name} ${student.last_name}`, 
-      records
-    );
-
-    return {
-      success: true,
-      intent: 'analyzeStudent',
-      analysis
-    };
+      const result = await analyzeFailures(assignment.id, teacherId, 60);
+      return result;
+    }
+  },
+  {
+    // Pattern 4: "Who is at risk?" / "Who is struggling?"
+    patterns: [
+      /who\s+(?:is|are)\s+(?:at risk|struggling|failing|behind)/i,
+      /(?:show|list)\s+(?:me\s+)?(?:at risk|struggling|failing)\s+students?/i,
+      /what\s+students?\s+(?:need|require)\s+(?:help|support|intervention)/i,
+    ],
+    intent: 'atRisk',
+    entities: [],
+    description: 'Find at-risk students',
+    handler: async (entities, teacherId) => {
+      const result = await findAtRiskStudents(teacherId, 60);
+      return result;
+    }
+  },
+  {
+    // Pattern 5: "Who has missing work?" / "Show chronic missing work"
+    patterns: [
+      /who\s+has\s+(?:lots of|a lot of|multiple|chronic|many)\s+missing\s+(?:work|assignments?)/i,
+      /(?:show|list)\s+(?:chronic|multiple)\s+missing\s+(?:work|assignments?)/i,
+      /what\s+students?\s+(?:aren't|are not)\s+turning\s+in\s+work/i,
+    ],
+    intent: 'chronicMissing',
+    entities: [],
+    description: 'Find students with chronic missing work',
+    handler: async (entities, teacherId) => {
+      const result = await findChronicMissingWork(teacherId, 3);
+      return result;
+    }
   }
-}
 ];
-
-
 
 /**
  * Match user message against patterns
@@ -159,7 +166,8 @@ function matchPattern(message) {
           intent: patternGroup.intent,
           entities: entities,
           confidence: 0.9,
-          description: patternGroup.description
+          description: patternGroup.description,
+          handler: patternGroup.handler
         };
       }
     }
@@ -172,7 +180,6 @@ function matchPattern(message) {
  * Fuzzy find student by name
  */
 async function fuzzyFindStudent(name, teacherId) {
-  // Get all students for this teacher
   const [students] = await db.query(`
     SELECT DISTINCT s.id, s.first_name, s.last_name,
            CONCAT(s.first_name, ' ', s.last_name) as full_name
@@ -185,10 +192,9 @@ async function fuzzyFindStudent(name, teacherId) {
     throw new Error('No students found for this teacher');
   }
   
-  // Use Fuse.js for fuzzy matching
   const fuse = new Fuse(students, {
     keys: ['first_name', 'last_name', 'full_name'],
-    threshold: 0.4, // 0 = exact match, 1 = match anything
+    threshold: 0.4,
     includeScore: true
   });
   
@@ -199,65 +205,12 @@ async function fuzzyFindStudent(name, teacherId) {
   }
   
   if (results.length === 1 || results[0].score < 0.2) {
-    // Clear winner
     return results[0].item;
   }
   
-  // Multiple close matches - need clarification
   return {
     needsClarification: true,
     options: results.slice(0, 3).map(r => r.item)
-  };
-}
-
-/**
- * Main parsing function
- */
-async function parseNaturalLanguage(message, teacherId) {
-  const matched = matchPattern(message);
-
-  if (!matched) {
-    return {
-      success: false,
-      error: 'I don\'t understand that question. Try:\n' +
-             '- "Show [student] grades"\n' +
-             '- "Who is failing?"\n' +
-             '- "What\'s the class average?"'
-    };
-  }
-
-  // Find the full pattern definition
-  const patternDef = PATTERNS.find(p => p.intent === matched.intent);
-
-  // If it has a handler, call it
-  if (patternDef?.handler) {
-    return await patternDef.handler(matched.entities, teacherId, db);
-  }
-
-  // Otherwise, resolve student entity if needed
-  if (matched.entities.studentName) {
-    try {
-      const student = await fuzzyFindStudent(matched.entities.studentName, teacherId);
-      if (student.needsClarification) {
-        return {
-          success: false,
-          needsClarification: true,
-          options: student.options,
-          message: `I found multiple students. Did you mean:\n` +
-                  student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
-        };
-      }
-      matched.entities.student = student;
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  return {
-    success: true,
-    intent: matched.intent,
-    entities: matched.entities,
-    confidence: matched.confidence
   };
 }
 
@@ -297,10 +250,48 @@ async function fuzzyFindAssignment(name, teacherId) {
   };
 }
 
-// Add to module.exports:
+/**
+ * Main parsing function
+ */
+async function parseNaturalLanguage(message, teacherId) {
+  const matched = matchPattern(message);
+
+  if (!matched) {
+    return {
+      success: false,
+      error: 'I don\'t understand that question. Try:\n' +
+             '- "How is [student] doing?"\n' +
+             '- "Who didn\'t do [assignment]?"\n' +
+             '- "Who failed [assignment]?"\n' +
+             '- "Who is at risk?"\n' +
+             '- "Who has missing work?"'
+    };
+  }
+
+  // Call the handler if it exists
+  if (matched.handler) {
+    try {
+      return await matched.handler(matched.entities, teacherId);
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error.message 
+      };
+    }
+  }
+
+  // Fallback (shouldn't reach here with current patterns)
+  return {
+    success: true,
+    intent: matched.intent,
+    entities: matched.entities,
+    confidence: matched.confidence
+  };
+}
+
 module.exports = {
   parseNaturalLanguage,
   matchPattern,
   fuzzyFindStudent,
-  fuzzyFindAssignment  // NEW
+  fuzzyFindAssignment
 };
