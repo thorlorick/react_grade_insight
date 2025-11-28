@@ -101,6 +101,7 @@ async function findAtRiskStudents(teacherId, threshold = 60) {
     response += `✅ No students are currently below ${threshold}%. Great job!`;
     return {
       success: true,
+      intent: 'atRisk',
       atRiskCount: 0,
       totalStudents,
       atRiskRate: 0,
@@ -120,6 +121,7 @@ async function findAtRiskStudents(teacherId, threshold = 60) {
 
   return {
     success: true,
+    intent: 'atRisk',
     atRiskCount,
     totalStudents,
     atRiskRate: parseFloat(atRiskRate),
@@ -164,6 +166,7 @@ async function findChronicMissingWork(teacherId, minMissing = 3) {
     response += `✅ No students have ${minMissing}+ missing assignments.`;
     return {
       success: true,
+      intent: 'chronicMissing',
       flaggedCount: 0,
       minMissing,
       analysis: response
@@ -180,6 +183,7 @@ async function findChronicMissingWork(teacherId, minMissing = 3) {
 
   return {
     success: true,
+    intent: 'chronicMissing',
     flaggedCount,
     minMissing,
     students,
