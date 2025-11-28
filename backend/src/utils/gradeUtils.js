@@ -67,6 +67,10 @@ function categorizeAssignment(assignmentName) {
   if (name.match(/history|social studies|geography|civics|government|historical/)) {
     return 'Social Studies';
   }
+
+  if (name.match(/french|français|vocab|vocabulary|verbe|verb|conjugation|conjugaison|lecture|écriture|dictée/)) {
+    return 'French';
+  }
   
   if (name.match(/project|presentation|research|portfolio|profile|instagram/)) {
     return 'Project';
