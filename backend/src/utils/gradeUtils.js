@@ -79,11 +79,12 @@ function categorizeAssignment(assignmentName) {
   if (name.match(/test|quiz|exam|midterm|final/)) {
     return 'Assessment';
   }
-  
-  if (name.match(/homework|hw|assignment|practice|exit|ticket/)) {
+
+  */
+  if (name.match(/homework|hw|practice|exit|ticket/)) {
     return 'Homework';
   }
-  */
+  
   
   return 'Other';
 }
