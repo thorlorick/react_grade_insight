@@ -578,3 +578,18 @@ As of right now (11/18/25) Rick is a pattern matcher. He's got nothing else othe
 # CLEAN UP TIME
 I have so many files from so many different iterations that I need to clean up. BUT..deleting the wrong file....oh man this is going to be stressful.
 Here we go.....
+
+# CLEAN UP TABLES
+SET FOREIGN_KEY_CHECKS = 0;
+
+DELETE FROM grades;
+DELETE FROM assignments;
+DELETE FROM students;
+
+ALTER TABLE grades AUTO_INCREMENT = 1;
+ALTER TABLE assignments AUTO_INCREMENT = 1;
+ALTER TABLE students AUTO_INCREMENT = 1;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+I'm using this to get rid of data if I need to repopulate....it's probably not correct, but it seems to work
