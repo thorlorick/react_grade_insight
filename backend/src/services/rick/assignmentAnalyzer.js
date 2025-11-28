@@ -75,6 +75,7 @@ async function analyzeMissingWork(assignmentId, teacherId) {
 
   return {
     success: true,
+    intent: 'missingWork',
     assignmentName: assignment.name,
     missingCount,
     totalStudents,
@@ -130,6 +131,7 @@ async function analyzeFailures(assignmentId, teacherId, threshold = 60) {
   if (allGrades.length === 0) {
     return {
       success: true,
+      intent: 'failedAssignment',
       assignmentName: assignment.name,
       failedCount: 0,
       totalGraded: 0,
@@ -159,6 +161,7 @@ async function analyzeFailures(assignmentId, teacherId, threshold = 60) {
     response += `✅ No students failed (below ${threshold}%). Great job!`;
     return {
       success: true,
+      intent: 'failedAssignment',
       assignmentName: assignment.name,
       failedCount: 0,
       totalGraded,
@@ -184,6 +187,7 @@ async function analyzeFailures(assignmentId, teacherId, threshold = 60) {
 
   return {
     success: true,
+    intent: 'failedAssignment',
     assignmentName: assignment.name,
     failedCount,
     totalGraded,
