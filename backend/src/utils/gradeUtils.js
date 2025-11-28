@@ -71,7 +71,7 @@ function categorizeAssignment(assignmentName) {
   if (name.match(/french|français|vocab|vocabulary|verbe|verb|conjugation|conjugaison|lecture|écriture|dictée/)) {
     return 'French';
   }
-  
+  /*
   if (name.match(/project|presentation|research|portfolio|profile|instagram/)) {
     return 'Project';
   }
@@ -83,6 +83,7 @@ function categorizeAssignment(assignmentName) {
   if (name.match(/homework|hw|assignment|practice|exit|ticket/)) {
     return 'Homework';
   }
+  */
   
   return 'Other';
 }
