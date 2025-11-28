@@ -60,18 +60,40 @@ const rickController = {
         return res.json({
           success: true,
           response: "Hi! I'm Rick, your AI teaching assistant. I can help you:\n\n" +
-                   "• Check student grades: \"Show [name]'s grades\"\n" +
-                   "• Find struggling students: \"Who is failing?\"\n" +
-                   "• Get class stats: \"What's the class average?\"\n" +
-                   "• See missing work: \"Who has missing grades?\"\n" +
-                   "• Analyze assignments: \"Show grades for [assignment]\"\n\n" +
+                   "• Analyze student performance: \"How is [name] doing?\"\n" +
+                   "• Find missing work: \"Who didn't do [assignment]?\"\n" +
+                   "• Identify failures: \"Who failed [assignment]?\"\n" +
+                   "• Find at-risk students: \"Who is struggling?\"\n" +
+                   "• Check chronic missing work: \"Who has missing work?\"\n\n" +
                    "Just ask me a question in plain English!"
         });
       }
 
       console.log('Processing intent:', parsed.intent);
 
-      // Execute appropriate query based on intent
+      // NEW INTENTS: Handled directly by analyzers
+      const analyzerIntents = [
+        'analyzeStudent',
+        'missingWork', 
+        'failedAssignment',
+        'atRisk',
+        'chronicMissing'
+      ];
+
+      if (analyzerIntents.includes(parsed.intent)) {
+        console.log(`Executing ${parsed.intent} - handled by analyzer`);
+        console.log('Sending successful response');
+        console.log('=== RICK CHAT DEBUG END ===');
+        
+        return res.json({
+          success: true,
+          response: parsed.analysis,
+          intent: parsed.intent,
+          data: parsed
+        });
+      }
+
+      // LEGACY INTENTS: Still using old query builders
       let result;
       let formatted;
 
@@ -87,37 +109,11 @@ const rickController = {
           result = await queryBuilders.filterByStatusQuery(parsed.entities, teacherId);
           formatted = formatters.formatStudentList(result);
           break;
-        
-        case 'analyzeStudent':
-          console.log('Executing analyzeStudent handler...');
-          formatted = parsed.analysis || 'No analysis available.';
-          result = parsed.analysis;
-          break;
 
         case 'classAverage':
           console.log('Executing classAverage query...');
           result = await queryBuilders.classAverageQuery(parsed.entities, teacherId);
           formatted = formatters.formatClassAverage(result);
-          break;
-
-        case 'missingWork':
-          console.log('Executing missingWork query...');
-          // Resolve student/assignment from searchTerm if provided
-          if (parsed.entities.searchTerm) {
-            // Try student first
-            try {
-              parsed.entities.student = await require('../services/rick/patternMatcher').fuzzyFindStudent(parsed.entities.searchTerm, teacherId);
-            } catch (e) {
-              // Not a student, try assignment
-              try {
-                parsed.entities.assignment = await require('../services/rick/patternMatcher').fuzzyFindAssignment(parsed.entities.searchTerm, teacherId);
-              } catch (e2) {
-                // Neither - show all missing work
-              }
-            }
-          }
-          result = await queryBuilders.missingWorkQuery(parsed.entities, teacherId);
-          formatted = formatters.formatMissingWork(result);
           break;
 
         case 'assignmentAnalysis':
