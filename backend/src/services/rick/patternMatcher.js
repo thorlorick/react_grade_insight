@@ -5,6 +5,7 @@ const { pool: db } = require('../../db');
 const { analyzeStudentPerformance } = require('./studentAnalyzer');
 const { analyzeMissingWork, analyzeFailures } = require('./assignmentAnalyzer');
 const { findAtRiskStudents, findChronicMissingWork } = require('./populationAnalyzer');
+const { findBestMatch, formatClarification } = require('../../utils/assignmentNormalizer');
 
 /**
  * Pattern definitions
@@ -215,7 +216,7 @@ async function fuzzyFindStudent(name, teacherId) {
 }
 
 /**
- * Fuzzy find assignment by name
+ * Fuzzy find assignment by name using smart normalizer
  */
 async function fuzzyFindAssignment(name, teacherId) {
   const [assignments] = await db.query(`
@@ -228,26 +229,22 @@ async function fuzzyFindAssignment(name, teacherId) {
     throw new Error('No assignments found');
   }
   
-  const fuse = new Fuse(assignments, {
-    keys: ['name'],
-    threshold: 0.4,
-    includeScore: true
-  });
+  // Use smart matcher
+  const result = findBestMatch(name, assignments);
   
-  const results = fuse.search(name);
-  
-  if (results.length === 0) {
-    throw new Error(`No assignment found matching "${name}"`);
+  if (!result.found) {
+    if (result.needsClarification) {
+      return {
+        needsClarification: true,
+        options: result.matches
+      };
+    }
+    throw new Error(result.error);
   }
   
-  if (results.length === 1 || results[0].score < 0.2) {
-    return results[0].item;
-  }
-  
-  return {
-    needsClarification: true,
-    options: results.slice(0, 3).map(r => r.item)
-  };
+  // Return the matched assignment (without tokens/matchScore)
+  const { tokens, matchScore, ...assignment } = result.assignment;
+  return assignment;
 }
 
 /**
