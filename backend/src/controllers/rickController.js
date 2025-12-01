@@ -89,7 +89,8 @@ const rickController = {
           success: true,
           response: parsed.analysis,
           intent: parsed.intent,
-          data: parsed
+          data: parsed,
+          structured: parsed.structured  // Pass through structured data
         });
       }
 
