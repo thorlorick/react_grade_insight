@@ -16,11 +16,90 @@ const PATTERNS = [
     patterns: [
       /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+(.+)/i,
       /(?:analyze|show)\s+(.+?)(?:'s)?\s+(?:performance|grades?|progress)\s+in\s+(.+)/i,
-      /(.+?)(?:'s)?\s+(math|science|english|history|social studies|french)\s+(?:performance|grades?)/i,
+      /(.+?)(?:'s)?\s+(math|science|english|history|social studies|french|spanish)\s+(?:performance|grades?)/i,
     ],
     intent: 'analyzeStudentSubject',
     entities: ['studentName', 'subject'],
     description: 'Analyze student performance in specific subject',
+    handler: async (entities, teacherId) => {
+      const student = await fuzzyFindStudent(entities.studentName, teacherId);
+      if (student.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          options: student.options,
+          message: `I found multiple students. Which one did you mean?\n\n` +
+            student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+        };
+      }
+
+      // Import categorization from utils
+      const { categorizeAssignment } = require('../../utils/gradeUtils');
+
+      // Fetch ALL grades for this student
+      const [records] = await db.query(`
+        SELECT 
+          a.name AS assignment, 
+          g.grade AS raw_grade,
+          a.max_points,
+          CASE 
+            WHEN g.grade IS NULL OR g.grade = '' THEN NULL
+            WHEN a.max_points > 0 THEN ROUND((g.grade / a.max_points) * 100, 1)
+            ELSE g.grade
+          END AS grade
+        FROM grades g
+        JOIN assignments a ON g.assignment_id = a.id
+        WHERE g.student_id = ? AND g.teacher_id = ?
+      `, [student.id, teacherId]);
+
+      // Normalize subject name
+      const subjectMap = {
+        'math': 'Math',
+        'mathematics': 'Math',
+        'science': 'Science',
+        'english': 'English',
+        'ela': 'English',
+        'history': 'Social Studies',
+        'social studies': 'Social Studies',
+        'geography': 'Social Studies',
+        'french': 'French',
+        'français': 'French',
+        'francais': 'French',
+        'spanish': 'Spanish',
+        'español': 'Spanish',
+        'espanol': 'Spanish',
+      };
+      
+      const targetSubject = subjectMap[entities.subject.toLowerCase()] || 
+                           entities.subject.charAt(0).toUpperCase() + entities.subject.slice(1).toLowerCase();
+
+      // Filter records to only this subject
+      const subjectRecords = records.filter(r => {
+        const category = categorizeAssignment(r.assignment);
+        return category === targetSubject;
+      });
+
+      if (subjectRecords.length === 0) {
+        return {
+          success: true,
+          intent: 'analyzeStudentSubject',
+          analysis: `${student.first_name} ${student.last_name} has no graded ${targetSubject} assignments yet.`
+        };
+      }
+
+      // Use existing analyzer but with filtered records
+      const analysis = analyzeStudentPerformance(
+        `${student.first_name} ${student.last_name} - ${targetSubject}`, 
+        subjectRecords
+      );
+
+      return {
+        success: true,
+        intent: 'analyzeStudentSubject',
+        analysis
+      };
+    }
+  },
     handler: async (entities, teacherId) => {
       const student = await fuzzyFindStudent(entities.studentName, teacherId);
       if (student.needsClarification) {
@@ -64,12 +143,52 @@ const PATTERNS = [
   {
     // Pattern 2: "How is [STUDENT] doing?" (general - AFTER subject-specific)
     patterns: [
-      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
-      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)/i,
+      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing\s*$/i,  // Added $ to prevent matching "doing in"
+      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)\s*$/i,
     ],
     intent: 'analyzeStudent',
     entities: ['studentName'],
     description: 'Analyze overall student performance',
+    handler: async (entities, teacherId) => {
+      const student = await fuzzyFindStudent(entities.studentName, teacherId);
+      if (student.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          options: student.options,
+          message: `I found multiple students. Which one did you mean?\n\n` +
+            student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+        };
+      }
+
+      // Fetch grades for this student WITH percentages
+      const [records] = await db.query(`
+        SELECT 
+          a.name AS assignment, 
+          g.grade AS raw_grade,
+          a.max_points,
+          CASE 
+            WHEN g.grade IS NULL OR g.grade = '' THEN NULL
+            WHEN a.max_points > 0 THEN ROUND((g.grade / a.max_points) * 100, 1)
+            ELSE g.grade
+          END AS grade
+        FROM grades g
+        JOIN assignments a ON g.assignment_id = a.id
+        WHERE g.student_id = ? AND g.teacher_id = ?
+      `, [student.id, teacherId]);
+
+      const analysis = analyzeStudentPerformance(
+        `${student.first_name} ${student.last_name}`, 
+        records
+      );
+
+      return {
+        success: true,
+        intent: 'analyzeStudent',
+        analysis
+      };
+    }
+  },
     handler: async (entities, teacherId) => {
       const student = await fuzzyFindStudent(entities.studentName, teacherId);
       if (student.needsClarification) {
@@ -251,8 +370,14 @@ function matchPattern(message) {
         // Extract entities from regex capture groups
         const entities = {};
         patternGroup.entities.forEach((entityName, index) => {
-          entities[entityName] = match[index + 1];
+          // Only add entity if capture group exists
+          if (match[index + 1] !== undefined) {
+            entities[entityName] = match[index + 1];
+          }
         });
+        
+        console.log('Pattern matched:', patternGroup.intent);
+        console.log('Entities extracted:', entities);
         
         return {
           intent: patternGroup.intent,
