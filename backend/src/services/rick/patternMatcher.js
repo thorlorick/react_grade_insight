@@ -8,7 +8,7 @@ const { findAtRiskStudents, findChronicMissingWork } = require('./populationAnal
 const { findBestMatch, formatClarification } = require('../../utils/assignmentNormalizer');
 
 /**
- * Pattern definitions
+ * Pattern definitions for app
  */
 const PATTERNS = [
   {
