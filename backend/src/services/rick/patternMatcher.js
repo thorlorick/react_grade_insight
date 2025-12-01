@@ -61,6 +61,89 @@ const PATTERNS = [
     }
   },
   {
+    // Pattern 1b: "How is [STUDENT] doing in [SUBJECT]?"
+    patterns: [
+      /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+(.+)/i,
+      /(?:analyze|show)\s+(.+?)(?:'s)?\s+(?:performance|grades?|progress)\s+in\s+(.+)/i,
+      /(.+?)(?:'s)?\s+(math|science|english|history|social studies)\s+(?:performance|grades?)/i,
+    ],
+    intent: 'analyzeStudentSubject',
+    entities: ['studentName', 'subject'],
+    description: 'Analyze student performance in specific subject',
+    handler: async (entities, teacherId) => {
+      const student = await fuzzyFindStudent(entities.studentName, teacherId);
+      if (student.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          options: student.options,
+          message: `I found multiple students. Which one did you mean?\n\n` +
+            student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+        };
+      }
+
+      // Import categorization from utils
+      const { categorizeAssignment } = require('../../utils/gradeUtils');
+
+      // Fetch ALL grades for this student
+      const [records] = await db.query(`
+        SELECT 
+          a.name AS assignment, 
+          g.grade AS raw_grade,
+          a.max_points,
+          CASE 
+            WHEN g.grade IS NULL OR g.grade = '' THEN NULL
+            WHEN a.max_points > 0 THEN ROUND((g.grade / a.max_points) * 100, 1)
+            ELSE g.grade
+          END AS grade
+        FROM grades g
+        JOIN assignments a ON g.assignment_id = a.id
+        WHERE g.student_id = ? AND g.teacher_id = ?
+      `, [student.id, teacherId]);
+
+      // Normalize subject name
+      const subjectMap = {
+        'math': 'Math',
+        'mathematics': 'Math',
+        'science': 'Science',
+        'english': 'English',
+        'ela': 'English',
+        'history': 'Social Studies',
+        'social studies': 'Social Studies',
+        'geography': 'Social Studies',
+      };
+      
+      const targetSubject = subjectMap[entities.subject.toLowerCase()] || 
+                           entities.subject.charAt(0).toUpperCase() + entities.subject.slice(1).toLowerCase();
+
+      // Filter records to only this subject
+      const subjectRecords = records.filter(r => {
+        const category = categorizeAssignment(r.assignment);
+        return category === targetSubject;
+      });
+
+      if (subjectRecords.length === 0) {
+        return {
+          success: true,
+          intent: 'analyzeStudentSubject',
+          analysis: `${student.first_name} ${student.last_name} has no graded ${targetSubject} assignments yet.`
+        };
+      }
+
+      // Use existing analyzer but with filtered records
+      const analysis = analyzeStudentPerformance(
+        `${student.first_name} ${student.last_name} - ${targetSubject}`, 
+        subjectRecords
+      );
+
+      return {
+        success: true,
+        intent: 'analyzeStudentSubject',
+        analysis
+      };
+    }
+  },
+  {
     // Pattern 2: "Who didn't do [ASSIGNMENT]?"
     patterns: [
       /who\s+(?:didn't|did not|hasn't|has not|haven't|have not)\s+(?:do|done|submit|submitted|turn in|turned in|complete|completed)\s+(.+)/i,
