@@ -106,7 +106,13 @@ async function findAtRiskStudents(teacherId, threshold = 60) {
       totalStudents,
       atRiskRate: 0,
       threshold,
-      analysis: response
+      analysis: response,
+      structured: {
+        type: 'atRisk',
+        title: `At-Risk Students (Below ${threshold}%)`,
+        summary: `No students are currently below ${threshold}%. Great job!`,
+        studentList: []
+      }
     };
   }
 
@@ -127,7 +133,19 @@ async function findAtRiskStudents(teacherId, threshold = 60) {
     atRiskRate: parseFloat(atRiskRate),
     threshold,
     students: studentAverages,
-    analysis: response
+    analysis: response,
+    // Structured data for frontend rendering
+    structured: {
+      type: 'atRisk',
+      title: `At-Risk Students (Below ${threshold}%)`,
+      summary: `${atRiskCount} of ${totalStudents} students (${atRiskRate}%) are below ${threshold}%`,
+      studentList: studentAverages.map(s => ({
+        id: s.id,
+        name: `${s.first_name} ${s.last_name}`,
+        grade: `${parseFloat(s.average_percentage).toFixed(1)}%`,
+        missingCount: s.missing_count
+      }))
+    }
   };
 }
 
@@ -169,7 +187,13 @@ async function findChronicMissingWork(teacherId, minMissing = 3) {
       intent: 'chronicMissing',
       flaggedCount: 0,
       minMissing,
-      analysis: response
+      analysis: response,
+      structured: {
+        type: 'chronicMissing',
+        title: `Chronic Missing Work (${minMissing}+ missing)`,
+        summary: `No students have ${minMissing}+ missing assignments`,
+        studentList: []
+      }
     };
   }
 
@@ -187,7 +211,19 @@ async function findChronicMissingWork(teacherId, minMissing = 3) {
     flaggedCount,
     minMissing,
     students,
-    analysis: response
+    analysis: response,
+    // Structured data for frontend rendering
+    structured: {
+      type: 'chronicMissing',
+      title: `Chronic Missing Work (${minMissing}+ missing)`,
+      summary: `${flaggedCount} student${flaggedCount > 1 ? 's' : ''} with chronic missing work`,
+      studentList: students.map(s => ({
+        id: s.id,
+        name: `${s.first_name} ${s.last_name}`,
+        missingCount: s.missing_count,
+        missingRate: `${s.missing_rate}%`
+      }))
+    }
   };
 }
 
