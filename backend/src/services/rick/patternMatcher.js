@@ -12,14 +12,15 @@ const { findBestMatch, formatClarification } = require('../../utils/assignmentNo
  */
 const PATTERNS = [
   {
-    // Pattern 1: "How is [STUDENT] doing?"
+    // Pattern 1: "How is [STUDENT] doing in [SUBJECT]?" (MUST BE FIRST - most specific)
     patterns: [
-      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
-      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)/i,
+      /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+(.+)/i,
+      /(?:analyze|show)\s+(.+?)(?:'s)?\s+(?:performance|grades?|progress)\s+in\s+(.+)/i,
+      /(.+?)(?:'s)?\s+(math|science|english|history|social studies|french)\s+(?:performance|grades?)/i,
     ],
-    intent: 'analyzeStudent',
-    entities: ['studentName'],
-    description: 'Analyze overall student performance',
+    intent: 'analyzeStudentSubject',
+    entities: ['studentName', 'subject'],
+    description: 'Analyze student performance in specific subject',
     handler: async (entities, teacherId) => {
       const student = await fuzzyFindStudent(entities.studentName, teacherId);
       if (student.needsClarification) {
@@ -61,15 +62,14 @@ const PATTERNS = [
     }
   },
   {
-    // Pattern 1b: "How is [STUDENT] doing in [SUBJECT]?"
+    // Pattern 2: "How is [STUDENT] doing?" (general - AFTER subject-specific)
     patterns: [
-      /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+(.+)/i,
-      /(?:analyze|show)\s+(.+?)(?:'s)?\s+(?:performance|grades?|progress)\s+in\s+(.+)/i,
-      /(.+?)(?:'s)?\s+(math|science|english|history|social studies)\s+(?:performance|grades?)/i,
+      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing/i,
+      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)/i,
     ],
-    intent: 'analyzeStudentSubject',
-    entities: ['studentName', 'subject'],
-    description: 'Analyze student performance in specific subject',
+    intent: 'analyzeStudent',
+    entities: ['studentName'],
+    description: 'Analyze overall student performance',
     handler: async (entities, teacherId) => {
       const student = await fuzzyFindStudent(entities.studentName, teacherId);
       if (student.needsClarification) {
