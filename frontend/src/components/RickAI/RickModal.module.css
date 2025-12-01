@@ -1,4 +1,184 @@
 /* RickModal.module.css - Matches GradeInsight design system */
+/* Add these new styles to your existing RickModal.module.css */
+
+/* Structured Response Container */
+.structuredResponse {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.responseTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.responseSummary {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Badges */
+.warningBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.infoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Stats Bar (for assignment analysis) */
+.statsBar {
+  display: flex;
+  gap: 16px;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  font-size: 16px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Student List */
+.studentListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.studentListHeader {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.studentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom scrollbar for student list */
+.studentList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.studentList::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.studentList::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.studentList::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.studentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+
+.studentItem:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateX(2px);
+}
+
+.studentName {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+  flex: 1;
+}
+
+.studentGrade {
+  font-size: 14px;
+  color: #059669;
+  font-weight: 600;
+  padding: 4px 10px;
+  background-color: #d1fae5;
+  border-radius: 6px;
+}
+
+.missingBadge {
+  font-size: 12px;
+  color: #dc2626;
+  background-color: #fee2e2;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Text content (for non-structured responses) */
+.textContent {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* Keep your existing modal styles below */
+/* ... rest of your existing CSS ... */
+
 
 .overlay {
   position: fixed;
@@ -380,3 +560,5 @@
     font-size: 16px; /* Prevents iOS zoom */
   }
 }
+
+
