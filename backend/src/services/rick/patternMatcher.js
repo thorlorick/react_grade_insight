@@ -111,6 +111,12 @@ const PATTERNS = [
         'history': 'Social Studies',
         'social studies': 'Social Studies',
         'geography': 'Social Studies',
+        'french': 'French',
+        'français': 'French',
+        'francais': 'French',
+        'spanish': 'Spanish',
+        'español': 'Spanish',
+        'espanol': 'Spanish',
       };
       
       const targetSubject = subjectMap[entities.subject.toLowerCase()] || 
