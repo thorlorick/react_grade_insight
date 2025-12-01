@@ -4,7 +4,7 @@ const { validGrades, calculateStats, parseGrade } = require('../../utils/gradeUt
 const { pool: db } = require('../../db');
 
 /**
- * Analyze who didn't submit a specific assignment
+ * Analyze who didn't submit a specific assignment for app
  * @param {number} assignmentId - Assignment ID
  * @param {number} teacherId - Teacher ID
  * @returns {Object} - Analysis with students who didn't submit
