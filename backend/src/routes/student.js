@@ -4,7 +4,7 @@ const { pool } = require('../db');
 
 const router = express.Router();
 
-// Auth middleware
+// Auth middleware for app
 const checkStudentAuth = (req, res, next) => {
   if (!req.session.student_id) {
     return res.status(401).json({ error: 'Student authentication required' });
@@ -125,3 +125,4 @@ router.get('/notes', checkStudentAuth, async (req, res) => {
 });
 
 module.exports = router;
+
