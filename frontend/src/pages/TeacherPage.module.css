@@ -322,11 +322,17 @@
     0 -1px 0 rgba(0, 0, 0, 0.1) inset;
 }
 
+/* UPDATED: More space for the table */
 .pageWrapper {
-  padding: 2rem;
-  background-color: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
-  min-height: 100vh;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: transparent;
+  min-height: calc(100vh - 80px);
   font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 .uploadSuccess {
@@ -336,6 +342,7 @@
   padding: 1rem;
   margin: 1rem 0;
   border-radius: 8px;
+  position: relative;
 }
 
 .uploadError {
@@ -345,6 +352,26 @@
   padding: 1rem;
   margin: 1rem 0;
   border-radius: 8px;
+  position: relative;
+}
+
+.dismissButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.dismissButton:hover {
+  opacity: 1;
 }
 
 
@@ -379,7 +406,7 @@
 
   .heroContainer {
     height: calc(100vh - 40px);
-    margin-top: 80px; /* Account for taller mobile navbar */
+    margin-top: 80px;
   }
 
   .content {
@@ -419,7 +446,7 @@
 
   .formInput, .signupInput {
     padding: 14px 16px;
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px;
   }
 
   .loginButton {
@@ -431,6 +458,11 @@
     padding: 12px 20px;
     font-size: 1rem;
     margin-top: 20px;
+  }
+
+  .pageWrapper {
+    padding: 0.5rem;
+    min-height: calc(100vh - 150px);
   }
 }
 
