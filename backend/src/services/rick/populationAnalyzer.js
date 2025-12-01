@@ -24,7 +24,7 @@ async function getPopulationStats(teacherId) {
       AND g.grade IS NOT NULL
   `, [teacherId]);
 
-  // Get student count
+  // Get student count for the app
   const [studentCount] = await db.query(`
     SELECT COUNT(DISTINCT student_id) as total
     FROM grades
