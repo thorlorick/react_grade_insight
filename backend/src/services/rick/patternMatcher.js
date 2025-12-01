@@ -27,7 +27,7 @@ const PATTERNS = [
           success: false,
           needsClarification: true,
           options: student.options,
-          message: `I found multiple students. Did you mean:\n` +
+          message: `I found multiple students. Which one did you mean?\n\n` +
             student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
         };
       }
@@ -74,12 +74,13 @@ const PATTERNS = [
     handler: async (entities, teacherId) => {
       const assignment = await fuzzyFindAssignment(entities.assignmentName, teacherId);
       if (assignment.needsClarification) {
+        const { formatClarification } = require('../../utils/assignmentNormalizer');
         return {
           success: false,
           needsClarification: true,
           options: assignment.options,
-          message: `I found multiple assignments. Did you mean:\n` +
-            assignment.options.map((a, i) => `${i + 1}. ${a.name}`).join('\n')
+          message: `I found multiple assignments. Which one did you mean?\n\n` +
+            formatClarification(assignment.options)
         };
       }
 
@@ -101,12 +102,13 @@ const PATTERNS = [
     handler: async (entities, teacherId) => {
       const assignment = await fuzzyFindAssignment(entities.assignmentName, teacherId);
       if (assignment.needsClarification) {
+        const { formatClarification } = require('../../utils/assignmentNormalizer');
         return {
           success: false,
           needsClarification: true,
           options: assignment.options,
-          message: `I found multiple assignments. Did you mean:\n` +
-            assignment.options.map((a, i) => `${i + 1}. ${a.name}`).join('\n')
+          message: `I found multiple assignments. Which one did you mean?\n\n` +
+            formatClarification(assignment.options)
         };
       }
 
