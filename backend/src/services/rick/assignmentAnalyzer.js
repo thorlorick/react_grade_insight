@@ -82,7 +82,18 @@ async function analyzeMissingWork(assignmentId, teacherId) {
     submittedCount,
     missingRate: parseFloat(missingRate),
     students: missingStudents,
-    analysis: response
+    analysis: response,
+    // Structured data for frontend rendering
+    structured: {
+      type: 'missingWork',
+      title: `Missing Work: ${assignment.name}`,
+      summary: `${missingCount} of ${totalStudents} students (${missingRate}%) have not submitted`,
+      isHighRate: missingRate > 30,
+      studentList: missingStudents.map(s => ({
+        id: s.id,
+        name: `${s.first_name} ${s.last_name}`
+      }))
+    }
   };
 }
 
