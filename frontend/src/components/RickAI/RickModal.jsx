@@ -2,6 +2,73 @@ import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
 import styles from './RickModal.module.css';
 
+// Component to render structured data as a nice list
+const StructuredResponse = ({ data }) => {
+  if (!data) return null;
+
+  const { type, title, summary, studentList, stats, isHighRate, isHighFailureRate, isLowFailureRate } = data;
+
+  return (
+    <div className={styles.structuredResponse}>
+      <h3 className={styles.responseTitle}>{title}</h3>
+      
+      <p className={styles.responseSummary}>
+        {summary}
+        {isHighRate && <span className={styles.warningBadge}>⚠️ High rate</span>}
+        {isHighFailureRate && <span className={styles.warningBadge}>⚠️ Challenging assignment</span>}
+        {isLowFailureRate && <span className={styles.infoBadge}>ℹ️ Targeted intervention</span>}
+      </p>
+
+      {/* Show stats if available (for failed assignments) */}
+      {stats && (
+        <div className={styles.statsBar}>
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>Average:</span>
+            <span className={styles.statValue}>{stats.average}%</span>
+          </div>
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>Range:</span>
+            <span className={styles.statValue}>{stats.min}% - {stats.max}%</span>
+          </div>
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>Graded:</span>
+            <span className={styles.statValue}>{stats.graded}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Student list */}
+      {studentList && studentList.length > 0 && (
+        <div className={styles.studentListContainer}>
+          <p className={styles.studentListHeader}>
+            Students ({studentList.length}):
+          </p>
+          <ul className={styles.studentList}>
+            {studentList.map((student, index) => (
+              <li key={student.id || index} className={styles.studentItem}>
+                <span className={styles.studentName}>{student.name}</span>
+                {student.grade && (
+                  <span className={styles.studentGrade}>{student.grade}</span>
+                )}
+                {student.missingCount > 0 && (
+                  <span className={styles.missingBadge}>
+                    {student.missingCount} missing
+                  </span>
+                )}
+                {student.missingRate && (
+                  <span className={styles.missingBadge}>
+                    {student.missingRate} of assignments
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const RickModal = ({ onClose }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +86,7 @@ const RickModal = ({ onClose }) => {
 
   useEffect(() => {
     if (!isLoading && inputRef.current) {
-    inputRef.current.focus();
+      inputRef.current.focus();
     }
   }, [isLoading]);
  
@@ -36,6 +103,7 @@ const RickModal = ({ onClose }) => {
         isUser: false,
         timestamp: new Date(),
         data: null,
+        structured: null,
       },
     ]);
   }, []);
@@ -52,6 +120,7 @@ const RickModal = ({ onClose }) => {
       isUser: true,
       timestamp: new Date(),
       data: null,
+      structured: null,
     };
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
@@ -74,6 +143,7 @@ const RickModal = ({ onClose }) => {
           isUser: false,
           timestamp: new Date(),
           data: result.data || null,
+          structured: result.structured || null,  // Store structured data
         };
         setMessages((prev) => [...prev, rickMessage]);
       } else {
@@ -87,11 +157,12 @@ const RickModal = ({ onClose }) => {
         isUser: false,
         timestamp: new Date(),
         data: null,
+        structured: null,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-       // Refocus the input after sending
+      // Refocus the input after sending
       inputRef.current?.focus();
     }
   };
@@ -105,6 +176,7 @@ const RickModal = ({ onClose }) => {
           isUser: false,
           timestamp: new Date(),
           data: null,
+          structured: null,
         },
       ]);
     }
@@ -166,7 +238,6 @@ const RickModal = ({ onClose }) => {
           </div>
         </div>
 
-    
         <div className={styles.messagesContainer}>
           {messages.map((msg) => (
             <div
@@ -174,9 +245,14 @@ const RickModal = ({ onClose }) => {
               className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
             >
               <div className={styles.messageContent}>
-                
-                {msg.content}
-                
+                {/* If structured data exists, render it nicely. Otherwise show text */}
+                {msg.structured ? (
+                  <StructuredResponse data={msg.structured} />
+                ) : (
+                  <div className={styles.textContent}>
+                    {msg.content}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -195,7 +271,6 @@ const RickModal = ({ onClose }) => {
           <div ref={messagesEndRef} />
         </div>
 
-     
         <form onSubmit={handleSendMessage} className={styles.inputContainer}>
           <input
             ref={inputRef}
