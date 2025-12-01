@@ -1,7 +1,7 @@
 // backend/prompts/sqlGenerationPrompt.js
 
 /**
- * Generate a detailed prompt for SQL generation
+ * Generate a detailed prompt for SQL generation for app
  */
 const buildSQLPrompt = (context) => {
   const { schema, userMessage, memories, conversationHistory, teacherId } = context;
