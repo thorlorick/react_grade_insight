@@ -1,7 +1,7 @@
 // backend/prompts/responseFormattingPrompt.js
 
 /**
- * Generate a prompt for formatting query results into natural language
+ * Generate a prompt for formatting query results into natural language for app
  */
 const buildResponsePrompt = (context) => {
   const { userMessage, queryResults, memories, conversationHistory, teacherName } = context;
