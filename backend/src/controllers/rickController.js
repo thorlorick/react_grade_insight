@@ -1,5 +1,4 @@
 // backend/src/controllers/rickController.js
-
 const { parseNaturalLanguage } = require('../services/rick/patternMatcher');
 const queryBuilders = require('../services/rick/queryBuilders');
 const formatters = require('../services/rick/formatters');
@@ -75,6 +74,7 @@ const rickController = {
       // NEW INTENTS: Handled directly by analyzers
       const analyzerIntents = [
         'analyzeStudent',
+        'analyzeStudentSubject',  // NEW
         'missingWork', 
         'failedAssignment',
         'atRisk',
