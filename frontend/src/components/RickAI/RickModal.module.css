@@ -8,7 +8,7 @@
 .responseTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #7dd3fc;
   margin: 0;
   padding-bottom: 8px;
   border-bottom: 2px solid #e5e7eb;
@@ -16,7 +16,7 @@
 
 .responseSummary {
   font-size: 14px;
-  color: #4b5563;
+  color: #ffffff;
   margin: 0;
   display: flex;
   align-items: center;
