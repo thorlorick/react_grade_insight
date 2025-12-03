@@ -1,5 +1,4 @@
 // backend/src/controllers/rickController.js
-
 const { parseNaturalLanguage } = require('../services/rick/patternMatcher');
 const queryBuilders = require('../services/rick/queryBuilders');
 const formatters = require('../services/rick/formatters');
@@ -46,6 +45,17 @@ const rickController = {
       console.log('Calling parseNaturalLanguage...');
       const parsed = await parseNaturalLanguage(message, teacherId);
       console.log('Parsed result:', JSON.stringify(parsed, null, 2));
+
+      // Handle clarification requests specially (not errors!)
+      if (parsed.needsClarification) {
+        console.log('Needs clarification, sending options');
+        return res.json({
+          success: true,  // Changed from false - this is a valid response
+          needsClarification: true,
+          response: parsed.message,
+          options: parsed.options
+        });
+      }
 
       if (!parsed.success) {
         console.log('Parse failed, sending error response');
