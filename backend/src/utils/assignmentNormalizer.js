@@ -230,10 +230,10 @@ function smartMatchAssignments(userInput, assignments) {
  * Find best assignment match with intelligent fallback
  * @param {string} userInput - What the teacher typed
  * @param {Array} assignments - Array of assignment objects
- * @param {number} threshold - Minimum score to consider a match (default 40)
+ * @param {number} threshold - Minimum score to consider a match (default 50)
  * @returns {Object} - Best match or clarification object
  */
-function findBestMatch(userInput, assignments, threshold = 40) {
+function findBestMatch(userInput, assignments, threshold = 50) {
   const matches = smartMatchAssignments(userInput, assignments);
   
   // No matches at all
@@ -304,13 +304,6 @@ function formatClarification(matches) {
     if (tokens.unit) details.push(`Unit ${tokens.unit}`);
     if (tokens.type) details.push(tokens.type);
     if (tokens.number) details.push(`#${tokens.number}`);
-    
-    // Add date if available
-    if (match.due_date) {
-      const date = new Date(match.due_date);
-      const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      details.push(`Due: ${dateStr}`);
-    }
     
     const context = details.length > 0 ? ` (${details.join(', ')})` : '';
     
