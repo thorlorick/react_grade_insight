@@ -69,6 +69,21 @@ const StructuredResponse = ({ data }) => {
   );
 };
 
+// Component to render clarification requests
+const ClarificationResponse = ({ message }) => {
+  return (
+    <div className={styles.clarificationResponse}>
+      <div className={styles.clarificationIcon}>🤔</div>
+      <div className={styles.clarificationContent}>
+        <p className={styles.clarificationText}>{message}</p>
+        <p className={styles.clarificationHint}>
+          💡 Try copying one of the exact names above, or be more specific.
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const RickModal = ({ onClose }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +133,7 @@ You can ask things like:
     ]);
   }, []);
 
-  const handleSendMessage = async (e) => {
+   const handleSendMessage = async (e) => {
     e.preventDefault();
     const messageText = inputValue.trim();
     if (!messageText || isLoading) return;
@@ -154,6 +169,7 @@ You can ask things like:
           timestamp: new Date(),
           data: result.data || null,
           structured: result.structured || null,  // Store structured data
+          needsClarification: result.needsClarification || false,  // Store clarification flag
         };
         setMessages((prev) => [...prev, rickMessage]);
       } else {
@@ -255,10 +271,14 @@ You can ask things like:
               className={`${styles.message} ${msg.isUser ? styles.messageUser : styles.messageAssistant}`}
             >
               <div className={styles.messageContent}>
-                {/* If structured data exists, render it nicely. Otherwise show text */}
-                {msg.structured ? (
+                {/* If clarification needed, show special UI */}
+                {msg.needsClarification ? (
+                  <ClarificationResponse message={msg.content} />
+                ) : msg.structured ? (
+                  /* If structured data exists, render it nicely */
                   <StructuredResponse data={msg.structured} />
                 ) : (
+                  /* Otherwise show text */
                   <div className={styles.textContent}>
                     {msg.content}
                   </div>
