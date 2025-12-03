@@ -118,12 +118,12 @@ const RickModal = ({ onClose }) => {
 Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data and track progress.
 
 You can ask things like:
-• How is [STUDENT] doing in [SUBJECT]?
-• How is [STUDENT] doing?
-• Who didn't do [ASSIGNMENT]?
-• Who failed [ASSIGNMENT]?
+• How is STUDENT doing in SUBJECT?
+• How is STUDENT doing?
+• Who didn't do ASSIGNMENT?
+• Who failed ASSIGNMENT?
 • Who is at risk?
-• Who has missing work?
+• Who has lots of missing work?
 `,  
         isUser: false,
         timestamp: new Date(),
