@@ -158,31 +158,12 @@ function scoreMatch(userTokens, assignmentTokens) {
     score += 20;
   }
   
-  // Token overlap scoring - important for keywords like "french", "weekly"
-  if (userTokens.tokens && assignmentTokens.tokens) {
-    const userSet = new Set(userTokens.tokens);
-    const assignmentSet = new Set(assignmentTokens.tokens);
-    let overlaps = 0;
-    
-    userSet.forEach(token => {
-      if (assignmentSet.has(token)) {
-        overlaps++;
-      }
-    });
-    
-    // Award points for keyword matches
-    const overlapScore = (overlaps / userTokens.tokens.length) * 20;
-    score += overlapScore;
-  }
-  
   // Partial credit for cleaned string similarity
   if (assignmentTokens.cleaned.includes(userTokens.cleaned)) {
     score += 10;
-  } else if (userTokens.cleaned.length > 3 && assignmentTokens.cleaned.includes(userTokens.cleaned.substring(0, Math.floor(userTokens.cleaned.length * 0.7)))) {
-    score += 5;
   }
   
-  return Math.round(score);
+  return score;
 }
 
 /**
