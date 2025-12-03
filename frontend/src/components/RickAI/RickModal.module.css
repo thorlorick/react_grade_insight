@@ -8,7 +8,7 @@
 .responseTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #7dd3fc;
   margin: 0;
   padding-bottom: 8px;
   border-bottom: 2px solid #e5e7eb;
@@ -16,7 +16,7 @@
 
 .responseSummary {
   font-size: 14px;
-  color: #4b5563;
+  color: #FFFFFF;
   margin: 0;
   display: flex;
   align-items: center;
@@ -89,7 +89,7 @@
 .studentListHeader {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: #FFFFFF;
   margin: 0;
 }
 
@@ -197,7 +197,7 @@
 .clarificationText {
   margin: 0;
   font-size: 14px;
-  color: #78350f;
+  color: #030303;
   white-space: pre-wrap;
   line-height: 1.6;
 }
