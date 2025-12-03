@@ -305,6 +305,13 @@ function formatClarification(matches) {
     if (tokens.type) details.push(tokens.type);
     if (tokens.number) details.push(`#${tokens.number}`);
     
+    // Add date if available
+    if (match.due_date) {
+      const date = new Date(match.due_date);
+      const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      details.push(`Due: ${dateStr}`);
+    }
+    
     const context = details.length > 0 ? ` (${details.join(', ')})` : '';
     
     return `${index + 1}. ${match.name}${context}`;
