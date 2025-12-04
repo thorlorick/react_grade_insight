@@ -1,9 +1,9 @@
 // backend/src/services/rick/intelligentMatcher.js
 
-const { fuzzyFindStudent, fuzzyFindAssignment } = require('./patternMatcher');
 const { analyzeStudentPerformance } = require('./studentAnalyzer');
 const { findAtRiskStudents, findChronicMissingWork } = require('./populationAnalyzer');
 const { categorizeAssignment } = require('../../utils/gradeUtils');
+const { fuzzyFindStudent, fuzzyFindAssignment } = require('./entityMatcher');
 const { pool: db } = require('../../db');
 
 /**
