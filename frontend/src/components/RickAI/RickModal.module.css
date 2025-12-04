@@ -178,8 +178,8 @@
   display: flex;
   gap: 12px;
   padding: 16px;
-  background-color: #545454;
-  border: 2px solid #2a3b3d;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
 }
 
@@ -198,7 +198,7 @@
 .clarificationText {
   margin: 0;
   font-size: 14px;
-  color: #cccdc7;
+  color: rgba(255, 255, 255, 0.9);
   white-space: pre-wrap;
   line-height: 1.6;
 }
@@ -206,7 +206,7 @@
 .clarificationHint {
   margin: 0;
   font-size: 12px;
-  color: #92220e;
+  color: #FFD700;
   font-style: italic;
 }
 
