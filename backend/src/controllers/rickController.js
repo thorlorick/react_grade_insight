@@ -85,11 +85,16 @@ const rickController = {
       // NEW INTENTS: Handled directly by analyzers
       const analyzerIntents = [
         'analyzeStudent',
-        'analyzeStudentSubject',  // NEW
+        'analyzeStudentSubject',
+        'analyzeStudentByType',  // NEW: from intelligent matcher
         'missingWork', 
         'failedAssignment',
         'atRisk',
-        'chronicMissing'
+        'atRiskInSubject',  // NEW: from intelligent matcher
+        'chronicMissing',
+        'missingWorkInSubject',  // NEW: from intelligent matcher
+        'doingWell',  // NEW: from intelligent matcher
+        'doingWellInSubject'  // NEW: from intelligent matcher
       ];
 
       if (analyzerIntents.includes(parsed.intent)) {
