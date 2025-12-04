@@ -6,6 +6,7 @@ const { analyzeStudentPerformance } = require('./studentAnalyzer');
 const { analyzeMissingWork, analyzeFailures } = require('./assignmentAnalyzer');
 const { findAtRiskStudents, findChronicMissingWork } = require('./populationAnalyzer');
 const { findBestMatch, formatClarification } = require('../../utils/assignmentNormalizer');
+const { intelligentMatch } = require('./intelligentMatcher');
 
 /**
  * Pattern definitions
@@ -215,8 +216,8 @@ const PATTERNS = [
   {
     // Pattern 6: "Who has missing work?"
     patterns: [
-      /who\s+has\s+(?:lots of|a lot of|multiple|chronic|many)\s+missing\s+(?:work|assignments?)/i,
-      /(?:show|list)\s+(?:chronic|multiple)\s+missing\s+(?:work|assignments?)/i,
+      /who\s+has\s+(?:lots of|a lot of|multiple|chronic|many)?\s*missing\s+(?:work|assignments?)/i,
+      /(?:show|list)\s+(?:chronic|multiple)?\s*missing\s+(?:work|assignments?)/i,
       /what\s+students?\s+(?:aren't|are not)\s+turning\s+in\s+work/i,
     ],
     intent: 'chronicMissing',
@@ -333,28 +334,18 @@ async function fuzzyFindAssignment(name, teacherId) {
 }
 
 /**
- * Main parsing function
+ * Main parsing function with three-layer intelligence
  */
 async function parseNaturalLanguage(message, teacherId) {
+  // LAYER 1: Try exact pattern matching
   const matched = matchPattern(message);
 
-  if (!matched) {
-    return {
-      success: false,
-      error: 'I don\'t understand that question. Try:\n' +
-             '- "How is [student] doing?"\n' +
-             '- "How is [student] doing in [subject]?"\n' +
-             '- "Who didn\'t do [assignment]?"\n' +
-             '- "Who failed [assignment]?"\n' +
-             '- "Who is at risk?"\n' +
-             '- "Who has missing work?"'
-    };
-  }
-
-  if (matched.handler) {
+  if (matched && matched.handler) {
     try {
+      console.log('Layer 1: Exact pattern matched');
       return await matched.handler(matched.entities, teacherId);
     } catch (error) {
+      console.error('Pattern handler error:', error);
       return { 
         success: false, 
         error: error.message 
@@ -362,11 +353,28 @@ async function parseNaturalLanguage(message, teacherId) {
     }
   }
 
+  // LAYER 2: Try intelligent component analysis
+  console.log('Layer 1 failed, trying Layer 2: Intelligent matching');
+  const intelligentResult = await intelligentMatch(message, teacherId);
+  
+  if (intelligentResult) {
+    console.log('Layer 2: Intelligent match found');
+    return intelligentResult;
+  }
+
+  // LAYER 3: Helpful error message
+  console.log('Layer 2 failed, returning Layer 3: Help message');
   return {
-    success: true,
-    intent: matched.intent,
-    entities: matched.entities,
-    confidence: matched.confidence
+    success: false,
+    error: 'I don\'t understand that question. Try:\n' +
+           '- "How is [student] doing?"\n' +
+           '- "How is [student] doing in [subject]?"\n' +
+           '- "Who didn\'t do [assignment]?"\n' +
+           '- "Who failed [assignment]?"\n' +
+           '- "Who is at risk?"\n' +
+           '- "Who is at risk in [subject]?"\n' +
+           '- "Who is doing well?"\n' +
+           '- "Who has missing work?"'
   };
 }
 
