@@ -130,9 +130,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
- /* background-color: #ffffff;
+  background-color: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 6px; */
+  border-radius: 6px;
   transition: all 0.2s ease;
   gap: 12px;
 }
@@ -144,7 +144,7 @@
 
 .studentName {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #000000;
   font-weight: 500;
   flex: 1;
 }
