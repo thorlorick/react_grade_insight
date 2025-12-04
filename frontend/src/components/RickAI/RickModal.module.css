@@ -178,7 +178,7 @@
   display: flex;
   gap: 12px;
   padding: 16px;
-  background-color: #89acb0;
+  background-color: #545454;
   border: 2px solid #2a3b3d;
   border-radius: 8px;
 }
@@ -198,7 +198,7 @@
 .clarificationText {
   margin: 0;
   font-size: 14px;
-  color: #0f1b1c;
+  color: #cccdc7;
   white-space: pre-wrap;
   line-height: 1.6;
 }
