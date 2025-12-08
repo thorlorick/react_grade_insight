@@ -219,7 +219,7 @@ You can ask things like:
     return (
       <div className={styles.minimized} onClick={() => setMinimized(false)}>
         <span className={styles.minimizedIcon}>🤖</span>
-        <span className={styles.minimizedText}>Rick TA</span>
+        <span className={styles.minimizedText}>Rick</span>
         {messages.length > 1 && (
           <span className={styles.messageCount}>{messages.length - 1}</span>
         )}
@@ -235,7 +235,7 @@ You can ask things like:
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
             <div>
-              <h2 className={styles.title}>Rick TA</h2>
+              <h2 className={styles.title}>Rick</h2>
               <p className={styles.subtitle}>Your Personal Teaching Assistant</p>
             </div>
           </div>
