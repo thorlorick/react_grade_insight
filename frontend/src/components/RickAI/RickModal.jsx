@@ -115,7 +115,7 @@ const RickModal = ({ onClose }) => {
       {
         id: Date.now(),
         content: `
-Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data and track progress.
+Hi! I'm Rick, your Teaching Assistant. I can help you analyze student data and track progress.
 
 You can ask things like:
 • How is STUDENT doing in SUBJECT?
@@ -219,7 +219,7 @@ You can ask things like:
     return (
       <div className={styles.minimized} onClick={() => setMinimized(false)}>
         <span className={styles.minimizedIcon}>🤖</span>
-        <span className={styles.minimizedText}>Rick AI</span>
+        <span className={styles.minimizedText}>Rick TA</span>
         {messages.length > 1 && (
           <span className={styles.messageCount}>{messages.length - 1}</span>
         )}
@@ -235,8 +235,8 @@ You can ask things like:
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
             <div>
-              <h2 className={styles.title}>Rick AI</h2>
-              <p className={styles.subtitle}>Your teaching assistant</p>
+              <h2 className={styles.title}>Rick TA</h2>
+              <p className={styles.subtitle}>Your Personal Teaching Assistant</p>
             </div>
           </div>
           <div className={styles.headerButtons}>
