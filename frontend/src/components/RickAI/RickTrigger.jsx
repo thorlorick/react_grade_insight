@@ -25,7 +25,7 @@ const RickTrigger = ({ variant = 'button' }) => {
           className={styles.navLink}
           aria-label="Open Rick AI Assistant"
         >
-          Rick AI
+          Analysis
         </button>
         
         {showRick && (
