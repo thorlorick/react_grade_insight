@@ -593,3 +593,6 @@ ALTER TABLE students AUTO_INCREMENT = 1;
 SET FOREIGN_KEY_CHECKS = 1;
 
 I'm using this to get rid of data if I need to repopulate....it's probably not correct, but it seems to work
+
+# SELLING PHASE???
+I'm starting to ask Claude about selling this thing...are we there yet....not even close!!!!!
