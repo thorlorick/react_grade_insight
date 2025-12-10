@@ -3,7 +3,7 @@ const { pool: db } = require('../../db');
 const { analyzeByCategory, generateInsights } = require('../../utils/rick/assignmentCategorizer');
 
 /**
- * Query 1: Show grades for a specific student (WITH SMART ANALYSIS)
+ * Query 1: Show grades for a specific student (WITH SMART ANALYSIS) in app
  */
 async function showGradesQuery(entities, teacherId) {
   const { student } = entities;
