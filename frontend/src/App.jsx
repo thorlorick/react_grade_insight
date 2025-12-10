@@ -17,6 +17,7 @@ import ParentPage from './pages/ParentPage';
 import SignUp from './pages/TeacherSignUp';
 import AdminPanel from './pages/AdminPanel';
 import ParentSignup from './pages/ParentSignup';
+import TeacherAdminPage from './pages/TeacherAdminPage';
 
 const App = () => {
   return (
@@ -45,8 +46,14 @@ const App = () => {
         <Route path="/signupPageForTeachers" element={<SignUp />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/ParentSignup" element={<ParentSignup />} />
-      
-      
+
+        // Add this route inside your <Routes> component
+        <Route path="/teacher-admin" element={
+          <ProtectedTeacherRoute>
+            <TeacherAdminPage />
+          </ProtectedTeacherRoute>
+} />
+           
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />
       </Routes>
