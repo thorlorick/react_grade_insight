@@ -83,6 +83,9 @@ app.use(express.static(path.join(__dirname, '../../frontend/')));
 // Admin routes (add with your other routes)
 app.use('/api/admin', require('./routes/admin'));
 
+// Teacher Admin routes for signed up teachers
+app.use('/api/teacher-admin', require('./routes/teacherAdmin'));
+
 // Contact route
 app.use(contactRoutes);
 
