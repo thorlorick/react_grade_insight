@@ -21,7 +21,7 @@ const TeacherLogin = () => {
       [name]: value
     }));
     
-    // Clear error when user starts typing
+    // Clear error when user starts typing in app
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
