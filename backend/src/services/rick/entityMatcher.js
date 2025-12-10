@@ -32,14 +32,27 @@ async function fuzzyFindStudent(name, teacherId) {
     throw new Error(`No student found matching "${name}"`);
   }
   
+  // Check if we have multiple matches with similar scores
+  if (results.length > 1) {
+    const topScore = results[0].score;
+    const secondScore = results[1].score;
+    
+    // If top two matches are very close in score (within 0.1), need clarification
+    if (Math.abs(topScore - secondScore) < 0.1) {
+      return {
+        needsClarification: true,
+        options: results.slice(0, 3).map(r => r.item)
+      };
+    }
+  }
+  
+  // Single match or clear winner
   if (results.length === 1 || results[0].score < 0.2) {
     return results[0].item;
   }
   
-  return {
-    needsClarification: true,
-    options: results.slice(0, 3).map(r => r.item)
-  };
+  // Multiple matches but first one is significantly better
+  return results[0].item;
 }
 
 /**
