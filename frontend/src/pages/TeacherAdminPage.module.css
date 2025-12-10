@@ -11,11 +11,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('%PUBLIC_URL%/images/insightBG.jpg'); 
-  background-size: cover;
-  background-position: center;
-  filter: blur(8px);
-  opacity: 0.2;
+  background: rgba(15, 15, 15, 0.5);
   z-index: 0;
 }
 
