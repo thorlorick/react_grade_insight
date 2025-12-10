@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedTeacherRoute from './components/ProtectedTeacherRoute';
 import './App.css';
-
 // Import your pages
 import Gradeinsight from './pages/Gradeinsight';
 import TeacherLogin from './pages/TeacherLogin';
@@ -46,13 +45,11 @@ const App = () => {
         <Route path="/signupPageForTeachers" element={<SignUp />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/ParentSignup" element={<ParentSignup />} />
-
-        // Add this route inside your <Routes> component
         <Route path="/teacher-admin" element={
           <ProtectedTeacherRoute>
             <TeacherAdminPage />
           </ProtectedTeacherRoute>
-} />
+        } />
            
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />
