@@ -15,9 +15,9 @@ const PATTERNS = [
   {
     // Pattern 1: "How is [STUDENT] doing in [SUBJECT]?" (MUST BE FIRST - most specific)
     patterns: [
-      /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+(.+)/i,
-      /(?:analyze|show)\s+(.+?)(?:'s)?\s+(?:performance|grades?|progress)\s+in\s+(.+)/i,
-      /(.+?)(?:'s)?\s+(math|science|english|history|social studies|french|spanish)\s+(?:performance|grades?)/i,
+      /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+([a-z\s]+?)[\?\s]*$/i,
+      /(?:analyze|show)\s+(.+?)(?:'s)?\s+(?:performance|grades?|progress)\s+in\s+([a-z\s]+?)[\?\s]*$/i,
+      /(.+?)(?:'s)?\s+(math|science|english|history|social studies|french|spanish)\s+(?:performance|grades?)[\?\s]*$/i,
     ],
     intent: 'analyzeStudentSubject',
     entities: ['studentName', 'subject'],
