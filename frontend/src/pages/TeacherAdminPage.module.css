@@ -1,0 +1,339 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/insightBG.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.2;
+  z-index: 0;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(15, 15, 15, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #6ee7b7;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.backButton {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a7f3d0;
+  padding: 8px 20px;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: translateY(-1px);
+}
+
+.main {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #6ee7b7;
+  margin-top: 0;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: -0.01em;
+}
+
+.cardIcon {
+  font-size: 1.75rem;
+}
+
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.875rem;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table th {
+  padding: 12px 16px;
+  text-align: left;
+  color: #a7f3d0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table td {
+  padding: 12px 16px;
+  color: #d1fae5;
+  font-size: 0.875rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.editButton,
+.deleteButton,
+.saveButton,
+.cancelButton {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.editButton {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.2) 0%, rgba(52, 211, 153, 0.1) 100%);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #6ee7b7;
+}
+
+.editButton:hover {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, rgba(52, 211, 153, 0.15) 100%);
+}
+
+.deleteButton {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.deleteButton:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.15) 100%);
+}
+
+.saveButton {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #86efac;
+}
+
+.saveButton:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.15) 100%);
+}
+
+.cancelButton {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #d1fae5;
+}
+
+.cancelButton:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+}
+
+.input,
+.select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #d1fae5;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  color: #a7f3d0;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.passwordSection {
+  margin-bottom: 32px;
+}
+
+.passwordSection:last-child {
+  margin-bottom: 0;
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: #7dd3fc;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.primaryButton {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, rgba(52, 211, 153, 0.15) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #6ee7b7;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.primaryButton:hover {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.4) 0%, rgba(52, 211, 153, 0.2) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(52, 211, 153, 0.2);
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 32px 0;
+}
+
+.helpText {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  margin-top: 12px;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    padding: 20px 16px;
+  }
+
+  .card {
+    padding: 24px 16px;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tableWrapper {
+    overflow-x: scroll;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .editButton,
+  .deleteButton,
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+  }
+}
