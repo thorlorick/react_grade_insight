@@ -7,8 +7,10 @@ import TeacherDashboardTable from "../components/TeacherDashboardTable";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 import RickTrigger from '../components/RickAI/RickTrigger';
+import { useNavigate } from 'react-router-dom';
 
 const TeacherPage = () => {
+  const navigate = useNavigate();
   const [teacherData, setTeacherData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -270,7 +272,12 @@ const TeacherPage = () => {
             label: 'Download Template', 
             onClick: handleDownloadTemplate,
             className: 'download-template-button'
-          }
+          },
+           { 
+        label: 'Manage Data', 
+        onClick: () => navigate('/teacher-admin'),
+        className: 'admin-link'
+      }
         ]}
       >
          <RickTrigger variant="link" />
