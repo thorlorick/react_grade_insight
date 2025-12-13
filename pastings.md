@@ -596,3 +596,7 @@ I'm using this to get rid of data if I need to repopulate....it's probably not c
 
 # SELLING PHASE???
 I'm starting to ask Claude about selling this thing...are we there yet....not even close!!!!!
+
+# Teacher Admin Page
+I added a teacher admin page tied to their teacher_id / session_id -- they can use it for managing assignments, grades, passwords...I need to flesh out what else I need there.
+
