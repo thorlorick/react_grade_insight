@@ -40,12 +40,12 @@ const TeacherPage = () => {
       target: '.download-template-button',
       content: 'Need a template? Download a properly formatted CSV template here to ensure your uploads work correctly.',
     },
-     {
+    {
       target: '.upload-csv-button',
       content: 'Click here to upload a properly formatted CSV file with student grades. This is how you add or update grade data.',
     },
     {
-      target: '.admin-link",
+      target: '.admin-link',
       content: 'This is where you can manage your own data -- grades, assignments, password resets.',
     },
     {
@@ -281,20 +281,18 @@ const TeacherPage = () => {
             onClick: handleDownloadTemplate,
             className: 'download-template-button'
           },
-           { 
-        label: 'Manage Data', 
-        onClick: () => navigate('/teacher-admin'),
-        className: 'admin-link'
-      }
+          { 
+            label: 'Manage Data', 
+            onClick: () => navigate('/teacher-admin'),
+            className: 'admin-link'
+          }
         ]}
       >
-           <RickTrigger variant="link" className="rick-trigger" />
+        <RickTrigger variant="link" className="rick-trigger" />
         
         <div className="search-bar">
           <SearchBar onSearch={handleSearch} />
         </div>
-
-
       </Navbar>
 
       {/* Upload feedback */}
