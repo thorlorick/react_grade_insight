@@ -45,6 +45,10 @@ const TeacherPage = () => {
       content: 'Click here to upload a properly formatted CSV file with student grades. This is how you add or update grade data.',
     },
     {
+      target: '.admin-link",
+      content: 'This is where you can manage your own data -- grades, assignments, password resets.',
+    },
+    {
       target: '.search-bar',
       content: 'Use the search bar to quickly find students by name.',
     },
