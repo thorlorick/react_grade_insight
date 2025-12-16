@@ -49,6 +49,10 @@ const TeacherPage = () => {
       content: 'This is where you can manage your own data -- grades, assignments, password resets.',
     },
     {
+      target: '.rick-trigger',
+      content: 'Need help? Click here to chat with Rick, your AI teaching assistant who can answer questions and provide insights about your students.',
+    },
+    {
       target: '.search-bar',
       content: 'Use the search bar to quickly find students by name.',
     },
@@ -284,7 +288,7 @@ const TeacherPage = () => {
       }
         ]}
       >
-         <RickTrigger variant="link" />
+           <RickTrigger variant="link" className="rick-trigger" />
         
         <div className="search-bar">
           <SearchBar onSearch={handleSearch} />
