@@ -62,7 +62,7 @@ const AdminPanel = () => {
     localStorage.removeItem('adminPassword');
     setIsAuthenticated(false);
     setPassword('');
-    navigate('/admin');
+    navigate('/');
   };
 
   const createCode = async (e) => {
@@ -897,5 +897,6 @@ Grade Insight Team`;
 };
 
 export default AdminPanel;
+
 
 
