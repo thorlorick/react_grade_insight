@@ -59,11 +59,11 @@ const AdminPanel = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminPassword');
-    setIsAuthenticated(false);
-    setPassword('');
-    navigate('/');
-  };
+  localStorage.removeItem('adminPassword');
+  setIsAuthenticated(false);
+  setPassword('');
+  window.location.href = 'https://gradeinsight.com';
+};
 
   const createCode = async (e) => {
     e.preventDefault();
@@ -897,6 +897,7 @@ Grade Insight Team`;
 };
 
 export default AdminPanel;
+
 
 
 
