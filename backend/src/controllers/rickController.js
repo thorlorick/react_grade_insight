@@ -87,6 +87,18 @@ async function reExecuteWithSelection(originalQuery, type, selectedOption, teach
   // Determine what to do based on the original query and type
   const queryLower = originalQuery.toLowerCase();
   
+  // "Show me [student]" - UI action
+  if (type === 'student' && (queryLower.includes('show') || queryLower.includes('open') || queryLower.includes('display'))) {
+    return {
+      success: true,
+      intent: 'showStudent',
+      action: 'openModal',
+      studentId: selectedOption.id,
+      studentName: `${selectedOption.first_name} ${selectedOption.last_name}`,
+      message: `Opening ${selectedOption.first_name} ${selectedOption.last_name}'s profile...`
+    };
+  }
+  
   // Student analysis queries
   if (type === 'student' && queryLower.includes('doing')) {
     // "How is [student] doing in [subject]?" or "How is [student] doing?"
@@ -280,17 +292,18 @@ const rickController = {
 
       // NEW INTENTS: Handled directly by analyzers
       const analyzerIntents = [
+        'showStudent',  // NEW: UI action intent
         'analyzeStudent',
         'analyzeStudentSubject',
-        'analyzeStudentByType',  // NEW: from intelligent matcher
+        'analyzeStudentByType',
         'missingWork', 
         'failedAssignment',
         'atRisk',
-        'atRiskInSubject',  // NEW: from intelligent matcher
+        'atRiskInSubject',
         'chronicMissing',
-        'missingWorkInSubject',  // NEW: from intelligent matcher
-        'doingWell',  // NEW: from intelligent matcher
-        'doingWellInSubject'  // NEW: from intelligent matcher
+        'missingWorkInSubject',
+        'doingWell',
+        'doingWellInSubject'
       ];
 
       if (analyzerIntents.includes(parsed.intent)) {
