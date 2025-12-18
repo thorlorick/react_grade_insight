@@ -1,5 +1,3 @@
-// frontend/src/components/RickAI/RickModal.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
 import styles from './RickModal.module.css';
@@ -116,7 +114,27 @@ const RickModal = ({ onClose, onOpenStudentModal }) => {
     setMessages([
       {
         id: Date.now(),
-        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class.",
+        content: `Hi! I'm Rick, your virtual Teaching Assistant. Here's what I can help with:
+
+**Student Analysis:**
+• "How is [student] doing?"
+• "How is [student] doing in [subject]?"
+• "How is [student] doing on quizzes?"
+
+**Assignment Insights:**
+• "Who didn't do [assignment]?"
+• "Who failed [assignment]?"
+
+**Class Overview:**
+• "Who is at risk?"
+• "Who is at risk in [subject]?"
+• "Who is doing well?"
+• "Who has missing work?"
+
+**Quick Actions:**
+• "Show me [student]" - Opens their profile
+
+Just ask in plain English!`,
         isUser: false,
         timestamp: new Date(),
         data: null,
@@ -236,7 +254,7 @@ const RickModal = ({ onClose, onOpenStudentModal }) => {
     return (
       <div className={styles.minimized} onClick={() => setMinimized(false)}>
         <span className={styles.minimizedIcon}>🤖</span>
-        <span className={styles.minimizedText}>Rick AI</span>
+        <span className={styles.minimizedText}>Rick</span>
         {messages.length > 1 && (
           <span className={styles.messageCount}>{messages.length - 1}</span>
         )}
@@ -252,8 +270,8 @@ const RickModal = ({ onClose, onOpenStudentModal }) => {
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
             <div>
-              <h2 className={styles.title}>Rick AI</h2>
-              <p className={styles.subtitle}>Your teaching assistant</p>
+              <h2 className={styles.title}>Rick</h2>
+              <p className={styles.subtitle}>Your Teaching Assistant</p>
             </div>
           </div>
           <div className={styles.headerButtons}>
