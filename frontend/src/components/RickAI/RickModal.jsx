@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
 import styles from './RickModal.module.css';
@@ -84,7 +85,7 @@ const ClarificationResponse = ({ message }) => {
   );
 };
 
-const RickModal = ({ onClose }) => {
+const RickModal = ({ onClose, onOpenStudentModal }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -114,17 +115,7 @@ const RickModal = ({ onClose }) => {
     setMessages([
       {
         id: Date.now(),
-        content: `
-Hi! I'm Rick, your Teaching Assistant. I can help you analyze student data and track progress.
-
-You can ask things like:
-• How is STUDENT doing in SUBJECT?
-• How is STUDENT doing?
-• Who didn't do ASSIGNMENT?
-• Who failed ASSIGNMENT?
-• Who is at risk?
-• Who has lots of missing work?
-`,  
+        content: "Hi! I'm Rick, your AI teaching assistant. I can help you analyze student data, track progress, and answer questions about your class.",
         isUser: false,
         timestamp: new Date(),
         data: null,
@@ -133,7 +124,7 @@ You can ask things like:
     ]);
   }, []);
 
-   const handleSendMessage = async (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     const messageText = inputValue.trim();
     if (!messageText || isLoading) return;
@@ -162,6 +153,31 @@ You can ask things like:
       const result = await sendMessage(messageText, conversationHistory);
 
       if (result.success) {
+        // Check if this is a UI action (like opening a modal)
+        if (result.action === 'openModal' && result.studentId) {
+          console.log('Rick wants to open student modal:', result.studentId);
+          
+          // Add Rick's message
+          const rickMessage = {
+            id: Date.now() + 1,
+            content: result.response,
+            isUser: false,
+            timestamp: new Date(),
+            data: result.data || null,
+            structured: result.structured || null,
+            needsClarification: result.needsClarification || false,
+          };
+          setMessages((prev) => [...prev, rickMessage]);
+          
+          // Trigger the modal opening (if parent provided the callback)
+          if (onOpenStudentModal) {
+            console.log('Calling onOpenStudentModal with ID:', result.studentId);
+            onOpenStudentModal(result.studentId);
+          }
+          
+          return; // Don't continue to normal message handling
+        }
+        
         const rickMessage = {
           id: Date.now() + 1,
           content: result.response,
@@ -219,7 +235,7 @@ You can ask things like:
     return (
       <div className={styles.minimized} onClick={() => setMinimized(false)}>
         <span className={styles.minimizedIcon}>🤖</span>
-        <span className={styles.minimizedText}>Rick</span>
+        <span className={styles.minimizedText}>Rick AI</span>
         {messages.length > 1 && (
           <span className={styles.messageCount}>{messages.length - 1}</span>
         )}
@@ -235,8 +251,8 @@ You can ask things like:
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
             <div>
-              <h2 className={styles.title}>Rick</h2>
-              <p className={styles.subtitle}>Your Personal Teaching Assistant</p>
+              <h2 className={styles.title}>Rick AI</h2>
+              <p className={styles.subtitle}>Your teaching assistant</p>
             </div>
           </div>
           <div className={styles.headerButtons}>
