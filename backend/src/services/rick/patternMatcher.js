@@ -13,6 +13,37 @@ const { fuzzyFindStudent, fuzzyFindAssignment } = require('./entityMatcher');
  */
 const PATTERNS = [
   {
+    // Pattern 0: "Show me [STUDENT]" (UI action - MUST BE FIRST)
+    patterns: [
+      /(?:show|open|display)\s+(?:me\s+)?(.+?)[\?\s]*$/i,
+    ],
+    intent: 'showStudent',
+    entities: ['studentName'],
+    description: 'Open student modal',
+    handler: async (entities, teacherId) => {
+      const student = await fuzzyFindStudent(entities.studentName, teacherId);
+      if (student.needsClarification) {
+        return {
+          success: false,
+          needsClarification: true,
+          clarificationType: 'student',
+          options: student.options,
+          message: `I found multiple students. Which one did you mean?\n\n` +
+            student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
+        };
+      }
+
+      return {
+        success: true,
+        intent: 'showStudent',
+        action: 'openModal',
+        studentId: student.id,
+        studentName: `${student.first_name} ${student.last_name}`,
+        message: `Opening ${student.first_name} ${student.last_name}'s profile...`
+      };
+    }
+  },
+  {
     // Pattern 1: "How is [STUDENT] doing in [SUBJECT]?" (MUST BE FIRST - most specific)
     patterns: [
       /(?:how\s+(?:is|'s)|what\s+about)\s+(.+?)\s+doing\s+in\s+([a-z\s]+?)[\?\s]*$/i,
