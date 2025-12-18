@@ -28,6 +28,7 @@ const PATTERNS = [
         return {
           success: false,
           needsClarification: true,
+          clarificationType: 'student',
           options: student.options,
           message: `I found multiple students. Which one did you mean?\n\n` +
             student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
@@ -111,6 +112,7 @@ const PATTERNS = [
         return {
           success: false,
           needsClarification: true,
+          clarificationType: 'student',
           options: student.options,
           message: `I found multiple students. Which one did you mean?\n\n` +
             student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
@@ -161,6 +163,7 @@ const PATTERNS = [
         return {
           success: false,
           needsClarification: true,
+          clarificationType: 'assignment',
           options: assignment.options,
           message: `I found multiple assignments. Which one did you mean?\n\n` +
             formatClarification(assignment.options)
@@ -188,6 +191,7 @@ const PATTERNS = [
         return {
           success: false,
           needsClarification: true,
+          clarificationType: 'assignment',
           options: assignment.options,
           message: `I found multiple assignments. Which one did you mean?\n\n` +
             formatClarification(assignment.options)
