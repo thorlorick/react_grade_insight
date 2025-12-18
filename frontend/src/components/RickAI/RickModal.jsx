@@ -114,7 +114,7 @@ const RickModal = ({ onClose, onOpenStudentModal }) => {
     setMessages([
       {
         id: Date.now(),
-        content: `Hi! I'm Rick, your virtual Teaching Assistant. Here's what I can help with:
+        content: `Hi! I'm Rick, your AI teaching assistant. Here's what I can help with:
 
 **Student Analysis:**
 • "How is [student] doing?"
@@ -174,26 +174,32 @@ Just ask in plain English!`,
       if (result.success) {
         // Check if this is a UI action (like opening a modal)
         if (result.action === 'openModal' && result.studentId) {
-          console.log('Rick wants to open student modal:', result.studentId);
+          console.log('Rick wants to open student modal for ID:', result.studentId);
           
-          // Add Rick's message
+          // Add Rick's message first
           const rickMessage = {
             id: Date.now() + 1,
             content: result.response,
             isUser: false,
             timestamp: new Date(),
             data: result.data || null,
-            structured: result.structured || null,
-            needsClarification: result.needsClarification || false,
+            structured: null,
+            needsClarification: false,
           };
           setMessages((prev) => [...prev, rickMessage]);
           
-          // Trigger the modal opening (if parent provided the callback)
-          if (onOpenStudentModal) {
-            console.log('Calling onOpenStudentModal with ID:', result.studentId);
-            onOpenStudentModal(result.studentId);
-          }
+          // Small delay to ensure message is visible before modal opens
+          setTimeout(() => {
+            if (onOpenStudentModal) {
+              console.log('Calling onOpenStudentModal with ID:', result.studentId);
+              onOpenStudentModal(result.studentId);
+            } else {
+              console.warn('onOpenStudentModal callback not provided to RickModal');
+            }
+          }, 100);
           
+          setIsLoading(false);
+          inputRef.current?.focus();
           return; // Don't continue to normal message handling
         }
         
@@ -254,7 +260,7 @@ Just ask in plain English!`,
     return (
       <div className={styles.minimized} onClick={() => setMinimized(false)}>
         <span className={styles.minimizedIcon}>🤖</span>
-        <span className={styles.minimizedText}>Rick</span>
+        <span className={styles.minimizedText}>Rick AI</span>
         {messages.length > 1 && (
           <span className={styles.messageCount}>{messages.length - 1}</span>
         )}
@@ -270,8 +276,8 @@ Just ask in plain English!`,
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
             <div>
-              <h2 className={styles.title}>Rick</h2>
-              <p className={styles.subtitle}>Your Teaching Assistant</p>
+              <h2 className={styles.title}>Rick AI</h2>
+              <p className={styles.subtitle}>Your teaching assistant</p>
             </div>
           </div>
           <div className={styles.headerButtons}>
