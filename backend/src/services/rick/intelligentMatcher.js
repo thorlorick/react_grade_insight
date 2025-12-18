@@ -372,6 +372,7 @@ async function routeToComposedAnalyzer(components, teacherId) {
       return {
         success: false,
         needsClarification: true,
+        clarificationType: 'student',
         options: student.options,
         message: `I found multiple students. Which one did you mean?\n\n` +
           student.options.map((s, i) => `${i + 1}. ${s.first_name} ${s.last_name}`).join('\n')
