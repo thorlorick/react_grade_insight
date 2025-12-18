@@ -1,3 +1,4 @@
+// frontend/src/components/RickAI/RickModal.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
