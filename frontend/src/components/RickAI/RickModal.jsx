@@ -114,16 +114,14 @@ const RickModal = ({ onClose, onOpenStudentModal }) => {
     setMessages([
       {
         id: Date.now(),
-        content: `Hi! I'm Rick, your AI teaching assistant. Here's what I can help with:
+        content: `Hi! I'm Rick, your Virtual Teaching Assistant. Here's what I can help with:
 
 **Student Analysis:**
 • "How is [student] doing?"
 • "How is [student] doing in [subject]?"
-• "How is [student] doing on quizzes?"
 
 **Assignment Insights:**
 • "Who didn't do [assignment]?"
-• "Who failed [assignment]?"
 
 **Class Overview:**
 • "Who is at risk?"
@@ -261,7 +259,7 @@ Just ask in plain English!`,
     return (
       <div className={styles.minimized} onClick={() => setMinimized(false)}>
         <span className={styles.minimizedIcon}>🤖</span>
-        <span className={styles.minimizedText}>Rick AI</span>
+        <span className={styles.minimizedText}>Rick</span>
         {messages.length > 1 && (
           <span className={styles.messageCount}>{messages.length - 1}</span>
         )}
@@ -277,8 +275,8 @@ Just ask in plain English!`,
           <div className={styles.headerLeft}>
             <span className={styles.icon}>🤖</span>
             <div>
-              <h2 className={styles.title}>Rick AI</h2>
-              <p className={styles.subtitle}>Your teaching assistant</p>
+              <h2 className={styles.title}>Rick</h2>
+              <p className={styles.subtitle}>Your Virtual Teaching Assistant</p>
             </div>
           </div>
           <div className={styles.headerButtons}>
