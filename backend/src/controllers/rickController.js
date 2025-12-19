@@ -278,7 +278,7 @@ const rickController = {
         console.log('Detected greeting, sending response');
         return res.json({
           success: true,
-          response: "Hi! I'm Rick, your AI teaching assistant. I can help you:\n\n" +
+          response: "Hi! I'm Rick, your virtual Teaching Assistant. I can help you:\n\n" +
                    "• Analyze student performance: \"How is [name] doing?\"\n" +
                    "• Find missing work: \"Who didn't do [assignment]?\"\n" +
                    "• Identify failures: \"Who failed [assignment]?\"\n" +
