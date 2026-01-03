@@ -607,3 +607,7 @@ I think that's it. I have nothing left to add that I can think of and everything
 3) is it secure?
 4) where to sell? Teachers Pay Teachers? Where else?
 
+# 2026 -- The Year of GradeInsight!!!
+Honestly, I don't have anything else I can think to add or do. it's almost what I want. Obviously, later on, when there is money, I would add an API to Claude or someone to make the Analysis more complete. But the fuzzy logic is decent, and if teachers name their assignments correctly, then it's even more beneficial. I absolutely need to find someone to test the system. Paul? Ruby? I'm not sure.
+
+
