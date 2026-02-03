@@ -72,11 +72,45 @@ const useStudentNotes = () => {
   return { notes, loading };
 };
 
+// Calculate simple grade average
+const calculateAverage = (assignments) => {
+  const gradedAssignments = assignments.filter(a => a.grade !== null && a.grade !== undefined);
+  if (gradedAssignments.length === 0) return null;
+  
+  const totalEarned = gradedAssignments.reduce((sum, a) => sum + a.grade, 0);
+  const totalPossible = gradedAssignments.reduce((sum, a) => sum + a.max_points, 0);
+  
+  if (totalPossible === 0) return null;
+  
+  return (totalEarned / totalPossible) * 100;
+};
+
+// Get letter grade from percentage
+const getLetterGrade = (percentage) => {
+  if (percentage >= 90) return 'A';
+  if (percentage >= 80) return 'B';
+  if (percentage >= 70) return 'C';
+  if (percentage >= 60) return 'D';
+  return 'F';
+};
+
+// Get color class based on percentage
+const getGradeColorClass = (percentage) => {
+  if (percentage >= 90) return styles.gradeA;
+  if (percentage >= 80) return styles.gradeB;
+  if (percentage >= 70) return styles.gradeC;
+  if (percentage >= 60) return styles.gradeD;
+  return styles.gradeF;
+};
+
 const StudentPage = () => {
   const { data: assignments, loading: assignmentsLoading, error } = useStudentData();
   const { notes, loading: notesLoading } = useStudentNotes();
   
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  // Calculate average
+  const average = assignments.length > 0 ? calculateAverage(assignments) : null;
 
   // Joyride state - Start with state instead of localStorage check
   const [runTour, setRunTour] = useState(false);
@@ -200,6 +234,22 @@ const StudentPage = () => {
       <div className={styles.navbar}>
         <h1 className={styles.navLogo}>Grade Insight</h1>
         
+        {/* Average Display */}
+        <div className={styles.averageContainer}>
+          {assignmentsLoading ? (
+            <span className={styles.averageLoading}>Calculating...</span>
+          ) : average !== null ? (
+            <div className={styles.averageDisplay}>
+              <span className={styles.averageLabel}>Your Average:</span>
+              <span className={`${styles.averageValue} ${getGradeColorClass(average)}`}>
+                {average.toFixed(1)}% ({getLetterGrade(average)})
+              </span>
+            </div>
+          ) : (
+            <span className={styles.averageEmpty}>No grades yet</span>
+          )}
+        </div>
+
         <button
           onClick={handleLogout}
           className={styles.logoutButton}
