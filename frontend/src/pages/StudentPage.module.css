@@ -386,6 +386,65 @@
   color: rgba(125, 211, 252, 0.8);
   font-size: 0.875rem;
 }
+
+/* Average Display Styles */
+.averageContainer {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.averageDisplay {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.averageLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.averageValue {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.averageLoading,
+.averageEmpty {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+/* Grade Color Classes */
+.gradeA {
+  color: #10b981;
+}
+
+.gradeB {
+  color: #3b82f6;
+}
+
+.gradeC {
+  color: #f59e0b;
+}
+
+.gradeD {
+  color: #ef4444;
+}
+
+.gradeF {
+  color: #dc2626;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
   .body {
