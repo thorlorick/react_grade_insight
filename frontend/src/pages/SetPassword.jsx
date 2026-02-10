@@ -80,7 +80,7 @@ const SetPassword = () => {
     setErrors({});
 
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/auth/setStudentPassword', {
+      const response = await fetch('/api/auth/setStudentPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -239,3 +239,4 @@ const SetPassword = () => {
 
 
 export default SetPassword;
+
