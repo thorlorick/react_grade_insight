@@ -13,7 +13,7 @@ const useStudentData = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('https://gradeinsight.com:8083/api/student/data', {
+      const response = await fetch('/api/student/data', {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -51,7 +51,7 @@ const useStudentNotes = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch('https://gradeinsight.com:8083/api/student/notes', {
+        const response = await fetch('/api/student/notes', {
           credentials: 'include'
         });
         
@@ -191,7 +191,7 @@ const StudentPage = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('https://gradeinsight.com:8083/api/auth/studentLogout', {
+      await fetch('/api/auth/studentLogout', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
