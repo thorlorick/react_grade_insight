@@ -10,7 +10,7 @@ const StudentModal = ({ studentId, onClose }) => {
     const fetchStudentData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`https://gradeinsight.com:8083/api/teacher/student/${studentId}/details`, {
+        const res = await fetch(`/api/teacher/student/${studentId}/details`, {
           credentials: 'include'
         });
 
@@ -42,7 +42,7 @@ const StudentModal = ({ studentId, onClose }) => {
     if (!newNote.trim()) return;
 
     try {
-      const res = await fetch(`https://gradeinsight.com:8083/api/teacher/notes/${studentId}`, {
+      const res = await fetch(`/api/teacher/notes/${studentId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
