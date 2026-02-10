@@ -57,7 +57,7 @@ const StudentLogin = () => {
     
     try {
       // First, check if student needs to change password
-      const checkResponse = await fetch('https://gradeinsight.com:8083/api/auth/checkStudentLogin', {
+      const checkResponse = await fetch('/api/auth/checkStudentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
