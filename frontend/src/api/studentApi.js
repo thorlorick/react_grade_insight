@@ -1,6 +1,6 @@
 // src/api/studentApi.js
 
-const API_BASE_URL = 'https://gradeinsight.com:8083/api';
+const API_BASE_URL = '/api';
 
 // Get student's grade data
 export const getStudentData = async () => {
@@ -128,4 +128,5 @@ export const logoutStudent = async () => {
     console.error('Error logging out:', error);
     throw error;
   }
+
 };
