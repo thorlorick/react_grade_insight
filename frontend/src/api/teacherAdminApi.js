@@ -1,4 +1,4 @@
-const API_BASE = 'https://gradeinsight.com:8083/api/teacher-admin';
+const API_BASE = '/api/teacher-admin';
 
 // ============================================
 // ASSIGNMENT MANAGEMENT
