@@ -11,7 +11,7 @@ const ContactEmailModal = ({ onClose }) => {
 
     setLoading(true);
     try {
-      const res = await fetch('https://gradeinsight.com:8083/api/contact-lead', {
+      const res = await fetch('/api/contact-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -72,6 +72,7 @@ const ContactEmailModal = ({ onClose }) => {
 };
 
 export default ContactEmailModal;
+
 
 
 
