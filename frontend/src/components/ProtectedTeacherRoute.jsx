@@ -12,7 +12,7 @@ const ProtectedTeacherRoute = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('/api/auth/teacherCheck', { 
+      const response = await fetch('https://gradeinsight.com:8083/api/auth/teacherCheck', { 
         credentials: 'include' 
       });
       const data = await response.json();
