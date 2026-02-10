@@ -1,11 +1,11 @@
 // src/components/TeacherCardGrid.jsx
 import React, { useState } from 'react';
 import styles from './TeacherCardGrid.module.css';
-import StudentCard from './StudentCard'; // reuse your existing student card modal
+import StudentModal from './StudentModal'; // assuming this is your modal component
 
 const TeacherCardGrid = ({ data, loading }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [sortBy, setSortBy] = useState('name'); // 'name' or 'average'
+  const [sortBy, setSortBy] = useState('name');
 
   if (loading) {
     return <div className={styles.loading}>Loading students...</div>;
@@ -41,21 +41,20 @@ const TeacherCardGrid = ({ data, loading }) => {
     if (sortBy === 'name') {
       return `${a.last_name} ${a.first_name}`.localeCompare(`${b.last_name} ${b.first_name}`);
     } else {
-      // Sort by average (null/no grades go to end)
       if (a.average === null) return 1;
       if (b.average === null) return -1;
       return parseFloat(b.average) - parseFloat(a.average);
     }
   });
 
-  // Get grade color
-  const getGradeColor = (avg) => {
-    if (avg === null) return 'gray';
-    if (avg >= 90) return 'green';
-    if (avg >= 80) return 'blue';
-    if (avg >= 70) return 'yellow';
-    if (avg >= 60) return 'orange';
-    return 'red';
+  // Get grade classification (matching your modal's logic)
+  const getGradeClass = (avg) => {
+    if (avg === null) return 'nograde';
+    if (avg >= 90) return 'excellent';
+    if (avg >= 80) return 'high';
+    if (avg >= 70) return 'good';
+    if (avg >= 60) return 'mid';
+    return 'low';
   };
 
   return (
@@ -74,14 +73,14 @@ const TeacherCardGrid = ({ data, loading }) => {
         {sortedStudents.map((student) => (
           <div
             key={student.email}
-            className={`${styles.card} ${styles[getGradeColor(student.average)]}`}
+            className={`${styles.card} ${styles[getGradeClass(student.average)]}`}
             onClick={() => setSelectedStudent(student)}
           >
             <div className={styles.name}>
               {student.first_name} {student.last_name}
             </div>
             <div className={styles.average}>
-              {student.average !== null ? `${student.average}%` : 'No grades'}
+              {student.average !== null ? `${student.average}%` : 'N/A'}
             </div>
             <div className={styles.gradeCount}>
               {student.grades.length} assignment{student.grades.length !== 1 ? 's' : ''}
@@ -90,9 +89,9 @@ const TeacherCardGrid = ({ data, loading }) => {
         ))}
       </div>
 
-      {/* Student detail modal (reuse your existing StudentCard) */}
+      {/* Student detail modal */}
       {selectedStudent && (
-        <StudentCard
+        <StudentModal
           student={selectedStudent}
           onClose={() => setSelectedStudent(null)}
         />
