@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Joyride, { STATUS } from "react-joyride";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
-import TeacherCardGrid from "../components/TeacherCardGrid";
+import TeacherDashboardTable from "../components/TeacherDashboardTable";
 import styles from './TeacherPage.module.css';
 import { getTeacherData } from "../api/teacherApi";
 import RickTrigger from '../components/RickAI/RickTrigger';
@@ -29,7 +29,7 @@ const TeacherPage = () => {
     }
   }, []);
 
-  // Tour steps (updated for card view)
+  // Tour steps (no placement needed, handled globally)
   const tourSteps = [
     {
       target: 'body',
@@ -58,11 +58,11 @@ const TeacherPage = () => {
     },
     {
       target: '.teacher-dashboard',
-      content: 'This is your student overview. Each card shows a student\'s name and their current grade average. Cards are color-coded by performance.',
+      content: 'This is your grade table. Click any column header to sort by that column (name, email, or assignment grades).',
     },
     {
       target: '.teacher-dashboard',
-      content: 'Click on any student card to see detailed information including all assignments, grades, and to leave notes for individual students.',
+      content: 'Click on any student row to see detailed information and to be able to leave notes for individual students.',
     },
   ];
 
@@ -222,7 +222,7 @@ const TeacherPage = () => {
             zIndex: 10000,
           },
           overlay: {
-            backdropFilter: 'none',
+            backdropFilter: 'none', // no blur so elements stay sharp
           },
           tooltip: {
             borderRadius: '16px',
@@ -263,7 +263,7 @@ const TeacherPage = () => {
             color: '#6b7280',
           },
         }}
-        placement="top"
+        placement="top" // force all tooltips to appear at the top
       />
 
       {/* Navbar */}
@@ -323,9 +323,9 @@ const TeacherPage = () => {
         </div>
       )}
 
-      {/* Dashboard - now using card grid */}
+      {/* Dashboard */}
       <div className={`${styles.pageWrapper} teacher-dashboard`}>
-        <TeacherCardGrid 
+        <TeacherDashboardTable 
           data={filteredData} 
           loading={loading}
         />
