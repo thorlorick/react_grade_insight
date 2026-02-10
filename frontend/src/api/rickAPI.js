@@ -1,6 +1,6 @@
 // frontend/src/services/rickAPI.js
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://gradeinsight.com:8083/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 /**
  * Send a message to Rick
