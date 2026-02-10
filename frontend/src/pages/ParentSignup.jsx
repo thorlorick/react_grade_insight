@@ -140,7 +140,7 @@ const ParentSignup = () => {
       // Filter out empty email fields
       const validChildEmails = formData.childEmails.filter(email => email.trim());
       
-      const response = await fetch('https://gradeinsight.com:8083/api/auth/parentSignup', {
+      const response = await fetch('/api/auth/parentSignup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -397,4 +397,5 @@ const ParentSignup = () => {
 };
 
 export default ParentSignup;
+
 
