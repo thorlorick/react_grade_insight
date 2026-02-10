@@ -86,7 +86,7 @@ const StudentLogin = () => {
       }
 
       // If password doesn't need to be changed, proceed with normal login
-      const loginResponse = await fetch('https://gradeinsight.com:8083/api/auth/studentLogin', {
+      const loginResponse = await fetch('/api/auth/studentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
