@@ -36,7 +36,7 @@ const AdminPanel = () => {
     setLoginError('');
 
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/admin/create-code', {
+      const response = await fetch('/api/admin/create-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const AdminPanel = () => {
     setGeneratedCode(null);
 
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/admin/create-code', {
+      const response = await fetch('/api/admin/create-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ Grade Insight Team`;
     setResetMessage('');
 
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/admin/reset-student-password', {
+      const response = await fetch('/api/admin/reset-student-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ Grade Insight Team`;
     
     setLoadingContacts(true);
     try {
-      const res = await fetch('https://gradeinsight.com:8083/api/admin/contact-emails', {
+      const res = await fetch('/api/admin/contact-emails', {
         headers: { 'Authorization': `Bearer ${adminPassword}` },
       });
       const data = await res.json();
@@ -175,7 +175,7 @@ Grade Insight Team`;
   const fetchLoginAttempts = async () => {
     setLoadingAttempts(true);
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/admin/login-attempts', {
+      const response = await fetch('/api/admin/login-attempts', {
         headers: {
           'Authorization': `Bearer ${adminPassword}`
         }
@@ -897,6 +897,7 @@ Grade Insight Team`;
 };
 
 export default AdminPanel;
+
 
 
 
