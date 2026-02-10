@@ -13,7 +13,7 @@ export const useUploadCSV = (refreshStudents) => {
     formData.append('csv', file);
 
     try {
-      const res = await fetch('https://gradeinsight.com:8083/api/uploads/template', {
+      const res = await fetch('/api/uploads/template', {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -38,3 +38,4 @@ export const useUploadCSV = (refreshStudents) => {
 
   return { uploadCSV, uploadError, uploadSummary };
 };
+
