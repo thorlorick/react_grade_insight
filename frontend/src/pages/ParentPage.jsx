@@ -67,7 +67,7 @@ const ParentPage = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('https://gradeinsight.com:8083/api/auth/studentLogout', {
+      await fetch('/api/auth/studentLogout', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -182,5 +182,6 @@ const ParentPage = () => {
     </div>
   );
 };
+
 
 export default ParentPage;
