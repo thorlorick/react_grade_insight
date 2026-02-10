@@ -57,7 +57,7 @@ const ParentLogin = () => {
     
     try {
       // First, check if parent exists
-      const checkResponse = await fetch('https://gradeinsight.com:8083/api/auth/checkParentLogin', {
+      const checkResponse = await fetch('/api/auth/checkParentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const ParentLogin = () => {
       }
 
       // Parent exists, proceed with normal login
-      const loginResponse = await fetch('https://gradeinsight.com:8083/api/auth/parentLogin', {
+      const loginResponse = await fetch('/api/auth/parentLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
