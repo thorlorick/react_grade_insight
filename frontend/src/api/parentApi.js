@@ -1,6 +1,6 @@
 // src/api/parentApi.js
 
-const API_BASE_URL = 'https://gradeinsight.com:8083/api';
+const API_BASE_URL = '/api';
 
 // Get parent's children
 export const getParentChildren = async () => {
@@ -130,4 +130,5 @@ export const logoutParent = async () => {
     console.error('Error logging out:', error);
     throw error;
   }
+
 };
