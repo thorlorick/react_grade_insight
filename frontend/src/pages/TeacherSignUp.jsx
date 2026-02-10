@@ -62,7 +62,7 @@ const TeacherSignup = () => {
     setErrors({});
 
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/auth/verifyAccessCode', {
+      const response = await fetch('/api/auth/verifyAccessCode', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ const TeacherSignup = () => {
     setErrors({});
     
     try {
-      const response = await fetch('https://gradeinsight.com:8083/api/auth/teacherSignup', {
+      const response = await fetch('/api/auth/teacherSignup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -373,4 +373,5 @@ const TeacherSignup = () => {
 };
 
 export default TeacherSignup;
+
 
