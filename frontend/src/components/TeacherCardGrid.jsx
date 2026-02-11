@@ -1,7 +1,7 @@
 // src/components/TeacherCardGrid.jsx
 import React, { useState } from 'react';
 import styles from './TeacherCardGrid.module.css';
-import StudentModal from './StudentModal'; // assuming this is your modal component
+import StudentModal from './StudentModal';
 
 const TeacherCardGrid = ({ data, loading }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
