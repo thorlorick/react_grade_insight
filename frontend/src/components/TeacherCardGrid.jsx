@@ -7,9 +7,6 @@ const TeacherCardGrid = ({ data, loading }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [sortBy, setSortBy] = useState('name');
 
-  console.log('TeacherCardGrid - data:', data); // Debug log
-  console.log('TeacherCardGrid - loading:', loading); // Debug log
-
   if (loading) {
     return <div className={styles.loading}>Loading students...</div>;
   }
@@ -30,8 +27,10 @@ const TeacherCardGrid = ({ data, loading }) => {
         grades: [],
       };
     }
-    if (row.grade !== null && row.grade !== undefined) {
-      studentMap[key].grades.push(parseFloat(row.grade));
+    // Only include grades where we have both score and max_points
+    if (row.score !== null && row.score !== undefined && row.max_points > 0) {
+      const percentage = (row.score / row.max_points) * 100;
+      studentMap[key].grades.push(percentage);
     }
   });
 
@@ -42,8 +41,6 @@ const TeacherCardGrid = ({ data, loading }) => {
       ? (student.grades.reduce((a, b) => a + b, 0) / student.grades.length).toFixed(1)
       : null,
   }));
-
-  console.log('Processed students:', students); // Debug log
 
   // Sort students
   const sortedStudents = [...students].sort((a, b) => {
@@ -56,7 +53,7 @@ const TeacherCardGrid = ({ data, loading }) => {
     }
   });
 
-  // Get grade classification
+  // Get grade color based on average
   const getGradeClass = (avg) => {
     if (avg === null) return 'nograde';
     if (avg >= 90) return 'excellent';
@@ -90,9 +87,6 @@ const TeacherCardGrid = ({ data, loading }) => {
             </div>
             <div className={styles.average}>
               {student.average !== null ? `${student.average}%` : 'N/A'}
-            </div>
-            <div className={styles.gradeCount}>
-              {student.grades.length} assignment{student.grades.length !== 1 ? 's' : ''}
             </div>
           </div>
         ))}
