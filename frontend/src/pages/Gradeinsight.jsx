@@ -89,7 +89,7 @@ const GradeInsight = () => {
               <div className={styles.featureIcon}>🧑‍🏫</div>
               <div className={styles.featureTitle}>Teacher Upload</div>
               <p className={styles.featureDesc}>
-                Download grades from Google Classroom as a CSV and upload directly — no formatting or cleanup needed.
+                Download grades from Google Classroom as a CSV and upload directly — no formatting or cleanup needed. Or use your existing data and format it to our template.
               </p>
             </article>
 
