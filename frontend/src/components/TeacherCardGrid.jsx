@@ -7,8 +7,15 @@ const TeacherCardGrid = ({ data, loading }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [sortBy, setSortBy] = useState('name');
 
+  console.log('TeacherCardGrid - data:', data); // Debug log
+  console.log('TeacherCardGrid - loading:', loading); // Debug log
+
   if (loading) {
     return <div className={styles.loading}>Loading students...</div>;
+  }
+
+  if (!data || data.length === 0) {
+    return <div className={styles.loading}>No student data available.</div>;
   }
 
   // Group data by student and calculate averages
@@ -36,6 +43,8 @@ const TeacherCardGrid = ({ data, loading }) => {
       : null,
   }));
 
+  console.log('Processed students:', students); // Debug log
+
   // Sort students
   const sortedStudents = [...students].sort((a, b) => {
     if (sortBy === 'name') {
@@ -47,7 +56,7 @@ const TeacherCardGrid = ({ data, loading }) => {
     }
   });
 
-  // Get grade classification (matching your modal's logic)
+  // Get grade classification
   const getGradeClass = (avg) => {
     if (avg === null) return 'nograde';
     if (avg >= 90) return 'excellent';
