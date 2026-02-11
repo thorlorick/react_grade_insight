@@ -21,27 +21,41 @@ const TeacherCardGrid = ({ data, loading }) => {
     const key = row.email;
     if (!studentMap[key]) {
       studentMap[key] = {
-        student_id: row.student_id,  // Store student_id
+        student_id: row.student_id,
         first_name: row.first_name,
         last_name: row.last_name,
         email: row.email,
-        grades: [],
+        assignments: [],
       };
     }
-    // Only include grades where we have both score and max_points
+    // Store assignment data (matching StudentModal structure)
     if (row.score !== null && row.score !== undefined && row.max_points > 0) {
-      const percentage = (row.score / row.max_points) * 100;
-      studentMap[key].grades.push(percentage);
+      studentMap[key].assignments.push({
+        grade: row.score,
+        max_points: row.max_points
+      });
     }
   });
 
-  // Convert to array and add averages
-  const students = Object.values(studentMap).map(student => ({
-    ...student,
-    average: student.grades.length > 0
-      ? (student.grades.reduce((a, b) => a + b, 0) / student.grades.length).toFixed(1)
-      : null,
-  }));
+  // Convert to array and add averages (using StudentModal's calculation method)
+  const students = Object.values(studentMap).map(student => {
+    const gradedAssignments = student.assignments.filter(a => a.grade !== null && a.grade !== undefined);
+    
+    let average = null;
+    if (gradedAssignments.length > 0) {
+      const totalEarned = gradedAssignments.reduce((sum, a) => sum + a.grade, 0);
+      const totalPossible = gradedAssignments.reduce((sum, a) => sum + a.max_points, 0);
+      
+      if (totalPossible > 0) {
+        average = ((totalEarned / totalPossible) * 100).toFixed(1);
+      }
+    }
+    
+    return {
+      ...student,
+      average
+    };
+  });
 
   // Sort students
   const sortedStudents = [...students].sort((a, b) => {
