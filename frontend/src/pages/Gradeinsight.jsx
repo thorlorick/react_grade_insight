@@ -196,7 +196,7 @@ const GradeInsight = () => {
 
           <div className={styles.securityList}>
             <div className={styles.securityItem}>Download CSV from Google Classroom → upload to Grade Insight.</div>
-            <div className={styles.securityItem}>Teacher sees all students and assignments in one dashboard.</div>
+            <div className={styles.securityItem}>Teacher sees all students and their averages in easy to read cards.</div>
             <div className={styles.securityItem}>Students see only their grades; parents can see multiple children.</div>
             <div className={styles.securityItem}>Teachers can add general private comments for each student.</div>
             <div className={styles.securityItem}>One teacher = one sandbox, fully secure and isolated.</div>
