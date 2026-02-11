@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import styles from './TeacherCardGrid.module.css';
 import StudentModal from './StudentModal';
 
-const TeacherCardGrid = ({ data, loading }) => {
-  const [selectedStudent, setSelectedStudent] = useState(null);
+const TeacherCardGrid = ({ data, loading, teacherId }) => {
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [sortBy, setSortBy] = useState('name');
 
   if (loading) {
@@ -21,6 +21,7 @@ const TeacherCardGrid = ({ data, loading }) => {
     const key = row.email;
     if (!studentMap[key]) {
       studentMap[key] = {
+        student_id: row.student_id,  // IMPORTANT: Store student_id
         first_name: row.first_name,
         last_name: row.last_name,
         email: row.email,
@@ -80,7 +81,7 @@ const TeacherCardGrid = ({ data, loading }) => {
           <div
             key={student.email}
             className={`${styles.card} ${styles[getGradeClass(student.average)]}`}
-            onClick={() => setSelectedStudent(student)}
+            onClick={() => setSelectedStudentId(student.student_id)}
           >
             <div className={styles.name}>
               {student.first_name} {student.last_name}
@@ -93,10 +94,11 @@ const TeacherCardGrid = ({ data, loading }) => {
       </div>
 
       {/* Student detail modal */}
-      {selectedStudent && (
+      {selectedStudentId && (
         <StudentModal
-          student={selectedStudent}
-          onClose={() => setSelectedStudent(null)}
+          studentId={selectedStudentId}
+          teacherId={teacherId}
+          onClose={() => setSelectedStudentId(null)}
         />
       )}
     </div>
