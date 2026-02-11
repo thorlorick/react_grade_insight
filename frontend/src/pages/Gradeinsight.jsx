@@ -206,7 +206,7 @@ const GradeInsight = () => {
             <div className={styles.uploadCard}>
               <div className={styles.uploadTitle}>Teacher Dashboard</div>
               <img 
-                src="/images/TeachDash.png" 
+                src="/images/grade_cards.png" 
                 alt="Teacher dashboard showing student grades and assignments"
                 style={{ 
                   width: '100%', 
