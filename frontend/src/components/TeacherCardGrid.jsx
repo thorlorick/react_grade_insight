@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styles from './TeacherCardGrid.module.css';
 import StudentModal from './StudentModal';
 
-const TeacherCardGrid = ({ data, loading, teacherId }) => {
+const TeacherCardGrid = ({ data, loading }) => {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [sortBy, setSortBy] = useState('name');
 
@@ -21,7 +21,7 @@ const TeacherCardGrid = ({ data, loading, teacherId }) => {
     const key = row.email;
     if (!studentMap[key]) {
       studentMap[key] = {
-        student_id: row.student_id,  // IMPORTANT: Store student_id
+        student_id: row.student_id,  // Store student_id
         first_name: row.first_name,
         last_name: row.last_name,
         email: row.email,
@@ -97,7 +97,6 @@ const TeacherCardGrid = ({ data, loading, teacherId }) => {
       {selectedStudentId && (
         <StudentModal
           studentId={selectedStudentId}
-          teacherId={teacherId}
           onClose={() => setSelectedStudentId(null)}
         />
       )}
