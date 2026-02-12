@@ -90,10 +90,10 @@
   margin-bottom: 12px;
   color: #1a1a1a;
   line-height: 1.3;
-  min-height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-align: center;
 }
 
 .average {
@@ -208,7 +208,7 @@
   
   .name {
     font-size: 13px;
-    min-height: 32px;
+    line-height: 1.2;
   }
   
   .average {
