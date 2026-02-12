@@ -224,6 +224,16 @@
   transition: all 0.3s ease;
 }
 
+.select {
+  cursor: pointer;
+}
+
+.select option {
+  background: #1a1a1a;
+  color: #d1fae5;
+  padding: 8px;
+}
+
 .input:focus,
 .select:focus {
   outline: none;
