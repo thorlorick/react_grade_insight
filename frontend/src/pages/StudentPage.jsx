@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Joyride, { STATUS } from 'react-joyride';
-import StudentDashboardTable from '../components/StudentDashboardTable';
+import StudentDashboardCards from '../components/StudentDashboardCards';
 import styles from './StudentPage.module.css';
 
 // Custom hook for student data
@@ -154,8 +154,8 @@ const StudentPage = () => {
       disableBeacon: true,
     },
     {
-      target: '#assignments-table',
-      content: 'Here is your assignments table. You can see grades and sort columns.',
+      target: '#assignments-cards',
+      content: 'Here are your assignments displayed as cards. Each card shows your grade and percentage.',
       placement: 'bottom',
     },
     {
@@ -260,9 +260,9 @@ const StudentPage = () => {
       </div>
 
       <div className={styles.pageWrapper}>
-        {/* Assignments Table */}
-        <div className={styles.tableSection} id="assignments-table">
-          <StudentDashboardTable
+        {/* Assignments Card Grid */}
+        <div className={styles.tableSection} id="assignments-cards">
+          <StudentDashboardCards
             data={assignments}
             loading={assignmentsLoading}
             error={error}
