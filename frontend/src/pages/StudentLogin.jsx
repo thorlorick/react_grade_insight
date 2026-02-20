@@ -173,7 +173,7 @@ const StudentLogin = () => {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Enter your password"
+              placeholder="Enter any first time password"
               disabled={isLoading}
             />
             {errors.password && (
