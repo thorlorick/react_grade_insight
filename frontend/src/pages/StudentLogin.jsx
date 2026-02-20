@@ -21,7 +21,6 @@ const StudentLogin = () => {
       [name]: value
     }));
     
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -56,7 +55,6 @@ const StudentLogin = () => {
     setErrors({});
     
     try {
-      // First, check if student needs to change password
       const checkResponse = await fetch('/api/auth/checkStudentLogin', {
         method: 'POST',
         headers: {
@@ -69,12 +67,10 @@ const StudentLogin = () => {
       const checkData = await checkResponse.json();
 
       if (!checkResponse.ok) {
-        // Email doesn't exist or other error
         setErrors({ form: checkData.message || 'Email not found' });
         return;
       }
 
-      // If student must change password, redirect to SetPassword page
       if (checkData.mustChangePassword) {
         navigate('/setPassword', { 
           state: { 
@@ -85,7 +81,6 @@ const StudentLogin = () => {
         return;
       }
 
-      // If password doesn't need to be changed, proceed with normal login
       const loginResponse = await fetch('/api/auth/studentLogin', {
         method: 'POST',
         headers: {
@@ -98,11 +93,9 @@ const StudentLogin = () => {
       const loginData = await loginResponse.json();
 
       if (loginResponse.ok) {
-        // Login successful - redirect to dashboard
         console.log('Login successful:', loginData);
         navigate('/StudentPage');
       } else {
-        // Login failed
         setErrors({ form: loginData.message || 'Invalid login credentials' });
       }
 
@@ -126,8 +119,18 @@ const StudentLogin = () => {
       />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Student Login">
-          <LoginContainer title="(first time -- enter any password)">
-          {/* Form Error Display */}
+
+          <p style={{ 
+            textAlign: 'center', 
+            color: '#888', 
+            fontSize: '13px', 
+            marginTop: '-12px', 
+            marginBottom: '16px',
+            fontStyle: 'italic'
+          }}>
+            (first time — enter any password)
+          </p>
+
           {errors.form && (
             <div 
               className={loginStyles.errorMessage}
@@ -200,7 +203,6 @@ const StudentLogin = () => {
             {isLoading ? 'Checking...' : 'Log In'}
           </button>
 
-        </LoginContainer>
         </LoginContainer>
       </BackgroundContainer>
     </div>
