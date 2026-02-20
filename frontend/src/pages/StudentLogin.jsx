@@ -201,6 +201,7 @@ const StudentLogin = () => {
           </button>
 
         </LoginContainer>
+        </LoginContainer>
       </BackgroundContainer>
     </div>
   );
