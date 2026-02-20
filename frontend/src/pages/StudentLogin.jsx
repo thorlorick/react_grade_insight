@@ -126,6 +126,7 @@ const StudentLogin = () => {
       />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Student Login">
+          <LoginContainer title="(first time -- enter any password)">
           {/* Form Error Display */}
           {errors.form && (
             <div 
