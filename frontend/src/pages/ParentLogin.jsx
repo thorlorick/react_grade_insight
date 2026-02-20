@@ -126,6 +126,17 @@ const ParentLogin = () => {
       />
       <BackgroundContainer image="/images/insightBG.jpg">
         <LoginContainer title="Parent Login">
+          <p style={{ 
+            textAlign: 'center', 
+            color: '#888', 
+            fontSize: '13px', 
+            marginTop: '-12px', 
+            marginBottom: '16px',
+            fontStyle: 'italic'
+          }}>
+            (first time — enter any password)
+          </p>
+          
           {/* Form Error Display */}
           {errors.form && (
             <div 
