@@ -613,4 +613,6 @@ Honestly, I don't have anything else I can think to add or do. it's almost what 
 # EMAIL SOON
 As soon as report cards are done, I'm going to email the link to the staff and ask anyone who wants to try it, to try it. I have no clue if they will, and as of right now, I have very few students that actually use it. But, that's probably because it's so messy, without any realy grades to speak of. It doesn't help without more info
 
+# I think that's it
+I switched over cards for teachers and students. I left the parents one as a table just to not mess with it too much. Now I have to release it for beta testing....so scary!!!!
 
