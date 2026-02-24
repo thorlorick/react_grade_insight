@@ -2,6 +2,26 @@ import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage } from '../../api/rickAPI';
 import styles from './RickModal.module.css';
 
+const HELP_TEXT = `Hi! I'm Rick, your Virtual Teaching Assistant. Here's what I can help with:
+
+**Student Analysis:**
+• "How is [student] doing?"
+• "How is [student] doing in [subject]?"
+
+**Assignment Insights:**
+• "Who didn't do [assignment]?"
+
+**Class Overview:**
+• "Who is at risk?"
+• "Who is at risk in [subject]?"
+• "Who is doing well?"
+• "Who has missing work?"
+
+**Quick Actions:**
+• "Show me [student]" - Opens their profile
+
+Just ask in plain English! (Type /help anytime to see this again)`;
+
 // Component to render structured data as a nice list
 const StructuredResponse = ({ data }) => {
   if (!data) return null;
@@ -114,25 +134,7 @@ const RickModal = ({ onClose, onOpenStudentModal }) => {
     setMessages([
       {
         id: Date.now(),
-        content: `Hi! I'm Rick, your Virtual Teaching Assistant. Here's what I can help with:
-
-**Student Analysis:**
-• "How is [student] doing?"
-• "How is [student] doing in [subject]?"
-
-**Assignment Insights:**
-• "Who didn't do [assignment]?"
-
-**Class Overview:**
-• "Who is at risk?"
-• "Who is at risk in [subject]?"
-• "Who is doing well?"
-• "Who has missing work?"
-
-**Quick Actions:**
-• "Show me [student]" - Opens their profile
-
-Just ask in plain English!`,
+        content: HELP_TEXT,
         isUser: false,
         timestamp: new Date(),
         data: null,
@@ -145,6 +147,30 @@ Just ask in plain English!`,
     e.preventDefault();
     const messageText = inputValue.trim();
     if (!messageText || isLoading) return;
+
+    // Handle /help command locally without hitting the API
+    if (messageText.toLowerCase() === '/help') {
+      const userMessage = {
+        id: Date.now(),
+        content: messageText,
+        isUser: true,
+        timestamp: new Date(),
+        data: null,
+        structured: null,
+      };
+      const helpMessage = {
+        id: Date.now() + 1,
+        content: HELP_TEXT,
+        isUser: false,
+        timestamp: new Date(),
+        data: null,
+        structured: null,
+      };
+      setMessages((prev) => [...prev, userMessage, helpMessage]);
+      setInputValue('');
+      inputRef.current?.focus();
+      return;
+    }
 
     // Add user message
     const userMessage = {
@@ -238,7 +264,7 @@ Just ask in plain English!`,
       setMessages([
         {
           id: Date.now(),
-          content: 'Chat cleared. How can I help you?',
+          content: 'Chat cleared. How can I help you? (Type /help to see all commands)',
           isUser: false,
           timestamp: new Date(),
           data: null,
@@ -347,7 +373,7 @@ Just ask in plain English!`,
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask me anything..."
+            placeholder="Ask anything from the list... (or type /help)"
             className={styles.input}
             disabled={isLoading}
           />
