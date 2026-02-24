@@ -266,7 +266,7 @@ const GradeInsight = () => {
               rel="noopener noreferrer"
               className={styles.stripeButton}
             >
-              Get Grade Insight — $4.99
+              Get Grade Insight
             </a>
             <p className={styles.pricingFootnote}>
               Secure checkout powered by Stripe
