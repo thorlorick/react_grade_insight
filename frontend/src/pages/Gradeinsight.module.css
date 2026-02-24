@@ -310,90 +310,27 @@ opacity: 1;
 }
 
 
-/* Add these classes to your Gradeinsight.module.css */
+/* Replace previous pricing CSS with these simpler classes */
 
-.pricingCard {
-  max-width: 420px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(125, 211, 252, 0.2);
-  border-radius: 20px;
-  padding: 40px;
-  text-align: center;
+.pricingWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-}
-
-.pricingBadge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 6px 16px;
-  border-radius: 20px;
-}
-
-.pricingAmount {
-  font-size: 64px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1;
-}
-
-.pricingCurrency {
-  font-size: 32px;
-  font-weight: 600;
-  vertical-align: super;
-  color: #7dd3fc;
-}
-
-.pricingDescription {
-  color: #94a3b8;
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.pricingFeatures {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.pricingFeatures li {
-  color: #a7f3d0;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 12px;
-  background: rgba(167, 243, 208, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(167, 243, 208, 0.1);
+  gap: 12px;
 }
 
 .stripeButton {
   display: inline-block;
-  margin-top: 8px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   text-decoration: none;
-  padding: 16px 32px;
+  padding: 16px 40px;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.3px;
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
   transition: all 0.2s ease;
-  width: 100%;
-  text-align: center;
 }
 
 .stripeButton:hover {
@@ -410,7 +347,6 @@ opacity: 1;
   font-size: 12px;
   margin: 0;
 }
-
 
 
 /* Media Queries */
