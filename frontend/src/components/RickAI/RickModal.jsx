@@ -20,7 +20,7 @@ const HELP_TEXT = `Hi! I'm Rick, your Virtual Teaching Assistant. Here's what I 
 **Quick Actions:**
 • "Show me [student]" - Opens their profile
 
-Just ask in plain English! (Type /help anytime to see this again)`;
+(Type /help anytime to see this again)`;
 
 // Component to render structured data as a nice list
 const StructuredResponse = ({ data }) => {
