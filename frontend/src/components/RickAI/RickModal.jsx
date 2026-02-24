@@ -97,7 +97,7 @@ const ClarificationResponse = ({ message }) => {
       <div className={styles.clarificationContent}>
         <p className={styles.clarificationText}>{message}</p>
         <p className={styles.clarificationHint}>
-          💡 Try copying one of the exact names above, or be more specific.
+          💡 Try copying one of the exact names above, or use one of the numbers.
         </p>
       </div>
     </div>
