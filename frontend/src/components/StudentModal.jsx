@@ -140,6 +140,29 @@ const StudentModal = ({ studentId, onClose }) => {
         </div>
 
         <div className={styles.content}>
+
+          {/* TEACHER NOTES - shown first so teachers see them immediately */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Teacher Notes</h3>
+            {notes.length > 0 ? (
+              <ul className={styles.notesList}>
+                {notes.map(n => (
+                  <li key={n.id} className={styles.noteItem}>
+                    <p className={styles.noteText}>{n.note}</p>
+                    <small className={styles.noteDate}>
+                      {new Date(n.created_at).toLocaleString()}
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className={styles.emptyState}>
+                No notes yet. Add one below!
+              </div>
+            )}
+          </div>
+
+          {/* ASSIGNMENTS */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Assignments</h3>
             {assignments.length > 0 ? (
@@ -184,26 +207,7 @@ const StudentModal = ({ studentId, onClose }) => {
             )}
           </div>
 
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Teacher Notes</h3>
-            {notes.length > 0 ? (
-              <ul className={styles.notesList}>
-                {notes.map(n => (
-                  <li key={n.id} className={styles.noteItem}>
-                    <p className={styles.noteText}>{n.note}</p>
-                    <small className={styles.noteDate}>
-                      {new Date(n.created_at).toLocaleString()}
-                    </small>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className={styles.emptyState}>
-                No notes yet. Add one below!
-              </div>
-            )}
-          </div>
-
+          {/* ADD NOTE - always at the bottom */}
           <div className={styles.addNoteSection}>
             <textarea
               value={newNote}
@@ -221,6 +225,7 @@ const StudentModal = ({ studentId, onClose }) => {
               Add Note
             </button>
           </div>
+
         </div>
       </div>
     </div>
