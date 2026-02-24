@@ -248,31 +248,6 @@ const GradeInsight = () => {
 
         </section>
 
-       {/* Pricing Section */}
-        <section id="pricing" className={styles.section} aria-labelledby="pricing-heading">
-          <div className={styles.sectionHeader}>
-            <h3 id="pricing-heading" className={styles.sectionTitle}>
-              Pricing
-            </h3>
-            <p className={styles.sectionSubtitle}>
-              One-time purchase. No subscriptions, no surprises.
-            </p>
-          </div>
-
-          <div className={styles.pricingWrapper}>
-            <a
-              href="https://buy.stripe.com/3cI6oGcqw3nk64b16Z4ow01"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.stripeButton}
-            >
-              Get Grade Insight — $4.99
-            </a>
-            <p className={styles.pricingFootnote}>
-              Secure checkout powered by Stripe
-            </p>
-          </div>
-        </section>
 
         {/* Anchors to avoid dead links */}
         <section id="contact" aria-hidden="true" style={{ height: 1 }} />
