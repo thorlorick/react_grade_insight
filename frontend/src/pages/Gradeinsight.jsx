@@ -233,8 +233,48 @@ const GradeInsight = () => {
           </div>
         </section>
 
+        {/* Pricing Section */}
+        <section id="pricing" className={styles.section} aria-labelledby="pricing-heading">
+          <div className={styles.sectionHeader}>
+            <h3 id="pricing-heading" className={styles.sectionTitle}>
+              Pricing
+            </h3>
+            <p className={styles.sectionSubtitle}>
+              Simple, one-time pricing. No subscriptions, no surprises.
+            </p>
+          </div>
+
+          <div className={styles.pricingCard}>
+            <div className={styles.pricingBadge}>One-Time Purchase</div>
+            <div className={styles.pricingAmount}>
+              <span className={styles.pricingCurrency}>$</span>4.99
+            </div>
+            <p className={styles.pricingDescription}>
+              Pay once, use forever. Full access to all features for your entire classroom.
+            </p>
+            <ul className={styles.pricingFeatures}>
+              <li>✓ Unlimited student accounts</li>
+              <li>✓ Parent portal access</li>
+              <li>✓ Google Classroom CSV import</li>
+              <li>✓ Rick AI Teaching Assistant</li>
+              <li>✓ Private teacher notes</li>
+              <li>✓ All future updates included</li>
+            </ul>
+            <a
+              href="https://buy.stripe.com/3cI6oGcqw3nk64b16Z4ow01"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.stripeButton}
+            >
+              Get Grade Insight — $4.99
+            </a>
+            <p className={styles.pricingFootnote}>
+              Secure checkout powered by Stripe
+            </p>
+          </div>
+        </section>
+
         {/* Anchors to avoid dead links */}
-        <section id="pricing" aria-hidden="true" style={{ height: 1 }} />
         <section id="contact" aria-hidden="true" style={{ height: 1 }} />
       </main>
 
