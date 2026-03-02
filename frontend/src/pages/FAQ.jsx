@@ -133,6 +133,16 @@ const FAQ = () => {
         </section>
       </main>
 
+      <div className={styles.faqContactContainer}>
+  <p className={styles.faqContactText}>Didn't find what you were looking for?</p>
+  <a 
+    href="mailto:support@gradeinsight.com"
+    className={styles.faqContactButton}
+  >
+    Contact Support
+  </a>
+</div>
+
       {showContactModal && (
         <ContactEmailModal onClose={() => setShowContactModal(false)} />
       )}
