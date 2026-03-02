@@ -12,6 +12,7 @@ const GradeInsight = () => {
     { to: '/TeacherLogin', label: 'Teachers' },
     { to: '/StudentLogin', label: 'Students' },
     { to: '/ParentLogin', label: 'Parents' },
+    { to: '/FAQ', label: 'FAQ' },
     { label: 'Contact', onClick: () => setShowContactModal(true) },
   ];
 
