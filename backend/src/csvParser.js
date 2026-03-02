@@ -1,3 +1,4 @@
+// backend/src/csvParser.js
 const fs = require('fs');
 const csv = require('csv-parser');
 const { parseDate } = require('./dateParser');
@@ -8,6 +9,23 @@ require('dotenv').config();
 const MIN_FILLED_COUNT = process.env.MIN_FILLED_COUNT
   ? Number(process.env.MIN_FILLED_COUNT)
   : 1; // default: at least one student must have a grade
+
+// Map letter grades to numeric percentages (0-100 scale)
+const LETTER_MAP = {
+  "A+": 95,
+  A: 90,
+  "A-": 85,
+  "B+": 80,
+  B: 75,
+  "B-": 70,
+  "C+": 68,
+  C: 65,
+  "C-": 62,
+  "D+": 58,
+  D: 55,
+  "D-": 52,
+  F: 50
+};
 
 async function parseTemplate(filePath) {
   return new Promise((resolve, reject) => {
@@ -61,7 +79,7 @@ async function parseTemplate(filePath) {
         // Convert map to array
         const assignments = Object.values(assignmentMap).map((a) => ({
           name: a.name,
-          date: a.dates[0], // keep first or latest date if needed
+          date: a.dates[0],
           max_points: a.max_points,
         }));
 
@@ -69,13 +87,25 @@ async function parseTemplate(filePath) {
         const studentRows = rows.slice(2);
         const students = studentRows.map((r) => {
           const grades = Object.values(assignmentMap).map((a) => {
-            // Look up all columns that belong to the same project
+            // Look up all columns that belong to the same assignment
             const gradeValues = a.indices.map((i) => {
               const colName = assignmentNames[i];
               const raw = r[colName]?.trim();
               if (!raw || raw === '-') return null;
+
+              // First try numeric
               const num = Number(raw);
-              return Number.isFinite(num) ? num : null;
+              if (Number.isFinite(num)) return num;
+
+              // Then try letter mapping — scale to max_points if available
+              const mapped = LETTER_MAP[raw.toUpperCase()];
+              if (mapped != null) {
+                return a.max_points != null
+                  ? (mapped / 100) * a.max_points
+                  : mapped;
+              }
+
+              return null;
             });
 
             // Take the latest non-null grade
