@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Joyride, { STATUS } from 'react-joyride';
 import StudentDashboardCards from '../components/StudentDashboardCards';
-import { calculateAverage, getLetterGrade, getGradeColorClass } from '../../backend/src/utils/gradeCalculations';
+import { calculateAverage, getLetterGrade, getGradeColorClass } from '../components/gradeCalculations';
 import styles from './StudentPage.module.css';
 
 // Custom hook for student data
