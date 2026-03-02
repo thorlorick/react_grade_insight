@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Joyride, { STATUS } from 'react-joyride';
 import StudentDashboardCards from '../components/StudentDashboardCards';
+import { calculateAverage, getLetterGrade, getGradeColorClass } from '../../backend/utils/gradeCalculations';
 import styles from './StudentPage.module.css';
 
 // Custom hook for student data
@@ -71,7 +72,7 @@ const useStudentNotes = () => {
 
   return { notes, loading };
 };
-
+/*
 // Calculate simple grade average
 const calculateAverage = (assignments) => {
   const gradedAssignments = assignments.filter(a => a.grade !== null && a.grade !== undefined);
@@ -102,6 +103,7 @@ const getGradeColorClass = (percentage) => {
   if (percentage >= 60) return styles.gradeD;
   return styles.gradeF;
 };
+*/
 
 const StudentPage = () => {
   const { data: assignments, loading: assignmentsLoading, error } = useStudentData();
