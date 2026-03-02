@@ -236,22 +236,21 @@ const StudentPage = () => {
       <div className={styles.navbar}>
         <h1 className={styles.navLogo}>Grade Insight</h1>
         
-        {/* Average Display */}
-        <div className={styles.averageContainer}>
-          {assignmentsLoading ? (
-            <span className={styles.averageLoading}>Calculating...</span>
-          ) : average !== null ? (
-            <div className={styles.averageDisplay}>
-              <span className={styles.averageLabel}>Your Average:</span>
-              <span className={`${styles.averageValue} ${getGradeColorClass(average, styles)}`}>
-                {average.toFixed(1)}% ({getLetterGrade(average)})
-              </span>
-              </span>
-            </div>
-          ) : (
-            <span className={styles.averageEmpty}>No grades yet</span>
-          )}
-        </div>
+     {/* Average Display */}
+<div className={styles.averageContainer}>
+  {assignmentsLoading ? (
+    <span className={styles.averageLoading}>Calculating...</span>
+  ) : average !== null ? (
+    <div className={styles.averageDisplay}>
+      <span className={styles.averageLabel}>Your Average:</span>
+      <span className={`${styles.averageValue} ${getGradeColorClass(average, styles)}`}>
+        {average.toFixed(1)}% ({getLetterGrade(average)})
+      </span>
+    </div>
+  ) : (
+    <span className={styles.averageEmpty}>No grades yet</span>
+  )}
+</div>
 
         <button
           onClick={handleLogout}
