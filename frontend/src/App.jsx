@@ -17,6 +17,7 @@ import SignUp from './pages/TeacherSignUp';
 import AdminPanel from './pages/AdminPanel';
 import ParentSignup from './pages/ParentSignup';
 import TeacherAdminPage from './pages/TeacherAdminPage';
+import FAQ from './pages/FAQ';
 
 const App = () => {
   return (
@@ -50,6 +51,8 @@ const App = () => {
             <TeacherAdminPage />
           </ProtectedTeacherRoute>
         } />
+
+        <Route path="/FAQ" element={<FAQ />} />
            
         {/* Catch-all for 404 */}
         <Route path="*" element={<div>Page Not Found</div>} />
