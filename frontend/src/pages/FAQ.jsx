@@ -61,7 +61,7 @@ const FAQ = () => {
           <FAQGrid>
             <FAQItem
               q="How do I log in?"
-              a="Use the login link provided by your teacher and enter your assigned credentials."
+              a="Go to the Students section and enter your email and password. If it is your first time logging in, you will be prompted to create a new password."
             />
             <FAQItem
               q="Why can't I see other students' grades?"
@@ -77,7 +77,7 @@ const FAQ = () => {
             />
             <FAQItem
               q="Can parents have their own account?"
-              a="Yes, if enabled by the teacher."
+              a="Yes. A parent can create their own account and link it to their children's grade page."
             />
           </FAQGrid>
         </section>
@@ -96,11 +96,11 @@ const FAQ = () => {
             />
             <FAQItem
               q="What format must the CSV follow?"
-              a="Assignment names, dates, max points, and student numbers must match the provided template."
+              a="Assignment names, dates, max points, and student emails must match the provided template."
             />
             <FAQItem
               q="Can I edit grades later?"
-              a="Uploading a new CSV replaces previous data for that class."
+              a="Uploading a new CSV replaces previous data for that class. There is also a Manage Data section to allow for small changes."
             />
             <FAQItem
               q="Is student data secure?"
