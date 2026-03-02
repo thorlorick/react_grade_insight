@@ -411,6 +411,33 @@ opacity: 1;
   margin: 0;
 }
 
+/* FAQ Contact Button */
+.faqContactContainer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.faqContactText {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #ffffffcc; /* match subtle text like other sections */
+}
+
+.faqContactButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #181ED9; /* same as your brand color */
+  color: #ffffff;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.faqContactButton:hover {
+  background: #141AB8; /* slightly darker on hover */
+}
+
 
 /* Media Queries */
 @media (max-width: 768px) {
