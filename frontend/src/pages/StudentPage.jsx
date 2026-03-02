@@ -243,8 +243,9 @@ const StudentPage = () => {
           ) : average !== null ? (
             <div className={styles.averageDisplay}>
               <span className={styles.averageLabel}>Your Average:</span>
-              <span className={`${styles.averageValue} ${getGradeColorClass(average)}`}>
+              <span className={`${styles.averageValue} ${getGradeColorClass(average, styles)}`}>
                 {average.toFixed(1)}% ({getLetterGrade(average)})
+              </span>
               </span>
             </div>
           ) : (
