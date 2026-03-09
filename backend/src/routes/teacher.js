@@ -12,6 +12,12 @@ router.use((req, res, next) => {
 // === GET /api/teacher/data ===
 router.get('/data', async (req, res) => {
   try {
+    const teacherId = req.session?.teacher_id;
+
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
     const [rows] = await pool.execute(
       `SELECT s.id AS student_id, s.first_name, s.last_name, s.email,
               a.id AS assignment_id, a.name AS assignment_name, a.due_date AS assignment_date,
@@ -19,8 +25,11 @@ router.get('/data', async (req, res) => {
        FROM students s
        JOIN grades g ON s.id = g.student_id
        JOIN assignments a ON g.assignment_id = a.id
-       ORDER BY s.last_name, a.due_date`
+       WHERE g.teacher_id = ?
+       ORDER BY s.last_name, a.due_date`,
+      [teacherId]
     );
+
     res.json(rows);
   } catch (err) {
     console.error('Error fetching teacher data:', err);
@@ -34,14 +43,12 @@ router.get('/student/:studentId/details', async (req, res) => {
   console.log('Fetching student data for ID:', studentId);
 
   try {
-    // Check if teacher is logged in
     if (!req.session || !req.session.teacher_id) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
 
     const teacherId = req.session.teacher_id;
 
-    // Get student info
     const [studentRows] = await pool.query(
       `SELECT id, first_name, last_name, email
        FROM students
@@ -53,17 +60,15 @@ router.get('/student/:studentId/details', async (req, res) => {
       return res.status(404).json({ error: 'Student not found' });
     }
 
-    // Get student's assignments and grades
     const [assignmentRows] = await pool.query(
       `SELECT a.id AS assignment_id, a.name AS assignment_name, a.due_date,
               a.max_points, g.grade
        FROM assignments a
-       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?
+       LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ? AND g.teacher_id = ?
        ORDER BY a.due_date`,
-      [studentId]
+      [studentId, teacherId]
     );
 
-    // Get student's notes for this teacher
     const [noteRows] = await pool.query(
       `SELECT id, note, created_at
        FROM teacher_notes
@@ -72,7 +77,6 @@ router.get('/student/:studentId/details', async (req, res) => {
       [studentId, teacherId]
     );
 
-    // Return the data in the format your frontend expects
     res.json({
       student: studentRows[0],
       assignments: assignmentRows || [],
@@ -90,7 +94,6 @@ router.get('/notes/:studentId', async (req, res) => {
   const studentId = req.params.studentId;
 
   try {
-    // Check if teacher is logged in
     if (!req.session || !req.session.teacher_id) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
@@ -121,7 +124,6 @@ router.post('/notes/:studentId', async (req, res) => {
   const { note } = req.body;
 
   try {
-    // Check if teacher is logged in
     if (!req.session || !req.session.teacher_id) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
@@ -133,12 +135,11 @@ router.post('/notes/:studentId', async (req, res) => {
       return res.status(400).json({ error: 'Note too long (max 2000 characters)' });
     }
 
-   const [result] = await pool.execute(
-  `INSERT INTO teacher_notes (teacher_id, student_id, note) VALUES (?, ?, ?)`,
-  [teacherId, studentId, note || '']
-);
+    const [result] = await pool.execute(
+      `INSERT INTO teacher_notes (teacher_id, student_id, note) VALUES (?, ?, ?)`,
+      [teacherId, studentId, note || '']
+    );
 
-    // Get the inserted/updated note to return
     const [noteResult] = await pool.execute(
       `SELECT id, note, created_at 
        FROM teacher_notes 
@@ -154,7 +155,6 @@ router.post('/notes/:studentId', async (req, res) => {
         success: true 
       });
     } else {
-      // Fallback if query fails
       res.json({ 
         id: result.insertId || Date.now(),
         note: note || '',
@@ -175,7 +175,6 @@ router.delete('/notes/:studentId', async (req, res) => {
   const studentId = req.params.studentId;
 
   try {
-    // Check if teacher is logged in
     if (!req.session || !req.session.teacher_id) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
