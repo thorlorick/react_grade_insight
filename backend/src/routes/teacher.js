@@ -49,6 +49,16 @@ router.get('/student/:studentId/details', async (req, res) => {
 
     const teacherId = req.session.teacher_id;
 
+    // Verify this student belongs to this teacher before returning anything
+    const [ownerCheck] = await pool.query(
+      `SELECT 1 FROM student_teacher WHERE teacher_id = ? AND student_id = ?`,
+      [teacherId, studentId]
+    );
+
+    if (ownerCheck.length === 0) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
     const [studentRows] = await pool.query(
       `SELECT id, first_name, last_name, email
        FROM students
@@ -65,8 +75,9 @@ router.get('/student/:studentId/details', async (req, res) => {
               a.max_points, g.grade
        FROM assignments a
        LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ? AND g.teacher_id = ?
+       WHERE a.teacher_id = ?
        ORDER BY a.due_date`,
-      [studentId, teacherId]
+      [studentId, teacherId, teacherId]
     );
 
     const [noteRows] = await pool.query(
