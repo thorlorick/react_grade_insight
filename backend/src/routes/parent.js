@@ -1,7 +1,6 @@
 // backend/src/routes/parent.js
 const express = require('express');
 const { pool } = require('../db');
-
 const router = express.Router();
 
 // Simple auth check function
@@ -15,7 +14,6 @@ const checkParentAuth = (req, res, next) => {
 // === GET /api/parent/children ===
 router.get('/children', checkParentAuth, async (req, res) => {
   const parentId = req.session.parent_id;
-
   try {
     const [rows] = await pool.execute(
       `SELECT 
@@ -28,7 +26,6 @@ router.get('/children', checkParentAuth, async (req, res) => {
       ORDER BY s.last_name, s.first_name`,
       [parentId]
     );
-
     res.json(rows);
   } catch (err) {
     console.error('Error fetching parent children:', err);
@@ -40,20 +37,18 @@ router.get('/children', checkParentAuth, async (req, res) => {
 router.get('/grades/:studentId', checkParentAuth, async (req, res) => {
   const parentId = req.session.parent_id;
   const studentId = req.params.studentId;
-
   try {
-    // First verify this student belongs to this parent
+    // Verify this student belongs to this parent
     const [verification] = await pool.execute(
       `SELECT 1 FROM parent_student 
        WHERE parent_id = ? AND student_id = ?`,
       [parentId, studentId]
     );
-
     if (verification.length === 0) {
       return res.status(403).json({ error: 'Access denied to this student data' });
     }
 
-    // Get grades with assignment details
+    // Get grades with assignment details, scoped to this student's teachers only
     const [rows] = await pool.execute(
       `SELECT 
         a.id AS assignment_id,
@@ -67,11 +62,13 @@ router.get('/grades/:studentId', checkParentAuth, async (req, res) => {
           ELSE NULL 
         END AS percentage
       FROM assignments a
-      LEFT JOIN grades g ON a.id = g.assignment_id AND g.student_id = ?
+      JOIN student_teacher st
+        ON st.teacher_id = a.teacher_id AND st.student_id = ?
+      LEFT JOIN grades g 
+        ON a.id = g.assignment_id AND g.student_id = ?
       ORDER BY a.due_date DESC, a.name`,
-      [studentId]
+      [studentId, studentId]
     );
-
     res.json(rows);
   } catch (err) {
     console.error('Error fetching student grades:', err);
@@ -83,7 +80,6 @@ router.get('/grades/:studentId', checkParentAuth, async (req, res) => {
 router.get('/notes/:studentId', checkParentAuth, async (req, res) => {
   const parentId = req.session.parent_id;
   const studentId = req.params.studentId;
-
   try {
     // Verify student belongs to parent
     const [verification] = await pool.execute(
@@ -91,7 +87,6 @@ router.get('/notes/:studentId', checkParentAuth, async (req, res) => {
        WHERE parent_id = ? AND student_id = ?`,
       [parentId, studentId]
     );
-
     if (verification.length === 0) {
       return res.status(403).json({ error: 'Access denied to this student data' });
     }
@@ -120,7 +115,7 @@ router.get('/notes/:studentId', checkParentAuth, async (req, res) => {
       });
     }
 
-    // Return the most recent note (since we ordered by updated_at DESC)
+    // Return the most recent note
     const latestNote = rows[0];
     res.json({
       notes: latestNote.note || '',
@@ -128,7 +123,6 @@ router.get('/notes/:studentId', checkParentAuth, async (req, res) => {
       teacherName: `${latestNote.teacher_first_name} ${latestNote.teacher_last_name}`,
       schoolName: latestNote.school_name
     });
-
   } catch (err) {
     console.error('Error fetching teacher notes:', err);
     res.status(500).json({ error: 'Failed to fetch notes' });
