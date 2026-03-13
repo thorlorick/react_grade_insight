@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Add this GET route for template download (before your existing POST route)
+// GET route for template download
 router.get('/template', (req, res) => {
   const csvTemplate = `last_name,first_name,email,Math Quiz 1,Science Test,History Essay
 Doe,John,john.doe@email.com,85,92,78
@@ -58,20 +58,16 @@ router.post('/template', upload.single('csv'), async (req, res) => {
     // 2. Upsert assignments (match by teacher_id + name only)
     const assignmentIdMap = {}; // name => assignment_id
     for (const a of assignments) {
-      const dueDate = a.date || null; // convert empty/undefined to null
+      const dueDate = a.date || null;
 
-      // Check if assignment exists by name only (not by date)
       const [existing] = await conn.query(
         'SELECT id, due_date FROM assignments WHERE teacher_id=? AND name=?',
         [teacherId, a.name]
       );
 
       if (existing.length > 0) {
-        // Assignment exists - update it
         const existingId = existing[0].id;
         const existingDate = existing[0].due_date;
-        
-        // Keep non-null date: prefer new date if it exists, otherwise keep old
         const finalDate = dueDate !== null ? dueDate : existingDate;
         
         assignmentIdMap[a.name] = existingId;
@@ -80,7 +76,6 @@ router.post('/template', upload.single('csv'), async (req, res) => {
           [a.max_points, uploadId, finalDate, existingId]
         );
       } else {
-        // Assignment doesn't exist - insert it
         const [inserted] = await conn.query(
           'INSERT INTO assignments (teacher_id, upload_id, name, due_date, max_points) VALUES (?, ?, ?, ?, ?)',
           [teacherId, uploadId, a.name, dueDate, a.max_points]
@@ -110,6 +105,12 @@ router.post('/template', upload.single('csv'), async (req, res) => {
         );
         studentId = inserted.insertId;
       }
+
+      // Maintain teacher <-> student relationship
+      await conn.query(
+        'INSERT IGNORE INTO student_teacher (teacher_id, student_id) VALUES (?, ?)',
+        [teacherId, studentId]
+      );
 
       // Insert or overwrite grades
       for (let i = 0; i < assignments.length; i++) {
