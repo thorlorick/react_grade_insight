@@ -139,6 +139,15 @@ CREATE TABLE access_codes (
     INDEX idx_code (code)
 );
 
+-- Create table for sharing students
+CREATE TABLE student_teacher (
+  teacher_id INT NOT NULL,
+  student_id INT NOT NULL,
+  PRIMARY KEY (teacher_id, student_id),
+  FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
 -- Create rick_memory table
 CREATE TABLE IF NOT EXISTS rick_memory (
   id INT AUTO_INCREMENT PRIMARY KEY,
