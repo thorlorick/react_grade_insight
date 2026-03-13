@@ -131,8 +131,8 @@ const PATTERNS = [
   {
     // Pattern 2: "How is [STUDENT] doing?" (general)
     patterns: [
-      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing\s*$/i,
-      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)\s*$/i,
+      /(?:how\s+(?:is|'s)|what\s+about|tell\s+me\s+about)\s+(.+?)\s+doing[\?\s]*$/i,
+      /(?:analyze|assess|evaluate)\s+(.+?)(?:'s)?\s+(?:performance|progress)[\?\s]*$/i,
     ],
     intent: 'analyzeStudent',
     entities: ['studentName'],
@@ -236,9 +236,9 @@ const PATTERNS = [
   {
     // Pattern 5: "Who is at risk?"
     patterns: [
-      /who\s+(?:is|are)\s+(?:at risk|struggling|failing|behind)/i,
-      /(?:show|list)\s+(?:me\s+)?(?:at risk|struggling|failing)\s+students?/i,
-      /what\s+students?\s+(?:need|require)\s+(?:help|support|intervention)/i,
+      /who\s+(?:is|are)\s+(?:at risk|struggling|failing|behind)[\?\s]*$/i,
+      /(?:show|list)\s+(?:me\s+)?(?:at risk|struggling|failing)\s+students?[\?\s]*$/i,
+      /what\s+students?\s+(?:need|require)\s+(?:help|support|intervention)[\?\s]*$/i,
     ],
     intent: 'atRisk',
     entities: [],
@@ -251,9 +251,9 @@ const PATTERNS = [
   {
     // Pattern 6: "Who has missing work?"
     patterns: [
-      /who\s+has\s+(?:lots of|a lot of|multiple|chronic|many)?\s*missing\s+(?:work|assignments?)/i,
-      /(?:show|list)\s+(?:chronic|multiple)?\s*missing\s+(?:work|assignments?)/i,
-      /what\s+students?\s+(?:aren't|are not)\s+turning\s+in\s+work/i,
+      /who\s+has\s+(?:lots of|a lot of|multiple|chronic|many)?\s*missing\s+(?:work|assignments?)[\?\s]*$/i,
+      /(?:show|list)\s+(?:chronic|multiple)?\s*missing\s+(?:work|assignments?)[\?\s]*$/i,
+      /what\s+students?\s+(?:aren't|are not)\s+turning\s+in\s+work[\?\s]*$/i,
     ],
     intent: 'chronicMissing',
     entities: [],
@@ -279,7 +279,7 @@ function matchPattern(message) {
         const entities = {};
         patternGroup.entities.forEach((entityName, index) => {
           if (match[index + 1] !== undefined) {
-            entities[entityName] = match[index + 1];
+            entities[entityName] = match[index + 1].replace(/[\?\s]+$/, '').trim();
           }
         });
         
