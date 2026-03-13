@@ -1,7 +1,6 @@
 // backend/src/routes/student.js
 const express = require('express');
 const { pool } = require('../db');
-
 const router = express.Router();
 
 // Auth middleware for app
@@ -15,7 +14,6 @@ const checkStudentAuth = (req, res, next) => {
 // === GET /api/student/data ===
 router.get('/data', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-
   try {
     const [rows] = await pool.execute(
       `SELECT 
@@ -30,12 +28,13 @@ router.get('/data', checkStudentAuth, async (req, res) => {
           ELSE NULL 
         END AS percentage
       FROM assignments a
-      LEFT JOIN grades g 
+      JOIN student_teacher st
+        ON st.teacher_id = a.teacher_id AND st.student_id = ?
+      LEFT JOIN grades g
         ON a.id = g.assignment_id AND g.student_id = ?
       ORDER BY a.due_date DESC, a.name`,
-      [studentId]
+      [studentId, studentId]
     );
-
     res.json(rows);
   } catch (err) {
     console.error('Error fetching student data:', err);
@@ -46,7 +45,6 @@ router.get('/data', checkStudentAuth, async (req, res) => {
 // === GET /api/student/profile ===
 router.get('/profile', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-
   try {
     const [rows] = await pool.execute(
       `SELECT id, first_name, last_name, email, grade_level, student_number
@@ -54,9 +52,7 @@ router.get('/profile', checkStudentAuth, async (req, res) => {
        WHERE id = ?`,
       [studentId]
     );
-
     if (rows.length === 0) return res.status(404).json({ error: 'Student not found' });
-
     res.json(rows[0]);
   } catch (err) {
     console.error('Error fetching student profile:', err);
@@ -67,7 +63,6 @@ router.get('/profile', checkStudentAuth, async (req, res) => {
 // === GET /api/student/summary ===
 router.get('/summary', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-
   try {
     const [rows] = await pool.execute(
       `SELECT 
@@ -83,11 +78,12 @@ router.get('/summary', checkStudentAuth, async (req, res) => {
           ), 1
         ) AS overall_average
       FROM assignments a
-      LEFT JOIN grades g 
+      JOIN student_teacher st
+        ON st.teacher_id = a.teacher_id AND st.student_id = ?
+      LEFT JOIN grades g
         ON a.id = g.assignment_id AND g.student_id = ?`,
-      [studentId]
+      [studentId, studentId]
     );
-
     res.json(rows[0]);
   } catch (err) {
     console.error('Error fetching student summary:', err);
@@ -96,10 +92,8 @@ router.get('/summary', checkStudentAuth, async (req, res) => {
 });
 
 // === GET /api/student/notes ===
-// Returns all teacher notes for the logged-in student
 router.get('/notes', checkStudentAuth, async (req, res) => {
   const studentId = req.session.student_id;
-
   try {
     const [rows] = await pool.execute(
       `SELECT tn.id, tn.note, tn.created_at, t.first_name AS teacher_first_name, t.last_name AS teacher_last_name
@@ -109,14 +103,12 @@ router.get('/notes', checkStudentAuth, async (req, res) => {
        ORDER BY tn.created_at DESC`,
       [studentId]
     );
-
     const notes = rows.map(row => ({
       id: row.id,
       note: row.note,
       created_at: row.created_at,
       teacher: `${row.teacher_first_name} ${row.teacher_last_name}`
     }));
-
     res.json({ notes });
   } catch (err) {
     console.error('Error fetching student notes:', err);
@@ -125,4 +117,3 @@ router.get('/notes', checkStudentAuth, async (req, res) => {
 });
 
 module.exports = router;
-
