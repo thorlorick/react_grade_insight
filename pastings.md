@@ -616,3 +616,6 @@ As soon as report cards are done, I'm going to email the link to the staff and a
 # I think that's it
 I switched over cards for teachers and students. I left the parents one as a table just to not mess with it too much. Now I have to release it for beta testing....so scary!!!!
 
+# BUGS, BUGS EVERYWHERE!!!!
+Well we managed to get into some beta testing and the bugs were all over the place...teacher A seeing teacher B students, assignments from A bleeding into B...it was a mess. I had to rework the whole routes code just to safe guard everything...I HAD TO CREATE A NEW TABLE...this late in the game, that's just crazy. Anyways..seems to be holding. 
+
